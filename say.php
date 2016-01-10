@@ -20,6 +20,8 @@
 	$subject = str_replace ("\t", " ", $subject);
 	$subject = str_replace ("\022", "'", $subject);
 	$text = "來自：" . $author . "\n時間：" . $currentTime . "\n\n" . $text;
+	$text = str_replace ("<", "&lt;", $text);
+	$text = str_replace (">", "&gt;", $text);
 	if($author <> "")
 		setcookie ("forumName", $author, mktime (0, 0, 0, 1, 1, 2038), "/");
 ?>
