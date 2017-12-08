@@ -12,7 +12,7 @@
 		while(!feof ($index)) {
 			$line = fgets ($index, 4096);
 			$out = array ($line);
-			list ($articleNo, $indent, $subject, $author, $time) = split ("\t", $out[0]);
+			list ($articleNo, $indent, $subject, $author, $time) = explode ("\t", $out[0]);
 			if($articleNo == $messageNo) break;
 			$count++;
 		}
@@ -22,7 +22,7 @@
 	fclose ($lock);
 ?>
 
-<META HTTP-EQUIV=Refresh CONTENT="0; URL=forum.php?<?= 100 * floor ($count / 100); ?>">
+<META HTTP-EQUIV=Refresh CONTENT="0; URL=forum.php?<?php echo 100 * floor ($count / 100); ?>">
 <link rel=stylesheet href=forum.css>
 
 <?php
