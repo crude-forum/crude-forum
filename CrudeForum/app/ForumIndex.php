@@ -21,10 +21,9 @@ class ForumIndex implements \Iterator {
     }
 
     private function read() {
-        if (!feof($this->fh))
-            $this->currentLine = FALSE;
         if (($this->currentLine = fgets($this->fh, 4096)) === FALSE)
-            $this->currentLine = FALSE;
+            return $this->currentLine;
+        $this->currentLine = trim($this->currentLine);
         return $this->currentLine;
     }
 
@@ -61,8 +60,8 @@ class ForumIndex implements \Iterator {
 
             // skip empty lines
             while (
-                ($this->currentLine != FALSE) &&
-                empty(trim($this->currentLine))
+                ($this->currentLine !== FALSE) &&
+                empty($this->currentLine)
             ) {
                 $this->read();
             }

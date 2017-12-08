@@ -32,7 +32,7 @@ class PostSummary {
     }
 
     public function toIndexLine(): string {
-        return sprintf("%d\t%d\t%s\t%s\t%s",
+        return sprintf("%d\t%d\t%s\t%s\t%s\n",
             $this->id,
             $this->level,
             $this->title,
