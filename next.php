@@ -12,7 +12,7 @@
 		while(!feof ($index)) {
 			$line = fgets ($index, 4096);
 			$out = array ($line);
-			list ($articleNo, $indent, $subject, $author, $time) = split ("\t", $out[0]);
+			list ($articleNo, $indent, $subject, $author, $time) = explode ("\t", $out[0]);
 			if($previousArticleNo == $messageNo) break;
 			$previousArticleNo = $articleNo;
 		}
@@ -23,7 +23,7 @@
 	fclose ($lock);
 ?>
 
-<META HTTP-EQUIV=Refresh CONTENT="0; URL=read.php?<?= $articleNo; ?>">
+<META HTTP-EQUIV=Refresh CONTENT="0; URL=read.php?<?php echo $articleNo; ?>">
 <link rel=stylesheet href=forum.css>
 
 <?php

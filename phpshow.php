@@ -20,7 +20,7 @@ function setFocus () { document.form.text.focus (); }
 	$messageNo = str_replace ("/", "", $messageNo);
 ?>
 
-<center><form method=post name=form action=phpedit.php?<?= $messageNo; ?>>
+<center><form method=post name=form action=phpedit.php?<?php echo $messageNo; ?>>
 <textarea name=text rows=32 cols=120><?php
  $text = fopen ($messageNo, "r+");
 	if($text)
