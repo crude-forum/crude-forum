@@ -1,21 +1,23 @@
 <?php
- include 'configuration.php';
- include 'misc.php';
+ini_set('display_errors', 1);
+error_reporting(E_ALL);
+include 'configuration.php';
+include 'misc.php';
 
- $page = getenv ("QUERY_STRING");
- forumLog ("forum?" . $page);
+$page = getenv ("QUERY_STRING");
+forumLog ("forum?" . $page);
 ?>
 
 <meta http-equiv='Content-Type' content='text/html; charset=utf-8'>
-<link rel="alternate" type="application/rss+xml" title="Forum Threads - RSS" href="http://stupidsing.no-ip.org/rss.php?mode=thread" />
-<link rel="alternate" type="application/rss+xml" title="Forum Posts - RSS" href="http://stupidsing.no-ip.org/rss.php?mode=post" />
+<link rel="alternate" type="application/rss+xml" title="Forum Threads - RSS" href="https://stupidsing.no-ip.org/rss.php?mode=thread" />
+<link rel="alternate" type="application/rss+xml" title="Forum Posts - RSS" href="https://stupidsing.no-ip.org/rss.php?mode=post" />
 <link rel=stylesheet href=forum.css>
 
-<? print $beginFormat; ?>
+<?php print $beginFormat; ?>
 
 <title>Wandering and wonderings</title>
 <table width=100%><tr><td><div class=buttons><a href=sayForm.php>發言</a>&nbsp;&nbsp;<a href=
-forum.php?<? if($page > 100) print $page - 100; else print '0'; ?>
+forum.php?<?php if($page > 100) print $page - 100; else print '0'; ?>
 >上一頁</a>&nbsp;&nbsp;<a href=forum.php>首頁</a>&nbsp;&nbsp;<a href=index.html>主頁</a></div></td>
 <td align=right><div class=text>心意就如密友，長路裏相伴漫遊。</div></td></tr></table><br>
 
@@ -36,7 +38,7 @@ forum.php?<? if($page > 100) print $page - 100; else print '0'; ?>
 			$line = fgets ($index, 4096);
 			$out = array ($line);
 			if(trim ($out[0]) != "") {
-				list ($articleNo, $indent, $subject, $author, $time) = split ("\t", $out[0]);
+				list ($articleNo, $indent, $subject, $author, $time) = explode ("\t", $out[0]);
 				if($articleNo == "") break; // Blank line, end of file
 
 				if($indent == 0 && $nSubjects > 1)
@@ -58,7 +60,7 @@ forum.php?<? if($page > 100) print $page - 100; else print '0'; ?>
 
 </div><br><br><hr><br>
 <table width=100%><tr align=top><td><div class=buttons><a href=sayForm.php>發言</a>&nbsp;&nbsp;<a href=
-forum.php?<? print $page + 100; ?>
+forum.php?<?php print ((int) $page) + 100; ?>
 >下一頁</a>&nbsp;&nbsp;<a href=forum.php>首頁</a>&nbsp;&nbsp;<a href=../index.html>回主頁</a></div></td><td align=right>漫長漫長夜間，我伴我閒談；漫長漫長夜晚，從未覺是冷。</td></tr></table>
 
 <?php
