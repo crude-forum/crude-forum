@@ -1,2 +1,5 @@
 # ignore logs folder
 /logs
+
+# ignore config file
+/configuration.php
