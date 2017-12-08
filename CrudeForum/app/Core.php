@@ -35,6 +35,26 @@ class Core {
         return NULL;
     }
 
+    public function readNextPostSummary(string $postID): ?PostSummary {
+        $index = fopen($this->dataDirectory . 'index', 'r+');
+        $pos = 0;
+        $prevSummary = NULL;
+        if (is_resource($index)) {
+            while (!feof($index) && (($line = fgets($index, 4096)) !== FALSE)) {
+                $postSummary = PostSummary::fromIndexLine($line, $pos++);
+                if (($prevSummary !== NULL) && ($prevSummary->id == $postID))
+                    return $postSummary;
+                $prevSummary = $postSummary;
+            }
+            fclose($index);
+        } else {
+            throw new \Exception('failed to open forum index');
+            return NULL;
+        }
+        throw new \Exception("there is no post after #{$postID} in forum index");
+        return NULL;
+    }
+
     public function readPostSummary(string $postID): ?PostSummary {
         $index = fopen($this->dataDirectory . 'index', 'r+');
         $pos = 0;
