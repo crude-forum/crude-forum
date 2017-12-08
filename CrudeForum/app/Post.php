@@ -25,7 +25,7 @@ class Post {
             }
             return new Post($title, $body);
         } else {
-            throw new InvalidArgumentException('not a valid resource');
+            throw new \InvalidArgumentException('not a valid resource');
         }
     }
 }
