@@ -130,7 +130,7 @@ class Core {
 
         if(
            /* Do not log me */
-           (empty($administrator) || ($user != $administrator)) &&
+           (empty($this->administrator) || ($user != $this->administrator)) &&
 
            /* Do not log bots */
            !is_string (strstr ($userAgent, "http://search.msn.com/msnbot.htm")) &&
