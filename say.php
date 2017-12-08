@@ -93,7 +93,7 @@
 				$line = fgets ($index, 4096);
 				$out = array ($line);
 				if(trim ($out[0]) != "") {
-					list ($articleNo, $indent, $s, $a, $t) = split ("\t", $out[0]);
+					list ($articleNo, $indent, $s, $a, $t) = explode ("\t", $out[0]);
 					if (trim ($articleNo) != "" && trim ($s) != "" && trim($a) != "" && trim($t) != "") // filter spams
 						fputs ($output, $line);
 

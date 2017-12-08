@@ -25,7 +25,7 @@ if($index) {
 			$line = fgets ($index, 4096);
 			$out = array ($line);
 			if(trim ($out[0]) != "") {
-				list ($articleNo, $indent, $subject, $author, $time) = split ("\t", $out[0]);
+				list ($articleNo, $indent, $subject, $author, $time) = explode ("\t", $out[0]);
         $subdir = floor((int) $articleNo / 1000) . "/";
 				$content = htmlspecialchars(
 					'------------------<br/>[<a href="http://stupidsing.no-ip.org/sayForm.php?'.$articleNo.'">'.$lang['reply'].'</a>]&nbsp;&nbsp;'.
@@ -59,7 +59,7 @@ if($index) {
 			$line = fgets ($index, 4096);
 			$out = array ($line);
 			if(trim ($out[0]) != "") {
-				list ($articleNo, $indent, $subject, $author, $time) = split ("\t", $out[0]);
+				list ($articleNo, $indent, $subject, $author, $time) = explode ("\t", $out[0]);
         $subdir = floor((int) $articleNo / 1000) . "/";
 				$content = htmlspecialchars(
 					'------------------<br/>[<a href="http://stupidsing.no-ip.org/sayForm.php?'.$articleNo.'">'.$lang['reply'].'</a>]&nbsp;&nbsp;'.

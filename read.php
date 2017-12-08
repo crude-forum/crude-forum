@@ -19,12 +19,12 @@
 		$title = fgets ($text, 4096);
 ?>
 
-<title><?= $title; ?></title>
-<div class=text><?= $title; ?></div><br><br><br><div class=buttons>
-<a href=sayForm.php?<?= $filename; ?>>回覆</a>&nbsp;
-<a href=prev.php?<?= $filename; ?>>上一發言</a>&nbsp;
-<a href=next.php?<?= $filename; ?>>下一發言</a>&nbsp;
-<a href=back.php?<?= $filename; ?>>回論壇</a><br><br>
+<title><?php echo $title; ?></title>
+<div class=text><?php echo $title; ?></div><br><br><br><div class=buttons>
+<a href=sayForm.php?<?php echo $filename; ?>>回覆</a>&nbsp;
+<a href=prev.php?<?php echo $filename; ?>>上一發言</a>&nbsp;
+<a href=next.php?<?php echo $filename; ?>>下一發言</a>&nbsp;
+<a href=back.php?<?php echo $filename; ?>>回論壇</a><br><br>
 </div><hr><br><div class=text>
 
 <?php
@@ -40,10 +40,10 @@
 ?>
 
 </div><br><hr><br><div class=buttons>
-<a href=sayForm.php?<?= $filename; ?>>回覆</a>&nbsp;
-<a href=prev.php?<?= $filename; ?>>上一發言</a>&nbsp;
-<a href=next.php?<?= $filename; ?>>下一發言</a>&nbsp;
-<a href=back.php?<?= $filename; ?>>回論壇</a></div><br><br>
+<a href=sayForm.php?<?php echo $filename; ?>>回覆</a>&nbsp;
+<a href=prev.php?<?php echo $filename; ?>>上一發言</a>&nbsp;
+<a href=next.php?<?php echo $filename; ?>>下一發言</a>&nbsp;
+<a href=back.php?<?php echo $filename; ?>>回論壇</a></div><br><br>
 
 <?php
 	print $endFormat;
