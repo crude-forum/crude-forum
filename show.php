@@ -7,11 +7,11 @@
 	$messageNo = str_replace ("/", "", $messageNo);
 ?>
 
-<head><title><?= $messageNo; ?></title></head>
+<head><title><?php echo $messageNo; ?></title></head>
 <link rel=stylesheet href=forum.css>
 <body onload="document.form.text.focus ();">
 
-<center><form method=post name=form action=edit.php?<?= $messageNo; ?>>
+<center><form method=post name=form action=edit.php?<?php echo $messageNo; ?>>
 <textarea name=text rows=40 cols=80 style="font-size:13">
 <?php
     if($messageNo != 'notes') $subdir = floor((int) $messageNo / 1000) . "/";

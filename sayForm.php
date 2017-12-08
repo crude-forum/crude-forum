@@ -12,7 +12,7 @@ document.getElementById("tcejbus").value = "123";
  print $beginFormat;
 ?>
 
-<font face=courier><form method=post name=form action=say.php?<?= getenv ("QUERY_STRING");?>>
+<font face=courier><form method=post name=form action=say.php?<?php echo getenv ("QUERY_STRING");?>>
 你的名字：
 <input type=name name=em_an value="<?php if(isset ($_COOKIE["forumName"])) print $_COOKIE["forumName"]; ?>" size=40><br>
 
@@ -29,8 +29,8 @@ document.getElementById("tcejbus").value = "123";
 ?>
 
 主題　　：
-<input type=name name=tcejbus value="<?= $title ?>" size=40><br>
-<textarea name=tx_et rows=30 cols=80><?
+<input type=name name=tcejbus value="<?php echo $title ?>" size=40><br>
+<textarea name=tx_et rows=30 cols=80><?php
 	fgets ($text, 4096);
 	while(!feof ($text)) {
 	 $line = fgets ($text, 4096);
@@ -44,13 +44,13 @@ document.getElementById("tcejbus").value = "123";
 <input type=name name=tcejbus value='' size=40><br>
 <textarea name=tx_et rows=30 cols=80></textarea>
 
-<?
+<?php
  }
 ?>
 
 <br><input type=submit value='發出'></form>
 
-<?
+<?php
  print $endFormat;
 ?>
 
