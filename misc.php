@@ -2,10 +2,13 @@
 	function getLock () {
 	 include 'configuration.php';
 
-	 $lock = fopen ($dataDirectory . "lock", "r+");
+	 $lockfn = $dataDirectory . "lock";
+	 if(!file_exists ($lockfn) && !touch ($lockfn)) {
+		throw new Exception("unable to create lock file: {$lockfn}");
+	 }
+	 $lock = fopen ($lockfn, "r+");
 	 if(!$lock || !flock ($lock, LOCK_EX)) {
-		 print "Unable to get lock";
-		 exit;
+		 throw new Exception("Unable to get lock");
 	 }
 	 return $lock;
 	}
@@ -15,6 +18,9 @@
 
 		$logfn = $logDirectory . '/log';
 
+		if(!file_exists ($logfn) && !touch ($logfn)) {
+			throw new Exception("unable to create log file: {$logfn}");
+		}
 		if(file_exists ($logfn) &&
 			filesize ($logfn) >= 32768)
 			rename ($logfn, $logfn . '.' . strftime ("%Y%m%d"));

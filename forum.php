@@ -26,7 +26,11 @@ forum.php?<?php if($page > 100) print $page - 100; else print '0'; ?>
 <?php
 	$lock = getLock ();
 
-	$index = fopen ($dataDirectory . "index", "r+");
+	$indexfn = $dataDirectory . "index";
+	if(!file_exists ($indexfn) && !touch ($indexfn)) {
+		throw new Exception("unable to create index file: {$indexfn}");
+	}
+	$index = fopen ($indexfn, "r+");
 	if($index) {
 		$nSubjects = 0; // Limits number of subjects in a page
 
