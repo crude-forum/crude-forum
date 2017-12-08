@@ -63,10 +63,23 @@ class Core {
         return NULL;
     }
 
-    public function readPost(string $postID): Post {
+    public function readPost(string $postID): ?Post {
         $subdir = floor((int) $postID / 1000) . "/";
         $fh = fopen($this->dataDirectory . $subdir . $postID, "r+");
-        return Post::fromFile($fh);
+        if (!is_resource($fh)) {
+            throw new \Exception("failed to open post #{$postID}");
+            return NULL;
+        }
+
+        $title = fgets($fh, 4096);
+        $body  = '';
+        $lineBreak = '<br>';
+        while(!feof($fh)) {
+            $line = fgets($fh, 4096);
+            if (is_string(strstr($line, 'NO-LINE-END-BR'))) $lineBreak = '';
+            else $body .= $line . $lineBreak;
+        }
+        return new Post($title, $body);
     }
 
     public function getLock() {
