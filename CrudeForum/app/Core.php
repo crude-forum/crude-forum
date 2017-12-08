@@ -13,6 +13,23 @@ class Core {
         $this->administrator = $config['administrator'] ?? '';
     }
 
+    public function readPostSummary(string $postID): ?PostSummary {
+        $index = fopen($this->dataDirectory . 'index', 'r+');
+        $pos = 0;
+        if (is_resource($index)) {
+            while (!feof($index) && (($line = fgets($index, 4096)) !== FALSE)) {
+                $postSummary = PostSummary::fromIndexLine($line, $pos++);
+                if ($postSummary->id == $postID) return $postSummary;
+            }
+            fclose($index);
+        } else {
+            throw new \Exception('failed to open forum index');
+            return NULL;
+        }
+        throw new \Exception("post #{$postID} not found in forum index");
+        return NULL;
+    }
+
     public function readPost(string $postID): Post {
         $subdir = floor((int) $postID / 1000) . "/";
         $fh = fopen($this->dataDirectory . $subdir . $postID, "r+");

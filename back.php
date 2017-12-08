@@ -1,30 +1,20 @@
 <?php
 
-	include __DIR__ . '/CrudeForum/bootstrap.php';
-	print $beginFormat;
+include __DIR__ . '/CrudeForum/bootstrap.php';
+print $beginFormat;
 
-	$lock = $forum->getLock();
-	$messageNo = getenv ("QUERY_STRING");
-	$count = 0;
+$lock = $forum->getLock();
+$postID = getenv ("QUERY_STRING");
 
-	$index = fopen ($dataDirectory . "index", "r+");
-	if($index) {
-		while(!feof ($index)) {
-			$line = fgets ($index, 4096);
-			$out = array ($line);
-			list ($articleNo, $indent, $subject, $author, $time) = explode ("\t", $out[0]);
-			if($articleNo == $messageNo) break;
-			$count++;
-		}
-		fclose ($index);
-	}
+try {
+    $postSummary = $forum->readPostSummary($postID);
+} catch (Exception $e) {
+    die($e->getMessage());
+}
 
-	fclose ($lock);
 ?>
 
-<META HTTP-EQUIV=Refresh CONTENT="0; URL=forum.php?<?php echo 100 * floor ($count / 100); ?>">
+<META HTTP-EQUIV=Refresh CONTENT="0; URL=forum.php?<?php echo 100 * floor ($postSummary->pos / 100); ?>">
 <link rel=stylesheet href=forum.css>
 
-<?php
-	print $endFormat;
-?>
+<?php print $endFormat; ?>
