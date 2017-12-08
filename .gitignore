@@ -3,3 +3,7 @@
 
 # ignore config file
 configuration.php
+
+# ignore vim swap files
+.*.swp
+.*.swo
