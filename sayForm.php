@@ -8,7 +8,7 @@ document.getElementById("tcejbus").value = "123";
 <link rel=stylesheet href=forum.css>
 <body onload="setFocus ()">
 <?php
- include 'configuration.php';
+ include __DIR__ . '/CrudeForum/bootstrap.php';
  print $beginFormat;
 ?>
 

@@ -1,6 +1,5 @@
 <?php
-	include 'configuration.php';
-	include 'misc.php';
+	include __DIR__ . '/CrudeForum/bootstrap.php';
 	setlocale (LC_TIME, "C");
 
 	$parent = getenv ("QUERY_STRING");

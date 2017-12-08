@@ -1,6 +1,6 @@
 <?php
-	include 'configuration.php';
-	include 'misc.php';
+
+	include __DIR__ . '/CrudeForum/bootstrap.php';
 	print $beginFormat;
 
 	$lock = getLock ();

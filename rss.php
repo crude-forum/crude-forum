@@ -1,7 +1,6 @@
 <?php
 
-include 'configuration.php';
-include 'misc.php';
+include __DIR__ . '/CrudeForum/bootstrap.php';
 include 'rss.lang.big5.php';
 
 

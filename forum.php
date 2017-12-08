@@ -1,11 +1,9 @@
 <?php
-ini_set('display_errors', 1);
-error_reporting(E_ALL);
-include 'configuration.php';
-include 'misc.php';
 
+include __DIR__ . '/CrudeForum/bootstrap.php';
 $page = getenv ("QUERY_STRING");
 forumLog ("forum?" . $page);
+
 ?>
 
 <meta http-equiv='Content-Type' content='text/html; charset=utf-8'>

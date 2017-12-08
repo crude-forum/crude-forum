@@ -1,6 +1,5 @@
 <?php
-	include 'configuration.php';
-	include 'misc.php';
+	include __DIR__ . '/CrudeForum/bootstrap.php';
 	$filename = getenv ("QUERY_STRING");
 	forumLog ("read?" . $filename);
 ?>

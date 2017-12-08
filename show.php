@@ -1,6 +1,6 @@
 <meta http-equiv='Content-Type' content='text/html; charset=utf-8'>
 <?php
-	include 'configuration.php';
+	include __DIR__ . '/CrudeForum/bootstrap.php';
 	print $beginFormat;
 
 	$messageNo = getenv ("QUERY_STRING");

@@ -2,4 +2,4 @@
 /logs
 
 # ignore config file
-/configuration.php
+configuration.php
