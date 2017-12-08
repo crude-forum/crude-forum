@@ -1,7 +1,7 @@
 <?php
 	include __DIR__ . '/CrudeForum/bootstrap.php';
 	$filename = getenv ("QUERY_STRING");
-	forumLog ("read?" . $filename);
+	$forum->log("read?" . $filename);
 ?>
 
 <meta http-equiv='Content-Type' content='text/html; charset=utf-8'>

@@ -3,7 +3,7 @@
 	include __DIR__ . '/CrudeForum/bootstrap.php';
 	print $beginFormat;
 
-	$lock = getLock ();
+	$lock = $forum->getLock();
 	$messageNo = getenv ("QUERY_STRING");
 	$count = 0;
 

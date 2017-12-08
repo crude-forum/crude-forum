@@ -8,9 +8,9 @@ class Core {
     public $logDirectory;
 
     public function __construct($config) {
-        $dataDirectory = $config['dataDirectory'] ?? '';
-        $logDirectory  = $config['logDirectory'] ?? '';
-        $administrator = $config['administrator'] ?? '';
+        $this->dataDirectory = $config['dataDirectory'] ?? '';
+        $this->logDirectory  = $config['logDirectory'] ?? '';
+        $this->administrator = $config['administrator'] ?? '';
     }
 
     public function getLock() {
@@ -27,7 +27,7 @@ class Core {
         return $lock;
     }
 
-    public function forumLog ($msg) {
+    public function log ($msg) {
 
         $logfn = $this->logDirectory . '/log';
 

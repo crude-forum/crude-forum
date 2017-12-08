@@ -3,7 +3,7 @@
 	setlocale (LC_TIME, "C");
 
 	$parent = getenv ("QUERY_STRING");
-	forumLog ("say?" . $parent);
+	$forum->log ("say?" . $parent);
 
 	$author = stripslashes ($_POST["em_an"]);
 	$subject = stripslashes ($_POST["tcejbus"]);
@@ -43,7 +43,7 @@
 	}
 
 	print $beginFormat;
-	$lock = getLock ();
+	$lock = $forum->getLock();
 
 	// Gets messages count for assigning post number
 	$countfn = $dataDirectory . "count";

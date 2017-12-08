@@ -9,7 +9,7 @@ $cfgThreadTotal=10;
 
 
 
-$lock = getLock ();
+$lock = $forum->getLock();
 $index = fopen ($dataDirectory . "index", "r+");
  
 if($index) {

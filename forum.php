@@ -2,7 +2,7 @@
 
 include __DIR__ . '/CrudeForum/bootstrap.php';
 $page = getenv ("QUERY_STRING");
-forumLog ("forum?" . $page);
+$forum->log ("forum?" . $page);
 
 ?>
 
@@ -22,7 +22,7 @@ forum.php?<?php if($page > 100) print $page - 100; else print '0'; ?>
 <hr><br><br><div class=miscs>
 
 <?php
-	$lock = getLock ();
+	$lock = $forum->getLock();
 
 	$indexfn = $dataDirectory . "index";
 	if(!file_exists ($indexfn) && !touch ($indexfn)) {
