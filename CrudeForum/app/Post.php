@@ -13,18 +13,35 @@ class Post {
         $this->noAutoBr = (bool) $noAutoBr;
     }
 
-    public function safeBody(?callable $lineCallback=NULL) {
-        if ($lineCallback && !empty(trim($this->body))) {
-            $lines = array_map(
-                $lineCallback,
-                explode("\n", htmlspecialchars(trim($this->body)))
-            );
-            return implode("\n", $lines);
-        }
+    public static function replyFor(?Post $parent): Post {
+        if ($parent === NULL) return new Post();
+        if (empty($parent->title) && empty($parent->body)) return new Post();
+
+        // generate reply post
+        $title = (strpos($parent->title, 'Re: ') === 0) ?
+            $parent->title : 'Re: ' . $parent->title;
+        $body = $parent->filterBody(function ($line) {
+            return "| $line";
+        }) . "\n\n";
+        return new Post($title, $body);
+    }
+
+    public function safeTitle(): string {
+        return htmlspecialchars($this->title);
+    }
+
+    public function filterBody(callable $lineCallback) {
+        $lines = array_map(
+            $lineCallback,
+            explode("\n", trim($this->body)));
+        return implode("\n", $lines);
+    }
+
+    public function safeBody(): string {
         return htmlspecialchars($this->body);
     }
 
-    public function htmlBody() {
+    public function htmlBody(): string {
         return nl2br($this->body);
     }
 }

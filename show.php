@@ -7,7 +7,7 @@ $post = $forum->readPost($postID);
 
 ?>
 <meta http-equiv='Content-Type' content='text/html; charset=utf-8'>
-<head><title><?php echo $post->title; ?></title></head>
+<head><title><?php echo $post->safeTitle(); ?></title></head>
 <link rel=stylesheet href=forum.css>
 <body>
 <center><form method=post name=form action=edit.php?<?php echo $postID; ?>>

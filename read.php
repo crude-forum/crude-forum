@@ -13,8 +13,9 @@ $post = $forum->readPost($postID);
 
 <?php print $beginFormat; ?>
 
-<title><?php echo $post->title; ?></title>
-<div class=text><?php echo $post->title; ?></div><br><br><br><div class=buttons>
+<title><?php echo $post->safeTitle(); ?></title>
+<div class=text><?php echo $post->safeTitle(); ?></div>
+<br><br><br><div class=buttons>
 <a href=sayForm.php?<?php echo $postID; ?>>回覆</a>&nbsp;
 <a href=prev.php?<?php echo $postID; ?>>上一發言</a>&nbsp;
 <a href=next.php?<?php echo $postID; ?>>下一發言</a>&nbsp;

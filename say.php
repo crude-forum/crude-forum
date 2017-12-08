@@ -1,127 +1,59 @@
 <?php
-	include __DIR__ . '/CrudeForum/bootstrap.php';
-	setlocale (LC_TIME, "C");
 
-	$parent = getenv ("QUERY_STRING");
-	$forum->log ("say?" . $parent);
+include __DIR__ . '/CrudeForum/bootstrap.php';
+use ywsing\CrudeForum\Post;
+use ywsing\CrudeForum\PostSummary;
 
-	$author = stripslashes ($_POST["em_an"]);
-	$subject = stripslashes ($_POST["tcejbus"]);
-	$text = stripslashes ($_POST["tx_et"]);
-	$currentTime = strftime ("%a %F %T");
+setlocale (LC_TIME, "C");
 
-	 // Characters to be avoided
-	$author = str_replace ("\n", " ", $author);
-	$author = str_replace ("\r", " ", $author);
-	$author = str_replace ("\t", " ", $author);
-	$subject = str_replace ("\n", " ", $subject);
-	$subject = str_replace ("\r", " ", $subject);
-	$subject = str_replace ("\t", " ", $subject);
-	$subject = str_replace ("\022", "'", $subject);
-	$text = "來自：" . $author . "\n時間：" . $currentTime . "\n\n" . $text;
-	$text = str_replace ("<", "&lt;", $text);
-	$text = str_replace (">", "&gt;", $text);
-	if($author <> "")
-		setcookie ("forumName", $author, mktime (0, 0, 0, 1, 1, 2038), "/");
+$parentID = (int) getenv("QUERY_STRING");
+$forum->log ("say?" . $parentID);
+
+if (empty(trim($parentID))) $parentID = FALSE;
+
+$author = stripslashes ($_POST["em_an"]);
+$title = stripslashes ($_POST["tcejbus"]);
+$body = stripslashes ($_POST["tx_et"]);
+$currentTime = strftime ("%a %F %T");
+
+// Characters to be avoided
+$author = str_replace(["\n", "\r", "\t"], ' ', $author);
+$title = str_replace (["\n", "\r", "\t"], ' ', $title);
+$title = str_replace ("\022", "'", $title);
+$body = "來自：" . $author . "\n時間：" . $currentTime . "\n\n" . $body;
+$body = str_replace ("<", "&lt;", $body);
+$body = str_replace (">", "&gt;", $body);
+if ($author <> '')
+    setcookie ('forumName', $author, mktime (0, 0, 0, 1, 1, 2038), "/");
+
+if (strlen($author) > 8) die('Name too long');
+if ($author == '') die('Please Enter your name');
+if ($title == '') die('Please Enter a subject');
+
+print $beginFormat;
+$lock = $forum->getLock();
+
+// Gets messages count for assigning post number
+$nextID = $forum->getCount() + 1;
+$forum->writePost($nextID, new Post(
+    $title,
+    $body
+));
+$forum->appendIndex(new PostSummary(
+    $nextID,
+    0,
+    $title,
+    $author,
+    $currentTime
+), $parentID);
+$forum->incCount();
+
+fclose($lock);
+
 ?>
 
 <meta http-equiv='Content-Type' content='text/html; charset=big5'>
 <link rel=stylesheet href=forum.css>
-
-<?php
-	if(strlen ($author) > 8) {
-		print "Name too long";
-		exit;
-	}
-	if($author == "") {
-		print "Please Enter your name";
-		exit;
-	}
-	if($subject == "") {
-		print "Please Enter a subject";
-		exit;
-	}
-
-	print $beginFormat;
-	$lock = $forum->getLock();
-
-	// Gets messages count for assigning post number
-	$countfn = $dataDirectory . "count";
-	if(!file_exists ($countfn) && !touch ($countfn)) {
-		throw new Exception("unable to create count file: {$countfn}");
-	}
-	$countFile = fopen ($countfn, "r+");
-	if($countFile) {
-		fscanf ($countFile, "%d", $count);
-		fclose ($countFile);
-	} else {
-		printf ("Cannot open count file for reading");
-		exit;
-	}
-	$count++;
-	$countFile = fopen ($dataDirectory . "count", "w+");
-	if($countFile) {
-		fputs ($countFile, $count);
-		fclose ($countFile);
-	} else {
-		print "Cannot open count file for writing";
-		exit;
-	}
-
-	 // Writes post file
-  // added by Koala
-  $subdir = floor((int) $count / 1000) . "/";
-  if (!is_dir($dataDirectory . $subdir)) {
-    mkdir($dataDirectory . $subdir);
-    chmod($dataDirectory . $subdir, 0777);
-  }
-  // addition ended
-	$textFile = fopen ($dataDirectory . $subdir . $count, "w+");
-	fputs ($textFile, sprintf ("%s\n\n%s", $subject, $text));
-	fclose ($textFile);
-
-	 // Updates index file
-	rename ($dataDirectory . "index", $dataDirectory . "index.old");
-	$index = fopen ($dataDirectory . "index.old", "r+");
-
-	if($index) {
-		$output = fopen ($dataDirectory . "index", "w+");
-
-		if($output) {
-			if($parent == "")
-				fputs ($output, sprintf ("%d\t%d\t%s\t%s\t%s\n",
-					$count, 0, $subject, $author, $currentTime));
-
-			while(!feof ($index)) {
-				$line = fgets ($index, 4096);
-				$out = array ($line);
-				if(trim ($out[0]) != "") {
-					list ($articleNo, $indent, $s, $a, $t) = explode ("\t", $out[0]);
-					if (trim ($articleNo) != "" && trim ($s) != "" && trim($a) != "" && trim($t) != "") // filter spams
-						fputs ($output, $line);
-
-					if($parent != "" && $articleNo == $parent) { // Inserts at replying position
-					 fputs ($output, sprintf ("%d\t%d\t%s\t%s\t%s\n",
-						$count, $indent + 1, $subject, $author, $currentTime));
-					}
-				}
-			}
-
-			fclose ($output);
-			fclose ($index);
-
-			unlink ($dataDirectory . "index.old");
-		} else {
-			print "Unable to create new index file";
-			rename ($dataDirectory . "index.old", $dataDirectory . "index");
-		}
-	} else print "Unable to open old index file";
-
-	fclose ($lock);
-?>
-
 <META HTTP-EQUIV=Refresh CONTENT="0; URL=forum.php">
 
-<?
- print $endFormat;
-?>
+<?php print $endFormat; ?>

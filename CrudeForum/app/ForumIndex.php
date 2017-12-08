@@ -58,6 +58,14 @@ class ForumIndex implements \Iterator {
             throw new \Exception('forum index has already closed');
         try {
             $this->read();
+
+            // skip empty lines
+            while (
+                ($this->currentLine != FALSE) &&
+                empty(trim($this->currentLine))
+            ) {
+                $this->read();
+            }
             return ($this->currentLine !== FALSE);
         } catch (\Exception $e) {
             return FALSE;

@@ -22,6 +22,41 @@ class Core {
         return new ForumIndex(fopen($indexfn, 'r+'));
     }
 
+    public function getCount(): int {
+        // Gets messages count for assigning post number
+        $countfn = $this->dataDirectory . "count";
+        if(!file_exists ($countfn) && !touch ($countfn)) {
+            throw new Exception("unable to create count file: {$countfn}");
+        }
+
+        $countFile = fopen($countfn, "r");
+        if (!is_resource($countFile)) {
+            throw new \Exception('cannot open count file for reading');
+            return 0;
+        }
+        fscanf($countFile, "%d", $count);
+        fclose($countFile);
+        return ($count === NULL) ? 0 : $count;
+    }
+
+    public function incCount() {
+        // Gets messages count for assigning post number
+        $countfn = $this->dataDirectory . "count";
+        if(!file_exists ($countfn) && !touch ($countfn)) {
+            throw new Exception("unable to create count file: {$countfn}");
+        }
+
+        $countFile = fopen($countfn, "r+");
+        if (!is_resource($countFile)) {
+            throw new \Exception('cannot open count file for reading and writing');
+        }
+        fscanf($countFile, "%d", $count);
+        rewind($countFile);
+        $count = ($count === NULL) ? 0 : $count;
+        fputs($countFile, ++$count);
+        fclose($countFile);
+    }
+
     public function readPrevPostSummary(string $postID): ?PostSummary {
         $prevSummary = NULL;
         try {
@@ -102,6 +137,68 @@ class Core {
             else $body .= $line;
         }
         return new Post($title, $body, $noAutoBr);
+    }
+
+    public function writePost(int $postID, Post $post) {
+
+        // determine data folder for the post
+        $subdir = floor((int) $postID / 1000) . "/";
+        if (!is_dir($this->dataDirectory . $subdir)) {
+            mkdir($this->dataDirectory . $subdir);
+            chmod($this->dataDirectory . $subdir, 0777);
+        }
+
+        // determine post file fullpath
+        $postFn = $this->dataDirectory . $subdir . $postID;
+        $fh = fopen($postFn, "w+");
+        fputs($fh, sprintf("%s\n\n%s", $post->title, $post->body));
+        fclose($fh);
+    }
+
+    public function appendIndex(PostSummary $postSummary, $parentID=FALSE) {
+        rename($this->dataDirectory . "index", $this->dataDirectory . "index.old");
+
+        $fh_old = fopen($this->dataDirectory . "index.old", "r+");
+        if (!is_resource($fh_old)) {
+            throw new \Exception('unable to open index.old for read');
+            return FALSE;
+        }
+        $oldIndex = new ForumIndex($fh_old);
+
+        $fh = fopen($this->dataDirectory . "index", "w+");
+        if (!is_resource($fh)) {
+            throw new \Exception('unable to open index for write');
+            return FALSE;
+        }
+
+        // if this is not a reply
+        if ($parentID === FALSE) {
+            fputs($fh, $postSummary->toIndexLine());
+            foreach ($oldIndex as $oldPostSummary) {
+                fputs($fh, $oldPostSummary->toIndexLine());
+            }
+            unset($index);
+            unlink($this->dataDirectory . 'index.old');
+            return TRUE;
+        }
+
+        // if this is a reply
+        $parentID = (int) $parentID;
+        foreach ($oldIndex as $pos => $oldPostSummary) {
+            fputs($fh, $oldPostSummary->toIndexLine());
+            // append to below parent
+            if ($oldPostSummary->id == $parentID) {
+                $postSummary->level = $oldPostSummary->level + 1;
+                $postSummary->pos = $pos + 1;
+                fputs($fh, $postSummary->toIndexLine());
+            }
+        }
+        fclose($fh);
+
+        // close and remove old index
+        unset($oldIndex);
+        unlink($this->dataDirectory . 'index.old');
+        return TRUE;
     }
 
     public function getLock() {

@@ -30,4 +30,14 @@ class PostSummary {
         list($id, $level, $title, $author, $time) = explode("\t", $line);
         return new PostSummary($id, $level, $title, $author, $time, $pos);
     }
+
+    public function toIndexLine(): string {
+        return sprintf("%d\t%d\t%s\t%s\t%s",
+            $this->id,
+            $this->level,
+            $this->title,
+            $this->author,
+            $this->time
+        );
+    }
 }
