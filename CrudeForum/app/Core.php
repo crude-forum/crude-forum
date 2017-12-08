@@ -13,6 +13,12 @@ class Core {
         $this->administrator = $config['administrator'] ?? '';
     }
 
+    public function readPost(string $postID): Post {
+        $subdir = floor((int) $postID / 1000) . "/";
+        $fh = fopen($this->dataDirectory . $subdir . $postID, "r+");
+        return Post::fromFile($fh);
+    }
+
     public function getLock() {
 
         $lockfn = $this->dataDirectory . "lock";
