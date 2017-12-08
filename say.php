@@ -45,8 +45,12 @@
 	print $beginFormat;
 	$lock = getLock ();
 
-	 // Gets messages count for assigning post number
-	$countFile = fopen ($dataDirectory . "count", "r+");
+	// Gets messages count for assigning post number
+	$countfn = $dataDirectory . "count";
+	if(!file_exists ($countfn) && !touch ($countfn)) {
+		throw new Exception("unable to create count file: {$countfn}");
+	}
+	$countFile = fopen ($countfn, "r+");
 	if($countFile) {
 		fscanf ($countFile, "%d", $count);
 		fclose ($countFile);
