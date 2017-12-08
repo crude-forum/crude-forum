@@ -35,7 +35,7 @@
 
 		$remoteAddr = getenv ("REMOTE_ADDR");
 		$userAgent = getenv ("HTTP_USER_AGENT");
-		if($user != $administrator) /* I am invisible */
+		if(!empty($administrator) && ($user != $administrator)) /* I am invisible */
 			if(!is_string (strstr ($userAgent, "http://search.msn.com/msnbot.htm")) &&
 				 !is_string (strstr ($userAgent, "Free Eating Union")) &&
 				 !is_string (strstr ($userAgent, "ia_archiver")) &&
