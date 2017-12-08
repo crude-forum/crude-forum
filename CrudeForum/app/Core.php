@@ -82,13 +82,14 @@ class Core {
 
         $title = fgets($fh, 4096);
         $body  = '';
-        $lineBreak = '<br>';
+        $noAutoBr = FALSE;
+
         while(!feof($fh)) {
             $line = fgets($fh, 4096);
-            if (is_string(strstr($line, 'NO-LINE-END-BR'))) $lineBreak = '';
-            else $body .= $line . $lineBreak;
+            if (is_string(strstr($line, 'NO-LINE-END-BR'))) $noAutoBr = TRUE;
+            else $body .= $line;
         }
-        return new Post($title, $body);
+        return new Post($title, $body, $noAutoBr);
     }
 
     public function getLock() {

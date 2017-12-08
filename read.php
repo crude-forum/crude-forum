@@ -21,7 +21,7 @@ $post = $forum->readPost($postID);
 <a href=back.php?<?php echo $postID; ?>>回論壇</a><br><br>
 </div><hr><br><div class=text>
 
-<?php echo $post->body; ?>
+<?php echo $post->htmlBody(); ?>
 
 </div><br><hr><br><div class=buttons>
 <a href=sayForm.php?<?php echo $postID; ?>>回覆</a>&nbsp;
