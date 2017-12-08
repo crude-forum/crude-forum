@@ -13,7 +13,14 @@ class Post {
         $this->noAutoBr = (bool) $noAutoBr;
     }
 
-    public function saveBody() {
+    public function safeBody(?callable $lineCallback=NULL) {
+        if ($lineCallback && !empty(trim($this->body))) {
+            $lines = array_map(
+                $lineCallback,
+                explode("\n", htmlspecialchars(trim($this->body)))
+            );
+            return implode("\n", $lines);
+        }
         return htmlspecialchars($this->body);
     }
 

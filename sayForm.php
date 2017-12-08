@@ -30,7 +30,11 @@ document.getElementById("tcejbus").value = "123";
 <input
   type=name name=tcejbus
   value="<?php echo htmlspecialchars($post->title) ?>" size=40><br>
-<textarea name=tx_et rows=30 cols=80><?php echo $post->saveBody(); ?></textarea>
+<textarea name=tx_et rows=30 cols=80><?php
+echo $post->safeBody(function ($line) {
+    return "| $line";
+}) . "\n\n";
+?></textarea>
 
 <br><input type=submit value='發出'></form>
 

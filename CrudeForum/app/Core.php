@@ -73,17 +73,29 @@ class Core {
     }
 
     public function readPost(string $postID): ?Post {
-        $subdir = floor((int) $postID / 1000) . "/";
-        $fh = fopen($this->dataDirectory . $subdir . $postID, "r+");
+
+        // determine post file full path
+        $subdir = ($postID === 'notes') ?
+            '' : floor((int) $postID / 1000) . "/";
+        $postFn = $this->dataDirectory . $subdir . $postID;
+
+        // attempt to create if accessing note file
+        if(($postID === 'notes') && !file_exists($postFn) && !touch($postFn)) {
+            throw new Exception('unable to create notes file');
+            return NULL;
+        }
+
+        // open post file
+        $fh = fopen($postFn, "r+");
         if (!is_resource($fh)) {
             throw new \Exception("failed to open post #{$postID}");
             return NULL;
         }
 
+        // read post from file
         $title = fgets($fh, 4096);
         $body  = '';
         $noAutoBr = FALSE;
-
         while(!feof($fh)) {
             $line = fgets($fh, 4096);
             if (is_string(strstr($line, 'NO-LINE-END-BR'))) $noAutoBr = TRUE;
