@@ -13,10 +13,19 @@ class Core {
         $this->administrator = $config['administrator'] ?? '';
     }
 
+    public function getIndex(): ?ForumIndex {
+        $indexfn = $this->dataDirectory . "index";
+        if(!file_exists ($indexfn) && !touch ($indexfn)) {
+            throw new Exception("unable to create index file: {$indexfn}");
+            return NULL;
+        }
+        return new ForumIndex(fopen($indexfn, 'r+'));
+    }
+
     public function readPrevPostSummary(string $postID): ?PostSummary {
         $prevSummary = NULL;
         try {
-            $index = new ForumIndex(fopen($this->dataDirectory . 'index', 'r+'));
+            $index = $this->getIndex();
             foreach ($index as $postSummary) {
                 if ($postSummary->id == $postID) {
                     if ($prevSummary !== NULL) return $prevSummary;
@@ -35,7 +44,7 @@ class Core {
     public function readNextPostSummary(string $postID): ?PostSummary {
         $prevSummary = NULL;
         try {
-            $index = new ForumIndex(fopen($this->dataDirectory . 'index', 'r+'));
+            $index = $this->getIndex();
             foreach ($index as $postSummary) {
                 if (($prevSummary !== NULL) && ($prevSummary->id == $postID)) {
                     return $postSummary;
@@ -52,7 +61,7 @@ class Core {
 
     public function readPostSummary(string $postID): ?PostSummary {
         try {
-            $index = new ForumIndex(fopen($this->dataDirectory . 'index', 'r+'));
+            $index = $this->getIndex();
             foreach ($index as $postSummary)
                 if ($postSummary->id == $postID) return $postSummary;
         } catch (\InvalidArgumentException $e) {

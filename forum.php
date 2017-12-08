@@ -1,8 +1,11 @@
 <?php
 
 include __DIR__ . '/CrudeForum/bootstrap.php';
-$page = getenv ("QUERY_STRING");
-$forum->log ("forum?" . $page);
+$page = (int) getenv("QUERY_STRING");
+if ($page < 0) $page = 0;
+$pagePerPage = 100;
+
+$forum->log("forum?" . $page);
 
 ?>
 
@@ -22,42 +25,18 @@ forum.php?<?php if($page > 100) print $page - 100; else print '0'; ?>
 <hr><br><br><div class=miscs>
 
 <?php
-	$lock = $forum->getLock();
-
-	$indexfn = $dataDirectory . "index";
-	if(!file_exists ($indexfn) && !touch ($indexfn)) {
-		throw new Exception("unable to create index file: {$indexfn}");
-	}
-	$index = fopen ($indexfn, "r+");
-	if($index) {
-		$nSubjects = 0; // Limits number of subjects in a page
-
-		$skipLines = $page;
-		if($skipLines != "")
-			while($skipLines--) fgets ($index, 4096);
-
-		while(!feof ($index) && $nSubjects++ < 100) {
-			$line = fgets ($index, 4096);
-			$out = array ($line);
-			if(trim ($out[0]) != "") {
-				list ($articleNo, $indent, $subject, $author, $time) = explode ("\t", $out[0]);
-				if($articleNo == "") break; // Blank line, end of file
-
-				if($indent == 0 && $nSubjects > 1)
-					print "<p></p>";
-				for($i = 0; $i < $indent; $i++) print "　 ";
-				print "<a href=read.php?" . $articleNo . ">" . $subject . "</a>";
-				if($indent = 0)
-					print "　　　 -- ";
-				else print "　　-- ";
-					print $author . " at " . $time . "<br>";
-			}
-		}
-	}
-	else print "Unable to open index file";
-
-	fclose ($index);
-	fclose ($lock);
+$lock = $forum->getLock();
+$index = $forum->getIndex();
+foreach ($index as $key => $postSummary) {
+    if ($key >= $page) {
+        print str_repeat("　 ", $postSummary->level);
+        print "<a href=\"read.php?{$postSummary->id}\">{$postSummary->title}</a>";
+        print ($postSummary->level = 0) ? "　　　 -- " : "　　-- ";
+        print $postSummary->author . " at " . $postSummary->time . "<br>";
+    }
+    if ($key >= ($page + $pagePerPage - 1)) break;
+}
+fclose ($lock);
 ?>
 
 </div><br><br><hr><br>
@@ -65,6 +44,4 @@ forum.php?<?php if($page > 100) print $page - 100; else print '0'; ?>
 forum.php?<?php print ((int) $page) + 100; ?>
 >下一頁</a>&nbsp;&nbsp;<a href=forum.php>首頁</a>&nbsp;&nbsp;<a href=../index.html>回主頁</a></div></td><td align=right>漫長漫長夜間，我伴我閒談；漫長漫長夜晚，從未覺是冷。</td></tr></table>
 
-<?php
-	print $endFormat;
-?>
+<?php print $endFormat; ?>
