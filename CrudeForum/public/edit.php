@@ -1,7 +1,7 @@
 <meta http-equiv='Content-Type' content='text/html; charset=utf-8'>
 <link rel=stylesheet href=hidden.css><center>
 <?php
-    include __DIR__ . '/CrudeForum/bootstrap.php';
+    include __DIR__ . '/../bootstrap.php';
 
     use ywsing\CrudeForum\Post;
 

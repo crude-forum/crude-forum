@@ -1,11 +1,11 @@
 <?php
-include __DIR__ . '/CrudeForum/bootstrap.php';
+include __DIR__ . '/../bootstrap.php';
 print $beginFormat;
 
 $lock = $forum->getLock();
 $postID = getenv ("QUERY_STRING");
 try {
-    $postSummary = $forum->readNextPostSummary($postID);
+    $postSummary = $forum->readPrevPostSummary($postID);
 } catch (Exception $e) {
     die($e->getMessage());
 }

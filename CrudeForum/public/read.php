@@ -1,6 +1,6 @@
 <?php
 
-include __DIR__ . '/CrudeForum/bootstrap.php';
+include __DIR__ . '/../bootstrap.php';
 
 $postID = getenv ("QUERY_STRING");
 $forum->log("read?" . $postID);
