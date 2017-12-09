@@ -1,6 +1,0 @@
-# ignore data folder
-/data/*
-!/data/.gitstay
-
-# ignore vendor folder
-/vendor
