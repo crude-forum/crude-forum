@@ -23,6 +23,7 @@ $title = str_replace ("\022", "'", $title);
 $body = "來自：" . $author . "\n時間：" . $currentTime . "\n\n" . $body;
 $body = str_replace ("<", "&lt;", $body);
 $body = str_replace (">", "&gt;", $body);
+$body = str_replace ("\r\n", "\n", $body); // use UNIX linebreak
 if ($author <> '')
     setcookie ('forumName', $author, mktime (0, 0, 0, 1, 1, 2038), "/");
 
