@@ -19,7 +19,7 @@ class Core {
             throw new Exception("unable to create index file: {$indexfn}");
             return NULL;
         }
-        return new ForumIndex(fopen($indexfn, 'r+'));
+        return new ForumIndex(new FileObject(fopen($indexfn, 'r+')));
     }
 
     public function getCount(): int {
@@ -163,7 +163,7 @@ class Core {
             throw new \Exception('unable to open index.old for read');
             return FALSE;
         }
-        $oldIndex = new ForumIndex($fh_old);
+        $oldIndex = new ForumIndex(new FileObject($fh_old));
 
         $fh = fopen($this->dataDirectory . "index", "w+");
         if (!is_resource($fh)) {

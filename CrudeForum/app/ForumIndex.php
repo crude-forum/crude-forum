@@ -4,70 +4,34 @@ namespace ywsing\CrudeForum;
 
 class ForumIndex implements \Iterator {
 
-    private $position = 0;
-    private $fh = FALSE;
-    private $currentLine = FALSE;
+    private $iter = 0;
 
-    public function __construct($fh) {
-        if (!is_resource($fh))
-            throw new \InvalidArgumentException('not a valid resource');
-        $this->fh = $fh;
-        $this->read();
+    public function __construct(\Iterator $iter) {
+        $this->iter = $iter;
     }
 
     public function  __destruct() {
-        if ($this->fh !== FALSE) fclose($this->fh);
-        $this->fh = FALSE;
-    }
-
-    private function read() {
-        if (($this->currentLine = fgets($this->fh, 4096)) === FALSE)
-            return $this->currentLine;
-        $this->currentLine = trim($this->currentLine);
-        return $this->currentLine;
+        unset($this->iter);
     }
 
     public function current() {
-        if ($this->fh === FALSE)
-            throw new \Exception('forum index has already closed');
         return PostSummary::fromIndexLine(
-            $this->currentLine, $this->position);
+            $this->iter->current(), $this->iter->key());
     }
 
     public function key() {
-        if ($this->fh === FALSE)
-            throw new \Exception('forum index has already closed');
-        return $this->position;
+        return $this->iter->key();
     }
 
     public function next() {
-        if ($this->fh === FALSE)
-            throw new \Exception('forum index has already closed');
-        $this->position++;
+        return $this->iter->next();
     }
 
     public function rewind() {
-        if ($this->fh === FALSE)
-            throw new \Exception('forum index has already closed');
-        rewind($this->fh);
+        return $this->iter->rewind();
     }
 
     public function valid() {
-        if ($this->fh === FALSE)
-            throw new \Exception('forum index has already closed');
-        try {
-            $this->read();
-
-            // skip empty lines
-            while (
-                ($this->currentLine !== FALSE) &&
-                empty($this->currentLine)
-            ) {
-                $this->read();
-            }
-            return ($this->currentLine !== FALSE);
-        } catch (\Exception $e) {
-            return FALSE;
-        }
+        return $this->iter->valid();
     }
 }
