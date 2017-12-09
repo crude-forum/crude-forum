@@ -12,7 +12,7 @@ $post = $forum->readPost($postID);
 <body>
 <center><form method=post name=form action=edit.php?<?php echo $postID; ?>>
 <textarea name=text rows=40 cols=80
-    style="font-size:13"><?php echo $post->safeBody(); ?></textarea>
+    style="font-size:13"><?php echo $post->safeTitle() . "\n\n"  . $post->safeBody(); ?></textarea>
 <br><input type=submit value='.' autofocus></form>
 
 </body>

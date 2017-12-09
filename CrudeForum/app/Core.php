@@ -128,7 +128,8 @@ class Core {
         }
 
         // read post from file
-        $title = fgets($fh, 4096);
+        $title = trim(fgets($fh, 4096));
+        fgets($fh, 4096); // get rid of an empty line
         $body  = '';
         $noAutoBr = FALSE;
         while(!feof($fh)) {
