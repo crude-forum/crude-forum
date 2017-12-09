@@ -1,106 +1,64 @@
 <?php
 
 include __DIR__ . '/CrudeForum/bootstrap.php';
-include 'rss.lang.big5.php';
+
+use ywsing\CrudeForum\Paged;
+use ywsing\CrudeForum\Filtered;
+use ywsing\CrudeForum\PostSummary;
+use ywsing\CrudeForum\Post;
+
+$lang['author']='作者';
+$lang['reply']='回覆';
+$lang['forumIndex']='回論壇';
 
 
 // a little configuration //
 $cfgThreadTotal=10;
 
-
-
 $lock = $forum->getLock();
-$index = fopen ($dataDirectory . "index", "r+");
- 
-if($index) {
-	$nSubjects = 0; // Limits number of subjects in a page
-	$nThread = 0; // provide initial value to prevent warning
-	$mode = isset($_GET['mode']) ? $_GET['mode'] : NULL;
+$themePost = function(PostSummary $postSummary, Post $post) use ($lang) {
+    return htmlspecialchars(
+        '------------------<br/>[<a href="http://stupidsing.no-ip.org/sayForm.php?'.$postSummary->id.'">'.
+        $lang['reply'].'</a>]&nbsp;&nbsp;'.
+        '[<a href="http://stupidsing.no-ip.org/forum.php">'.$lang['forumIndex'].'</a>] <br/>------------------<br/>'.
+        $lang['author'].': '.$postSummary->author.'<br/><br/>'.
+        $post->htmlBody().
+        '<br/>------------------<br/>[<a href="http://stupidsing.no-ip.org/sayForm.php?'.$postSummary->id.'">'.
+        $lang['reply'].'</a>]&nbsp;&nbsp;'.
+        '[<a href="http://stupidsing.no-ip.org/forum.php">'.$lang['forumIndex'].'</a>] <br/>'.
+        '=============================='
+    );
+};
 
-	switch ($mode) {
-	default:
-	case 'post':
-		while(!feof ($index) && $nThread<$cfgThreadTotal) {
-			$line = fgets ($index, 4096);
-			$out = array ($line);
-			if(trim ($out[0]) != "") {
-				list ($articleNo, $indent, $subject, $author, $time) = explode ("\t", $out[0]);
-        $subdir = floor((int) $articleNo / 1000) . "/";
-				$content = htmlspecialchars(
-					'------------------<br/>[<a href="http://stupidsing.no-ip.org/sayForm.php?'.$articleNo.'">'.$lang['reply'].'</a>]&nbsp;&nbsp;'.
-					'[<a href="http://stupidsing.no-ip.org/forum.php">'.$lang['forumIndex'].'</a>] <br/>------------------<br/>'.
-					$lang['author'].': '.$author.'<br/><br/>'.
-					implode('<br/>', array_slice(explode("\n", file_get_contents($dataDirectory . $subdir . $articleNo)), 5)).
-					'<br/>------------------<br/>[<a href="http://stupidsing.no-ip.org/sayForm.php?'.$articleNo.'">'.$lang['reply'].'</a>]&nbsp;&nbsp;'.
-					'[<a href="http://stupidsing.no-ip.org/forum.php">'.$lang['forumIndex'].'</a>] <br/>'.
-					'==============================');
+$mode = isset($_GET['mode']) ? $_GET['mode'] : NULL;
 
-				
-				if($articleNo == "") break; // Blank line, end of file
-				if($indent == 0) $nThread++;
-				
-				// put post info into array
-				$postArr[]=array(
-	  'articleNo' => $articleNo,
-					'subject' => $subject,
-					'author' => $author,
-					'time' => $time,
-					'timestamp' => trim(preg_replace('/^(.+?) (.+?) (.+?) (\d\d)\:(\d\d):(\d\d) (\d\d\d\d)/', '$1, $3 $2 $7 $4:$5:$6 +0800', $time)),
-					'content' => $content
-				);
-			}
-		}
-		break;
-	case 'thread':
-	case 'threads':
-		$nThread=0;
-		while(!feof ($index) && $nThread<$cfgThreadTotal ) {
-			$line = fgets ($index, 4096);
-			$out = array ($line);
-			if(trim ($out[0]) != "") {
-				list ($articleNo, $indent, $subject, $author, $time) = explode ("\t", $out[0]);
-        $subdir = floor((int) $articleNo / 1000) . "/";
-				$content = htmlspecialchars(
-					'------------------<br/>[<a href="http://stupidsing.no-ip.org/sayForm.php?'.$articleNo.'">'.$lang['reply'].'</a>]&nbsp;&nbsp;'.
-					'[<a href="http://stupidsing.no-ip.org/forum.php">'.$lang['forumIndex'].'</a>] <br/>------------------<br/>'.
-					$lang['author'].': '.$author.'<br/><br/>'.
-					implode('<br/>', array_slice(explode("\n", file_get_contents($dataDirectory . $subdir . $articleNo)), 5)).
-					'<br/>------------------<br/>[<a href="http://stupidsing.no-ip.org/sayForm.php?'.$articleNo.'">'.$lang['reply'].'</a>]&nbsp;&nbsp;'.
-					'[<a href="http://stupidsing.no-ip.org/forum.php">'.$lang['forumIndex'].'</a>] <br/>'.
-					'=============================='
-				);
-				
-	if($articleNo == "") break; // Blank line, end of file
-				if($indent == 0) {
-	  $nThread++;
-
-					// put post info into array
-					$postArr[]=array(
-						'articleNo' => $articleNo,
-						'subject' => $subject,
-						'author' => $author,
-						'time' => $time,
-						'timestamp' => trim(preg_replace('/^(.+?) (.+?) (.+?) (\d\d)\:(\d\d):(\d\d) (\d\d\d\d)/', '$1, $3 $2 $7 $4:$5:$6 +0800', $time)),
-						'content' => $content
-					);
-				}
-			}
-		}
-		break;
-	}
+switch ($mode) {
+default:
+case 'post':
+    $index = new Paged($forum->getIndex(), 0, $cfgThreadTotal);
+    break;
+case 'thread':
+case 'threads':
+    $index = new Paged(new Filtered($forum->getIndex(), function ($postSummary) {
+        return ($postSummary->level == 0);
+    }), 0, $cfgThreadTotal);
+    break;
 }
 
-fclose ($index);
-fclose ($lock);
+$postArr = array();
+foreach ($index as $postSummary) {
+    $post = $forum->readPost($postSummary->id);
+    $postArr[]=array(
+        'articleNo' => $postSummary->id,
+        'subject' => $postSummary->title,
+        'author' => $postSummary->author,
+        'time' => $postSummary->time,
+        'timestamp' => trim(preg_replace('/^(.+?) (.+?) (.+?) (\d\d)\:(\d\d):(\d\d) (\d\d\d\d)/', '$1, $3 $2 $7 $4:$5:$6 +0800', $postSummary->time)),
+        'content' => $themePost($postSummary, $post),
+    );
+}
 
-/*
-echo 'Tue, 03 Jun 2003 09:39:21 GMT<br/>';
-echo $postArr[1]['time'] . '<br/>';
-$test = preg_replace('/^(.+?) (.+?) (.+?) (\d\d)\:(\d\d):(\d\d) (\d\d\d\d)'."\n".'$/', '$1, $3 $2 $7 $4:$5:$6 +0800', $postArr[1]['time']);
-echo $test.'<br/>';
-echo "'".str_replace(" ", '&nbsp;', str_replace("\r", '\r', str_replace("\n", '\n', $test)))."'";
-exit;
-*/
+fclose ($lock);
 
 header("Content-Type: text/xml; charset=utf-8");
 echo '<?xml version="1.0"?>'."\n";
