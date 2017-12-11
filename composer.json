@@ -2,7 +2,9 @@
     "name": "ywsing/crude-forum",
     "description": "A very simple, crude and insecure web dicussion forum developed using PHP. Store data in text files in back-end.",
     "type": "project",
-    "require": {},
+    "require": {
+        "nikic/fast-route": "^1.2"
+    },
     "autoload": {
         "psr-4": {
             "ywsing\\CrudeForum\\": "app/"

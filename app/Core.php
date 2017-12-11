@@ -3,6 +3,7 @@
 namespace ywsing\CrudeForum;
 
 use \ywsing\CrudeForum\Iterator\FileObject;
+use \FastRoute\Dispatcher;
 
 class Core {
 
@@ -13,6 +14,39 @@ class Core {
         $this->dataDirectory = $config['dataDirectory'] ?? '';
         $this->logDirectory  = $config['logDirectory'] ?? '';
         $this->administrator = $config['administrator'] ?? '';
+    }
+
+    public static function bootstrap(Dispatcher $dispatcher, callable $route) {
+        list($httpMethod, $uri) = $route();
+        $routeInfo = $dispatcher->dispatch($httpMethod, $uri);
+        switch ($routeInfo[0]) {
+            case Dispatcher::NOT_FOUND:
+                // ... 404 Not Found
+                break;
+            case Dispatcher::METHOD_NOT_ALLOWED:
+                $allowedMethods = $routeInfo[1];
+                // ... 405 Method Not Allowed
+                break;
+            case Dispatcher::FOUND:
+                $handler = $routeInfo[1];
+                $vars = $routeInfo[2];
+                $handler($vars);
+                break;
+        }
+    }
+
+    public static function routeURI() {
+        // Fetch method and URI from somewhere
+        $httpMethod = $_SERVER['REQUEST_METHOD'];
+        $uri = $_SERVER['REQUEST_URI'];
+
+        // Strip query; string (?foo=bar) and decode URI
+        if (false !== $pos = strpos($uri, '?')) {
+            $uri = substr($uri, 0, $pos);
+        }
+        $uri = rawurldecode($uri);
+
+        return array($httpMethod, $uri);
     }
 
     public function getIndex(): ?ForumIndex {

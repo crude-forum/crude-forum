@@ -14,3 +14,7 @@ $forum = new \ywsing\CrudeForum\Core([
     'dataDirectory' => CRUDE_DIR_DATA,
     'administrator' => CRUDE_ADMIN,
 ]);
+
+$dispatcher = FastRoute\simpleDispatcher(function(FastRoute\RouteCollector $router) {
+    require __DIR__ . '/routes.php';
+});
