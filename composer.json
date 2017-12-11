@@ -3,7 +3,8 @@
     "description": "A very simple, crude and insecure web dicussion forum developed using PHP. Store data in text files in back-end.",
     "type": "project",
     "require": {
-        "nikic/fast-route": "^1.2"
+        "nikic/fast-route": "^1.2",
+        "twig/twig": "^2.0"
     },
     "autoload": {
         "psr-4": {

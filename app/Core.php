@@ -4,31 +4,45 @@ namespace ywsing\CrudeForum;
 
 use \ywsing\CrudeForum\Iterator\FileObject;
 use \FastRoute\Dispatcher;
+use \Twig\Environment;
+use \Twig_Function;
+use \Twig\Loader\FilesystemLoader;
 
 class Core {
 
     private $storage;
+    public $template;
 
     public function __construct($config) {
         $this->storage = new Storage($config);
         $this->administrator = $config['administrator'] ?? '';
+        $this->template = new Environment(
+            new FilesystemLoader(__DIR__ . '/../views'),
+            [
+                //'cache' => __DIR__ . '/../data/cache/twig',
+            ]);
+        $this->template->addFunction(new Twig_Function('str_repeat', 'str_repeat'));
     }
 
-    public static function bootstrap(Dispatcher $dispatcher, callable $route) {
+    public static function bootstrap(Dispatcher $dispatcher, Core $forum, callable $route) {
         list($httpMethod, $uri) = $route();
         $routeInfo = $dispatcher->dispatch($httpMethod, $uri);
         switch ($routeInfo[0]) {
             case Dispatcher::NOT_FOUND:
                 // ... 404 Not Found
+                http_response_code(404);
+                die('not found');
                 break;
             case Dispatcher::METHOD_NOT_ALLOWED:
                 $allowedMethods = $routeInfo[1];
                 // ... 405 Method Not Allowed
+                http_response_code(405);
+                die('method not allowed');
                 break;
             case Dispatcher::FOUND:
                 $handler = $routeInfo[1];
                 $vars = $routeInfo[2];
-                $handler($vars);
+                $handler($vars, $forum);
                 break;
         }
     }
@@ -45,6 +59,14 @@ class Core {
         $uri = rawurldecode($uri);
 
         return array($httpMethod, $uri);
+    }
+
+    public static function routeQueryString($basename='/') {
+        return function () use ($basename) {
+            $httpMethod = $_SERVER['REQUEST_METHOD'];
+            $queryString = rawurldecode($_SERVER['QUERY_STRING'] ?? '');
+            return array($httpMethod, $basename . '/' . $queryString);
+        };
     }
 
     public function getIndex(): ?ForumIndex {
