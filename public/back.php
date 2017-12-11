@@ -4,7 +4,7 @@ include __DIR__ . '/../bootstrap.php';
 print $beginFormat;
 
 $lock = $forum->getLock();
-$postID = getenv ("QUERY_STRING");
+$postID = $_SERVER['QUERY_STRING'] ?? '';
 
 try {
     $postSummary = $forum->readPostSummary($postID);

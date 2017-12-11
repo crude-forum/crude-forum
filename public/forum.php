@@ -4,8 +4,8 @@ include __DIR__ . '/../bootstrap.php';
 
 use ywsing\CrudeForum\Paged;
 
-$page = (int) getenv("QUERY_STRING");
-if ($page < 0) $page = 0;
+$page = $_SERVER['QUERY_STRING'] ?? 0;
+if ((int) $page < 0) $page = 0;
 $postPerPage = 100;
 
 $forum->log("forum?" . $page);

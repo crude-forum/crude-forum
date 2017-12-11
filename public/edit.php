@@ -7,8 +7,9 @@
 
 	print $beginFormat;
 
-	$postID = getenv ("QUERY_STRING");
+    $postID = $_SERVER['QUERY_STRING'] ?? '';
 	$postID = str_replace (".", "", $postID);
+    if (empty(trim($postID))) die('empty postID');
 
 	$text = $_POST["text"];
 	if($text == "") {

@@ -6,7 +6,7 @@ use ywsing\CrudeForum\PostSummary;
 
 setlocale (LC_TIME, "C");
 
-$parentID = (int) getenv("QUERY_STRING");
+$parentID = $_SERVER['QUERY_STRING'] ?? '';
 $forum->log ("say?" . $parentID);
 
 if (empty(trim($parentID))) $parentID = FALSE;

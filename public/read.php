@@ -2,7 +2,8 @@
 
 include __DIR__ . '/../bootstrap.php';
 
-$postID = getenv ("QUERY_STRING");
+$postID = $_SERVER['QUERY_STRING'] ?? '';
+if (empty(trim($postID))) die('empty postID');
 $forum->log("read?" . $postID);
 $post = $forum->readPost($postID);
 

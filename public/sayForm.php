@@ -4,9 +4,9 @@ include __DIR__ . '/../bootstrap.php';
 
 use ywsing\CrudeForum\Post;
 
-$postID = (int) getenv("QUERY_STRING");
+$postID = $_SERVER['QUERY_STRING'] ?? '';
 
-$parent = ($postID > 0) ? $forum->readPost($postID) : NULL;
+$parent = (((int) $postID) > 0) ? $forum->readPost($postID) : NULL;
 $post = Post::replyFor($parent);
 
 ?>
@@ -16,7 +16,7 @@ $post = Post::replyFor($parent);
 <body onload="setFocus ()">
 <?php print $beginFormat; ?>
 
-<font face=courier><form method=post name=form action=say.php?<?php echo getenv ("QUERY_STRING");?>>
+<font face=courier><form method=post name=form action=say.php?<?php echo $postID;?>>
 <label for="em_an">你的名字：</label>
 <input id=em_an type=name name=em_an value="<?php if(isset ($_COOKIE["forumName"])) print $_COOKIE["forumName"]; ?>" size=40><br>
 

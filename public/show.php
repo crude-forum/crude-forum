@@ -3,7 +3,8 @@ include __DIR__ . '/CrudeForum/bootstrap.php';
 include __DIR__ . '/../bootstrap.php';
 print $beginFormat;
 
-$postID = getenv ("QUERY_STRING");
+$postID = $_SERVER['QUERY_STRING'] ?? '';
+if (empty(trim($postID))) die('empty postID');
 $post = $forum->readPost($postID);
 
 ?>
