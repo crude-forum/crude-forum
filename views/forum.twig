@@ -1,29 +1,27 @@
-<!doctype html>
-<html>
-<meta http-equiv='Content-Type' content='text/html; charset=utf-8'>
-<link rel="alternate" type="application/rss+xml" title="Forum Threads - RSS" href="https://stupidsing.no-ip.org/rss.php?mode=thread" />
-<link rel="alternate" type="application/rss+xml" title="Forum Posts - RSS" href="https://stupidsing.no-ip.org/rss.php?mode=post" />
-<link rel=stylesheet href=forum.css>
-<title>Wandering and wonderings</title>
-<table width=100%><tr><td>
-    <div class=buttons>
-        <a href=sayForm.php>發言</a>&nbsp;&nbsp;
-        <a href="{{ linkPrev }}">上一頁</a>&nbsp;&nbsp;
-        <a href="{{ linkForumHome }}">首頁</a>&nbsp;&nbsp;
-        <a href="{{ linkHome }}">主頁</a>
-    </div>
-</td>
-<td align=right><div class=text>心意就如密友，長路裏相伴漫遊。</div></td></tr></table><br>
+{% extends 'base.twig' %}
 
-<hr><br><br>
+{% block header %}
+<table width=100%><tr>
+    <td>
+        <div class=buttons>
+            <a href="{{ linkSay }}">發言</a>&nbsp;&nbsp;
+            <a href="{{ linkPrev }}">上一頁</a>&nbsp;&nbsp;
+            <a href="{{ linkForumHome }}">首頁</a>&nbsp;&nbsp;
+            <a href="{{ linkHome }}">主頁</a>
+        </div>
+    </td>
+    <td align=right>
+        <div class=text>心意就如密友，長路裏相伴漫遊。</div>
+    </td>
+</tr></table><br>
+{% endblock %}
 
-<main>
 {% block content %}
     <div class="posts">
         {% for postSummary in postSummaries %}
             <div class="post level-{{ postSummary.level }}">
                 {{ str_repeat('&nbsp;&nbsp;&nbsp;&nbsp;', postSummary.level) | raw }}
-                <a href="read.php?{{ postSummary.id }}">{{ postSummary.title }}</a>
+                <a href="{{ linkTo('post', postSummary.id) }}">{{ postSummary.title }}</a>
                 {% if postSummary.level == 0 %}
                 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;--
                 {% else %}
@@ -34,15 +32,14 @@
         {% endfor %}
     </div>
 {% endblock %}
-</main>
 
-<br><br><hr><br>
+{% block footer %}
 <table width=100%><tr align=top><td>
     <div class=buttons>
-        <a href=sayForm.php>發言</a>&nbsp;&nbsp;
-        <a href=forum.php?<?php print ((int) $page) + $postPerPage; ?>>下一頁</a>&nbsp;&nbsp;
-        <a href=forum.php>首頁</a>&nbsp;&nbsp;
-        <a href=../index.html>回主頁</a>
+        <a href="{{ linkSay }}">發言</a>&nbsp;&nbsp;
+        <a href="{{ linkNext }}">下一頁</a>&nbsp;&nbsp;
+        <a href="{{ linkForumHome }}">首頁</a>&nbsp;&nbsp;
+        <a href="{{ linkHome }}">回主頁</a>
     </div>
 </td><td align=right>漫長漫長夜間，我伴我閒談；漫長漫長夜晚，從未覺是冷。</td></tr></table>
-</html>
+{% endblock %}

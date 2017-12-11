@@ -22,6 +22,25 @@ class Core {
                 //'cache' => __DIR__ . '/../data/cache/twig',
             ]);
         $this->template->addFunction(new Twig_Function('str_repeat', 'str_repeat'));
+        $this->template->addFunction(new Twig_Function('linkTo',
+            '\ywsing\CrudeForum\Core::linkTo'));
+    }
+
+    public static function linkTo(string $entity, $id=NULL) {
+        switch ($entity) {
+            case 'forum/add':
+                return "/sayForm.php?{$id}";
+            case 'forum':
+                return "/forum/{$id}";
+            case 'post':
+                return "/post/{$id}";
+            case 'post/next':
+                return "/next.php?{$id}";
+            case 'post/prev':
+                return "/prev.php?{$id}";
+            case 'forum/back':
+                return "/back.php?{$id}";
+        }
     }
 
     public static function bootstrap(Dispatcher $dispatcher, Core $forum, callable $route) {

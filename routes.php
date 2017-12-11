@@ -1,15 +1,26 @@
 <?php
 
+use ywsing\CrudeForum\Core;
 use ywsing\CrudeForum\Iterator\Paged;
 
-$router->addRoute('GET', '/post/{id:\d+}', function ($vars) {
-    var_dump($vars);
-    exit('post');
-});
+$router->addRoute('GET', '/post/{postID:\d+}', function ($vars, $forum) {
+    $lock = $forum->getLock();
+    $postID = $vars['postID'] ?? '';
 
-$router->addRoute('GET', '/post/{id}', function ($vars) {
-    var_dump($vars);
-    exit('post string id');
+    if (empty(trim($postID))) die('empty postID');
+    $forum->log("read?" . $postID);
+    $post = $forum->readPost($postID);
+    if ($post === NULL) die('post not found');
+
+    echo $forum->template->render('post.twig', array(
+        'linkHome' => 'index.html',
+        'linkForumHome' => 'forum.php',
+        'postID' => $postID,
+        'linkPrev' => Core::linkTo('post/prev', $postID),
+        'linkNext' => Core::linkTo('post/next', $postID),
+        'linkBack' => Core::linkTo('forum/back', $postID),
+        'post' => $post,
+    ));
 });
 
 $router->addRoute('GET', '/forum[/[{page:\d+}]]', function ($vars, $forum) {
@@ -23,10 +34,10 @@ $router->addRoute('GET', '/forum[/[{page:\d+}]]', function ($vars, $forum) {
     $contents = $forum->template->render('forum.twig', array(
         'page' => $page,
         'linkHome' => 'index.html',
-        'linkForumHome' => 'forum.php' ,
-        'linkPrev' => 'forum.php?' . (($page > $postPerPage) ? $page - $postPerPage : 0),
-        'linkNext' => 'forum.php?' . ($page + $postPerPage),
-        'linkSay' => 'sayForm.php',
+        'linkForumHome' => Core::linkTo('forum'),
+        'linkPrev' => Core::linkTo('forum', (($page > $postPerPage) ? $page - $postPerPage : 0)),
+        'linkNext' => Core::linkTo('forum', ($page + $postPerPage)),
+        'linkSay' => Core::linkTo('forum/add'),
         'postSummaries' => $index,
     ));
     fclose ($lock);

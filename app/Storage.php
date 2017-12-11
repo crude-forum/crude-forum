@@ -63,7 +63,7 @@ class Storage {
 
         // determine post file full path
         $subdir = ($postID === 'notes') ?
-            '/' : floor((int) $postID / 1000) . '/';
+            '/' : '/' . floor((int) $postID / 1000) . '/';
         $postFn = $this->dataDirectory . $subdir . $postID;
 
         // attempt to create if accessing note file

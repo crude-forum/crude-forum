@@ -1,0 +1,26 @@
+{% extends 'base.twig' %}
+
+{% block title %}{{ post.safeTitle() }}{% endblock %}
+
+{% block header %}
+<h1>{{ post.safeTitle() }}</h1>
+<div class=buttons>
+    <a href="{{ linkTo('forum/say', postID) }}">回覆</a>&nbsp;
+    <a href="{{ linkTo('post/prev', postID) }}">上一發言</a>&nbsp;
+    <a href="{{ linkTo('post/next', postID) }}">下一發言</a>&nbsp;
+    <a href="{{ linkTo('forumOfPost', postID) }}">回論壇</a><br><br>
+</div>
+{% endblock %}
+
+{% block content %}
+    {{ post.htmlBody() | raw }}
+{% endblock %}
+
+{% block footer %}
+<div class=buttons>
+    <a href="{{ linkTo('forum/say', postID) }}">回覆</a>&nbsp;
+    <a href="{{ linkTo('post/prev', postID) }}">上一發言</a>&nbsp;
+    <a href="{{ linkTo('post/next', postID) }}">下一發言</a>&nbsp;
+    <a href="{{ linkTo('forumOfPost', postID) }}">回論壇</a><br><br>
+</div>
+{% endblock %}
