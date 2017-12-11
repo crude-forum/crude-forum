@@ -1,6 +1,6 @@
 <?php
 
-namespace ywsing\CrudeForum;
+namespace ywsing\CrudeForum\Iterator;
 
 class FileObject implements \Iterator {
 

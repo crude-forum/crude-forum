@@ -2,7 +2,7 @@
 
 include __DIR__ . '/../bootstrap.php';
 
-use ywsing\CrudeForum\Paged;
+use ywsing\CrudeForum\Iterator\Paged;
 
 $page = $_SERVER['QUERY_STRING'] ?? 0;
 if ((int) $page < 0) $page = 0;

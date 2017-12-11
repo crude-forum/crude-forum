@@ -1,8 +1,8 @@
 <?php
 
-namespace ywsing\CrudeForum;
+namespace ywsing\CrudeForum\Iterator;
 
-class IteratorWrapper implements \Iterator {
+class Wrapper implements \Iterator {
 
     public $iter = FALSE;
 

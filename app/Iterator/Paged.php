@@ -1,8 +1,8 @@
 <?php
 
-namespace ywsing\CrudeForum;
+namespace ywsing\CrudeForum\Iterator;
 
-class Paged extends IteratorWrapper implements \Iterator {
+class Paged extends Wrapper implements \Iterator {
 
     public $iter = 0;
     private $offset = 0;

@@ -2,8 +2,8 @@
 
 include __DIR__ . '/../bootstrap.php';
 
-use ywsing\CrudeForum\Paged;
-use ywsing\CrudeForum\Filtered;
+use ywsing\CrudeForum\Iterator\Paged;
+use ywsing\CrudeForum\Iterator\Filtered;
 use ywsing\CrudeForum\PostSummary;
 use ywsing\CrudeForum\Post;
 

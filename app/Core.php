@@ -2,6 +2,8 @@
 
 namespace ywsing\CrudeForum;
 
+use \ywsing\CrudeForum\Iterator\FileObject;
+
 class Core {
 
     public $dataDirectory;

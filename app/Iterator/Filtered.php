@@ -1,8 +1,8 @@
 <?php
 
-namespace ywsing\CrudeForum;
+namespace ywsing\CrudeForum\Iterator;
 
-class Filtered extends IteratorWrapper implements \Iterator {
+class Filtered extends Wrapper implements \Iterator {
 
     public $iter = 0;
     private $callback;
