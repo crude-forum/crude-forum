@@ -2,7 +2,7 @@
 
 if (!defined('CRUDE_DIR')) {
     define('CRUDE_DIR', __DIR__);
-    define('CRUDE_DIR_DATA', CRUDE_DIR . '/data/forumdata_utf8/');
+    define('CRUDE_DIR_DATA', CRUDE_DIR . '/data/forumdata_utf8');
     define('CRUDE_DIR_LOGS', CRUDE_DIR . '/data/logs');
     define('CRUDE_ADMIN', '');
 }

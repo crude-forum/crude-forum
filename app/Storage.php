@@ -11,12 +11,12 @@ class Storage {
     private $lock;
 
     public function __construct($config) {
-        $this->dataDirectory = $config['dataDirectory'] ?? '';
-        $this->logDirectory  = $config['logDirectory'] ?? '';
+        $this->dataDirectory = rtrim($config['dataDirectory'] ?? '', '/');
+        $this->logDirectory = rtrim($config['logDirectory'] ?? '', '/');
     }
 
     public function getIndex(): ?ForumIndex {
-        $indexfn = $this->dataDirectory . "index";
+        $indexfn = $this->dataDirectory . '/index';
         if(!file_exists ($indexfn) && !touch ($indexfn)) {
             throw new Exception("unable to create index file: {$indexfn}");
             return NULL;
@@ -26,7 +26,7 @@ class Storage {
 
     public function getCount(): int {
         // Gets messages count for assigning post number
-        $countfn = $this->dataDirectory . "count";
+        $countfn = $this->dataDirectory . '/count';
         if(!file_exists ($countfn) && !touch ($countfn)) {
             throw new Exception("unable to create count file: {$countfn}");
         }
@@ -43,7 +43,7 @@ class Storage {
 
     public function incCount() {
         // Gets messages count for assigning post number
-        $countfn = $this->dataDirectory . "count";
+        $countfn = $this->dataDirectory . '/count';
         if(!file_exists ($countfn) && !touch ($countfn)) {
             throw new Exception("unable to create count file: {$countfn}");
         }
@@ -63,7 +63,7 @@ class Storage {
 
         // determine post file full path
         $subdir = ($postID === 'notes') ?
-            '' : floor((int) $postID / 1000) . "/";
+            '/' : floor((int) $postID / 1000) . '/';
         $postFn = $this->dataDirectory . $subdir . $postID;
 
         // attempt to create if accessing note file
@@ -95,7 +95,7 @@ class Storage {
     public function writePost(int $postID, Post $post) {
 
         // determine data folder for the post
-        $subdir = floor((int) $postID / 1000) . "/";
+        $subdir = floor((int) $postID / 1000) . '/';
         if (!is_dir($this->dataDirectory . $subdir)) {
             mkdir($this->dataDirectory . $subdir);
             chmod($this->dataDirectory . $subdir, 0777);
@@ -109,16 +109,16 @@ class Storage {
     }
 
     public function appendIndex(PostSummary $postSummary, $parentID=FALSE) {
-        rename($this->dataDirectory . "index", $this->dataDirectory . "index.old");
+        rename($this->dataDirectory . '/index', $this->dataDirectory . '/index.old');
 
-        $fh_old = fopen($this->dataDirectory . "index.old", "r+");
+        $fh_old = fopen($this->dataDirectory . '/index.old', 'r+');
         if (!is_resource($fh_old)) {
             throw new \Exception('unable to open index.old for read');
             return FALSE;
         }
         $oldIndex = new ForumIndex(new FileObject($fh_old));
 
-        $fh = fopen($this->dataDirectory . "index", "w+");
+        $fh = fopen($this->dataDirectory . '/index', 'w+');
         if (!is_resource($fh)) {
             throw new \Exception('unable to open index for write');
             return FALSE;
@@ -131,7 +131,7 @@ class Storage {
                 fputs($fh, $oldPostSummary->toIndexLine());
             }
             unset($index);
-            unlink($this->dataDirectory . 'index.old');
+            unlink($this->dataDirectory . '/index.old');
             return TRUE;
         }
 
@@ -150,13 +150,13 @@ class Storage {
 
         // close and remove old index
         unset($oldIndex);
-        unlink($this->dataDirectory . 'index.old');
+        unlink($this->dataDirectory . '/index.old');
         return TRUE;
     }
 
     public function getLock() {
 
-        $lockfn = $this->dataDirectory . "lock";
+        $lockfn = $this->dataDirectory . '/lock';
         if(!file_exists ($lockfn) && !touch ($lockfn)) {
             throw new Exception("unable to create lock file: {$lockfn}");
         }
