@@ -1,18 +1,10 @@
 <?php
 include __DIR__ . '/../bootstrap.php';
-print $beginFormat;
 
-$lock = $forum->getLock();
-$postID = $_SERVER['QUERY_STRING'] ?? '';
-try {
-    $postSummary = $forum->readNextPostSummary($postID);
-} catch (Exception $e) {
-    die($e->getMessage());
-}
+use \ywsing\CrudeForum\Core;
 
-?>
-
-<META HTTP-EQUIV=Refresh CONTENT="0; URL=read.php?<?php echo $postSummary->id; ?>">
-<link rel=stylesheet href=forum.css>
-
-<?php print $endFormat; ?>
+Core::bootstrap(
+    $dispatcher,
+    $forum,
+    Core::routeQueryString('/post', 'next')
+);

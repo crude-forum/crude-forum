@@ -5,10 +5,10 @@
 {% block header %}
 <h1>{{ post.safeTitle() }}</h1>
 <div class=buttons>
-    <a href="{{ linkTo('forum/say', postID) }}">回覆</a>&nbsp;
-    <a href="{{ linkTo('post/prev', postID) }}">上一發言</a>&nbsp;
-    <a href="{{ linkTo('post/next', postID) }}">下一發言</a>&nbsp;
-    <a href="{{ linkTo('forumOfPost', postID) }}">回論壇</a><br><br>
+    <a href="{{ linkTo('forum', postID, 'reply') }}">回覆</a>&nbsp;
+    <a href="{{ linkTo('post', postID, 'prev') }}">上一發言</a>&nbsp;
+    <a href="{{ linkTo('post', postID, 'next') }}">下一發言</a>&nbsp;
+    <a href="{{ linkTo('post', postID, 'back') }}">回論壇</a><br><br>
 </div>
 {% endblock %}
 
@@ -18,9 +18,9 @@
 
 {% block footer %}
 <div class=buttons>
-    <a href="{{ linkTo('forum/say', postID) }}">回覆</a>&nbsp;
-    <a href="{{ linkTo('post/prev', postID) }}">上一發言</a>&nbsp;
-    <a href="{{ linkTo('post/next', postID) }}">下一發言</a>&nbsp;
-    <a href="{{ linkTo('forumOfPost', postID) }}">回論壇</a><br><br>
+    <a href="{{ linkTo('forum', postID, 'reply') }}">回覆</a>&nbsp;
+    <a href="{{ linkTo('post', postID, 'prev') }}">上一發言</a>&nbsp;
+    <a href="{{ linkTo('post', postID, 'next') }}">下一發言</a>&nbsp;
+    <a href="{{ linkTo('post', postID, 'back') }}">回論壇</a><br><br>
 </div>
 {% endblock %}

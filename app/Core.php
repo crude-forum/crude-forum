@@ -26,20 +26,14 @@ class Core {
             '\ywsing\CrudeForum\Core::linkTo'));
     }
 
-    public static function linkTo(string $entity, $id=NULL) {
+    public static function linkTo(string $entity, $id=NULL, $action=NULL) {
         switch ($entity) {
-            case 'forum/add':
-                return "/sayForm.php?{$id}";
             case 'forum':
-                return "/forum/{$id}";
+                if ($action === 'say') return "/sayForm.php?{$id}";
+                if (empty($id)) return empty($action) ? "/forum" : "/forum/{$action}";
+                return empty($action) ? "/forum/{$id}" : "/forum/{$id}/{$action}";
             case 'post':
-                return "/post/{$id}";
-            case 'post/next':
-                return "/next.php?{$id}";
-            case 'post/prev':
-                return "/prev.php?{$id}";
-            case 'forum/back':
-                return "/back.php?{$id}";
+                return empty($action) ? "/post/{$id}" : "/post/{$id}/{$action}";
         }
     }
 
@@ -80,11 +74,13 @@ class Core {
         return array($httpMethod, $uri);
     }
 
-    public static function routeQueryString($basename='/') {
-        return function () use ($basename) {
+    public static function routeQueryString($basename='/', $suffix=NULL) {
+        return function () use ($basename, $suffix) {
             $httpMethod = $_SERVER['REQUEST_METHOD'];
             $queryString = rawurldecode($_SERVER['QUERY_STRING'] ?? '');
-            return array($httpMethod, $basename . '/' . $queryString);
+            $queryString = !empty($queryString) ? '/' . $queryString : '';
+            $suffix = !empty($suffix) ? '/' . $suffix : '';
+            return array($httpMethod, $basename . $queryString . $suffix);
         };
     }
 
