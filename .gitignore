@@ -14,3 +14,6 @@ configuration.php
 
 # ignore vendor folder
 /vendor
+
+# ignore built css file
+/public/assets/forum.css

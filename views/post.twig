@@ -13,8 +13,10 @@
 {% endblock %}
 
 {% block content %}
+<article>
     {{ post.htmlHeader() | raw }}<br>
     {{ post.htmlBody() | raw }}
+</article>
 {% endblock %}
 
 {% block footer %}

@@ -7,6 +7,7 @@ use ywsing\CrudeForum\Iterator\Paged;
 use ywsing\CrudeForum\Iterator\Filtered;
 
 $postPerPage = 100;
+$rssPostLimit = 10;
 
 $router->addRoute('GET', '/post/{postID:\d+}', function ($vars, $forum) {
     $lock = $forum->getLock();
@@ -214,8 +215,7 @@ $router->addRoute('GET', '/forum[/[{page:\d+}]]', function ($vars, $forum) use (
     echo $contents;
 });
 
-$router->addRoute('GET', '/rss', function ($vars, $forum) {
-    $cfgThreadTotal = 10;
+$router->addRoute('GET', '/rss', function ($vars, $forum) use ($rssPostLimit) {
     $mode = $_GET['mode'] ?? 'post';
 
     // read post summaries as reference to the mode
@@ -230,12 +230,13 @@ $router->addRoute('GET', '/rss', function ($vars, $forum) {
                         return ($postSummary->level == 0);
                     }
                 ),
-                0, $cfgThreadTotal);
+                0, $rssPostLimit
+            );
             break;
         case 'post':
             $postSummaries = new Paged(
                 $forum->getIndex(),
-                0, $cfgThreadTotal
+                0, $rssPostLimit
             );
             break;
         default:

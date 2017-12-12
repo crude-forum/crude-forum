@@ -1,0 +1,123 @@
+$primary-text-color: #CBDCBB;
+$secondary-text-color: #99AA88;
+$slogan-color: #CBDCBB;
+
+.miscs {
+    color: #809080;
+}
+
+h1, h2, h3, h4, h5, h6 {
+    font-size: 1em;
+    font-weight: normal;
+    color: $primary-text-color;
+}
+
+h1 {
+    margin-bottom: 3em;
+}
+
+body, table {
+    background-color: #403D3D;
+    color: #F8F8F2;
+    scrollbar-base-color: #111111;
+    scrollbar-track-color: #111111;
+    scrollbar-face-color: #111111;
+    scrollbar-highlight-color: #111111;
+    scrollbar-3dlight-color: #111111;
+    scrollbar-darkshadow-color: #111111;
+    scrollbar-shadow-color: #111111;
+    scrollbar-arrow-color: #111111;
+    text-decoration: none;
+    font-family: "helvetica,arial";
+    font-size: 12pt;
+}
+
+header {
+    display: flex;
+    width: 100%;
+    margin-bottom: 2em;
+    > div {
+        flex: 1;
+    }
+    .slogan{
+        text-align: right;
+        color: $slogan-color;
+    }
+}
+
+main {
+    padding: 2em 0;
+}
+
+footer {
+    display: flex;
+    margin-top: 2em;
+    width: 100%;
+    > div {
+        flex: 1;
+    }
+    .slogan{
+        text-align: right;
+        color: $slogan-color;
+    }
+}
+
+input, textarea {
+    background-color: #403D3D;
+    color: #DCDCBC;
+    border: 1px solid #455354;
+    scrollbar-base-color: #000000;
+    scrollbar-track-color: #000000;
+    scrollbar-face-color: #000000;
+    scrollbar-highlight-color: #000000;
+    scrollbar-3dlight-color: #000000;
+    scrollbar-darkshadow-color: #000000;
+    scrollbar-shadow-color: #000000;
+    scrollbar-arrow-color: #000000;
+    text-decoration: none;
+}
+
+article, table {
+    color: $primary-text-color;
+    text-decoration: none;
+    font-family: "sans-serif";
+    font-size: 12pt;
+}
+
+a{
+    color: #FFF0CC;
+    text-decoration: none;
+    font-family: "sans-serif";
+    font-size: 11pt;
+    &:visited {
+        color: #B0B0AC;
+        text-decoration: none;
+    }
+    &:hover {
+        text-decoration: underline;
+    }
+}
+.buttons {
+    a {
+        color: $secondary-text-color;
+        font-weight: bolder;
+        text-decoration: none;
+        font-size: 12pt;
+        &:visited {
+            color: #889977;
+            text-shadow: 3px 3px 5px grey;
+            text-decoration: none;
+        }
+        &:hover {
+            color: #DDEE99;
+            font-weight: bolder;
+            text-decoration: underline;
+        }
+    }
+}
+
+hr {
+    background-color: #779966;
+    color: $secondary-text-color    ;
+    border-style: none;
+}
