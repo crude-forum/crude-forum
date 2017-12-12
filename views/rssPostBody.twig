@@ -1,0 +1,10 @@
+------------------<br/>
+[<a href="{{ sitePath }}{{ linkTo('post', postSummary.id) }}">{{ t.reply }}</a>]&nbsp;&nbsp;
+[<a href="{{ sitePath }}{{ linkTo('forum') }}">{{ t.forumIndex }}</a>]<br/>
+------------------<br/>
+{{ t.author }}: {{ postSummary.author }}<br/><br/>
+{{ post.htmlBody() | raw }}<br/>
+------------------<br/>
+[<a href="{{ sitePath }}{{ linkTo('post', postSummary.id) }}">{{ t.reply }}</a>]&nbsp;&nbsp;
+[<a href="{{ sitePath }}{{ linkTo('forum') }}">{{ t.forumIndex }}</a>]<br/>
+==============================

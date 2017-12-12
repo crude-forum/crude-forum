@@ -1,0 +1,23 @@
+<rss version="2.0">
+	<channel>
+        <title>{{ title }}</title>
+        <link>{{ link }}</link>
+        <description>{{ description }}</description>
+        <language>{{ language }}</language>
+        <pubDate>{{ pubDate }}</pubDate>
+        <lastBuildDate>{{ lastBuildDate }}</lastBuildDate>
+        <docs>http://blogs.law.harvard.edu/tech/rss</docs>
+        <generator>{{ generator }}</generator>
+        <managingEditor>{{ managingEditor }}</managingEditor>
+        <webMaster>{{ webMaster }}</webMaster>
+        {% for post in posts %}
+			<item>
+				<title>{{ post.title }}</title>
+				<link>{{ sitePath }}{{ linkTo('post', post.id) }}</link>
+				<description>{{ post.body }}</description>
+				<pubDate>{{ postRssPubDate(post.time) }}</pubDate>
+				<guid>{{ sitePath }}{{ linkTo('post', post.id) }}</guid>
+			</item>
+        {% endfor %}
+	</channel>
+</rss>

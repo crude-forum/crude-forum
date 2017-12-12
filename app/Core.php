@@ -25,6 +25,9 @@ class Core {
         $this->template->addFunction(new TwigFunction('str_repeat', 'str_repeat'));
         $this->template->addFunction(new TwigFunction('linkTo',
             '\ywsing\CrudeForum\Core::linkTo'));
+        $this->template->addFunction(new TwigFunction('postRssPubDate', function ($postTime) {
+            return trim(preg_replace('/^(.+?) (.+?) (.+?) (\d\d)\:(\d\d):(\d\d) (\d\d\d\d)/', '$1, $3 $2 $7 $4:$5:$6 +0800', $postTime));
+        }));
     }
 
     public function isAdmin(string $user) {

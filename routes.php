@@ -4,6 +4,7 @@ use ywsing\CrudeForum\Core;
 use ywsing\CrudeForum\Post;
 use ywsing\CrudeForum\PostSummary;
 use ywsing\CrudeForum\Iterator\Paged;
+use ywsing\CrudeForum\Iterator\Filtered;
 
 $postPerPage = 100;
 
@@ -211,4 +212,67 @@ $router->addRoute('GET', '/forum[/[{page:\d+}]]', function ($vars, $forum) use (
     ));
     fclose ($lock);
     echo $contents;
+});
+
+$router->addRoute('GET', '/rss', function ($vars, $forum) {
+    $cfgThreadTotal = 10;
+    $mode = $_GET['mode'] ?? 'post';
+
+    // read post summaries as reference to the mode
+    $lock = $forum->getLock();
+    switch ($mode) {
+        case 'thread':
+        case 'threads':
+            $postSummaries  = new Paged(
+                new Filtered(
+                    $forum->getIndex(),
+                    function ($postSummary) {
+                        return ($postSummary->level == 0);
+                    }
+                ),
+                0, $cfgThreadTotal);
+            break;
+        case 'post':
+            $postSummaries = new Paged(
+                $forum->getIndex(),
+                0, $cfgThreadTotal
+            );
+            break;
+        default:
+            throw new \Exception(sprintf('mode "%s" is not supported',
+                htmlspecialchars($mode)));
+    }
+
+    // read post index and post contents
+    $post = [];
+    foreach ($postSummaries as $postSummary) {
+        $post = $postSummary;
+        $post->body = $forum->template->render('rssPostBody.twig', [
+            'sitePath' => 'http://localhost:8080',
+            'postSummary' => $postSummary,
+            'post' => $forum->readPost($postSummary->id),
+            't' => [
+                'author' => '作者',
+                'reply' => '回覆',
+                'forumIndex' => '回論壇',
+            ],
+        ]);
+        $posts[] = $post;
+    }
+    unset($postSummaries);
+    fclose($lock);
+
+    // render rss
+    echo $forum->template->render('rss.twig', [
+        'sitePath' => 'http://localhost:8080',
+        'title' => 'La sfolgorante idea...!!!',
+        'link' => 'http://stupidsing.no-ip.org/forum.php',
+        'language' => 'zh-hk',
+        'pubDate' => date('D, d M Y H:i:s ', time()),
+        'lastBuildDate' => date('D, d M Y H:i:s ', time()),
+        'generator' => 'Custom PHP by Koala Yeung',
+        'managerEditor' => 'stupidsing@yahoo.com',
+        'webMaster' => 'stupidsing@yahoo.com',
+        'posts' => $posts,
+    ]);
 });
