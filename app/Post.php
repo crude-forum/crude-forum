@@ -35,7 +35,7 @@ class Post {
         $title = (strpos($parent->title, 'Re: ') === 0) ?
             $parent->title : 'Re: ' . $parent->title;
         $body = $parent->filterBody(function ($line) {
-            return "| $line";
+            return "|$line";
         }) . "\n\n";
         return new Post($title, $body);
     }
