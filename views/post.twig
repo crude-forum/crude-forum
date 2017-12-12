@@ -5,7 +5,7 @@
 {% block header %}
 <h1>{{ post.safeTitle() }}</h1>
 <div class=buttons>
-    <a href="{{ linkTo('forum', postID, 'reply') }}">回覆</a>&nbsp;
+    <a href="{{ linkTo('post', postID, 'reply') }}">回覆</a>&nbsp;
     <a href="{{ linkTo('post', postID, 'prev') }}">上一發言</a>&nbsp;
     <a href="{{ linkTo('post', postID, 'next') }}">下一發言</a>&nbsp;
     <a href="{{ linkTo('post', postID, 'back') }}">回論壇</a><br><br>
@@ -18,7 +18,7 @@
 
 {% block footer %}
 <div class=buttons>
-    <a href="{{ linkTo('forum', postID, 'reply') }}">回覆</a>&nbsp;
+    <a href="{{ linkTo('post', postID, 'reply') }}">回覆</a>&nbsp;
     <a href="{{ linkTo('post', postID, 'prev') }}">上一發言</a>&nbsp;
     <a href="{{ linkTo('post', postID, 'next') }}">下一發言</a>&nbsp;
     <a href="{{ linkTo('post', postID, 'back') }}">回論壇</a><br><br>
