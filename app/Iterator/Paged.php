@@ -2,7 +2,9 @@
 
 namespace ywsing\CrudeForum\Iterator;
 
-class Paged extends Wrapper implements \Iterator {
+class Paged implements \Iterator {
+
+    use Proxy;
 
     public $iter = 0;
     private $offset = 0;

@@ -2,9 +2,7 @@
 
 namespace ywsing\CrudeForum\Iterator;
 
-class Wrapper implements \Iterator {
-
-    public $iter = FALSE;
+trait Proxy {
 
     public function __construct(\Iterator $iter) {
         $this->iter = $iter;

@@ -2,7 +2,9 @@
 
 namespace ywsing\CrudeForum\Iterator;
 
-class Filtered extends Wrapper implements \Iterator {
+class Filtered implements \Iterator {
+
+    use Proxy;
 
     public $iter = 0;
     private $callback;
