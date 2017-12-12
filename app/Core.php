@@ -5,7 +5,7 @@ namespace ywsing\CrudeForum;
 use \ywsing\CrudeForum\Iterator\FileObject;
 use \FastRoute\Dispatcher;
 use \Twig\Environment;
-use \Twig_Function;
+use \Twig\TwigFunction;
 use \Twig\Loader\FilesystemLoader;
 
 class Core {
@@ -21,8 +21,8 @@ class Core {
             [
                 //'cache' => __DIR__ . '/../data/cache/twig',
             ]);
-        $this->template->addFunction(new Twig_Function('str_repeat', 'str_repeat'));
-        $this->template->addFunction(new Twig_Function('linkTo',
+        $this->template->addFunction(new TwigFunction('str_repeat', 'str_repeat'));
+        $this->template->addFunction(new TwigFunction('linkTo',
             '\ywsing\CrudeForum\Core::linkTo'));
     }
 
