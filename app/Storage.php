@@ -102,8 +102,7 @@ class Storage {
         }
 
         // determine post file fullpath
-        $postFn = $this->dataDirectory . $subdir . $postID;
-        $fh = fopen($postFn, "w+");
+        $fh = fopen($this->dataDirectory . '/' . $subdir . $postID, "w+");
         fputs($fh, sprintf("%s\n\n%s", $post->title, $post->body));
         fclose($fh);
     }

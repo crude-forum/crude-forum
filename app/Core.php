@@ -27,14 +27,18 @@ class Core {
     }
 
     public static function linkTo(string $entity, $id=NULL, $action=NULL) {
+        $path = [$entity];
+        if (!empty($id)) $path[] = $id;
+        if (!empty($action)) $path[] = $action;
+
+        // handle exceptions
         switch ($entity) {
-            case 'forum':
-                if ($action === 'say') return "/sayForm.php?{$id}";
-                if (empty($id)) return empty($action) ? "/forum" : "/forum/{$action}";
-                return empty($action) ? "/forum/{$id}" : "/forum/{$id}/{$action}";
             case 'post':
-                return empty($action) ? "/post/{$id}" : "/post/{$id}/{$action}";
+                // saving post with no postID equals create new post
+                if (empty($id) && $action === 'save') return '/post/add';
         }
+
+        return '/' . implode('/', $path);
     }
 
     public static function bootstrap(Dispatcher $dispatcher, Core $forum, callable $route) {
