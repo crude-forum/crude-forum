@@ -13,6 +13,7 @@
 {% endblock %}
 
 {% block content %}
+    {{ post.htmlHeader() | raw }}<br>
     {{ post.htmlBody() | raw }}
 {% endblock %}
 

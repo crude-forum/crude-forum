@@ -11,6 +11,7 @@ use \Twig\Loader\FilesystemLoader;
 class Core {
 
     private $storage;
+    private $administrator;
     public $template;
 
     public function __construct($config) {
@@ -24,6 +25,10 @@ class Core {
         $this->template->addFunction(new TwigFunction('str_repeat', 'str_repeat'));
         $this->template->addFunction(new TwigFunction('linkTo',
             '\ywsing\CrudeForum\Core::linkTo'));
+    }
+
+    public function isAdmin(string $user) {
+        return (!empty($user) && $this->administrator === $user);
     }
 
     public static function linkTo(string $entity, $id=NULL, $action=NULL) {

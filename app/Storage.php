@@ -72,24 +72,8 @@ class Storage {
             return NULL;
         }
 
-        // open post file
-        $fh = fopen($postFn, "r+");
-        if (!is_resource($fh)) {
-            throw new \Exception("failed to open post #{$postID}");
-            return NULL;
-        }
-
-        // read post from file
-        $title = trim(fgets($fh, 4096));
-        fgets($fh, 4096); // get rid of an empty line
-        $body  = '';
-        $noAutoBr = FALSE;
-        while(!feof($fh)) {
-            $line = fgets($fh, 4096);
-            if (is_string(strstr($line, 'NO-LINE-END-BR'))) $noAutoBr = TRUE;
-            else $body .= $line;
-        }
-        return new Post($title, $body, $noAutoBr);
+        // read post with text
+        return Post::fromText(file_get_contents($postFn));
     }
 
     public function writePost(int $postID, Post $post): bool {
@@ -110,7 +94,11 @@ class Storage {
             throw new \Exception('failed to open post file to write');
             return FALSE;
         }
-        if (!fputs($fh, sprintf("%s\n\n%s", $post->title, $post->body))) {
+        if (!fputs($fh, sprintf("%s\n\n%s\n\n%s",
+            $post->title,
+            implode("\n", $post->storageHeader()),
+            $post->body
+        ))) {
             throw new \Exception('failed to write to post file');
             return FALSE;
         }

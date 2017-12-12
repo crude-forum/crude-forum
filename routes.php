@@ -73,7 +73,7 @@ $showForm = function ($vars, $forum) {
         $post = $forum->readPost($postID);
         // TODO: read current post author from post
         // TODO: check if the post user is cookie user, or if user is admin
-        //$post->author = $_COOKIE['forumName'] ?? '';
+        $post->author = $post->header['author'] ?? '';
     } else if ($action == 'reply') {
         $parent = $forum->readPost($postID);
         $post = Post::replyFor($parent);
@@ -107,7 +107,7 @@ $savePost = function ($vars, $forum) {
     $author = str_replace(["\n", "\r", "\t"], ' ', $author);
     $title = str_replace (["\n", "\r", "\t"], ' ', $title);
     $title = str_replace ("\022", "'", $title);
-    $body = "來自：" . $author . "\n時間：" . $currentTime . "\n\n" . $body;
+    //$body = "來自：" . $author . "\n時間：" . $currentTime . "\n\n" . $body;
     $body = str_replace ("<", "&lt;", $body);
     $body = str_replace (">", "&gt;", $body);
     $body = str_replace ("\r\n", "\n", $body); // use UNIX linebreak
@@ -126,7 +126,8 @@ $savePost = function ($vars, $forum) {
             $nextID = $forum->getCount() + 1;
             $post = new Post(
                 $title,
-                $body
+                $body,
+                ['author' => $author, 'time' => $currentTime]
             );
             $forum->writePost($nextID, $post);
             $forum->appendIndex(new PostSummary(
@@ -146,7 +147,8 @@ $savePost = function ($vars, $forum) {
             $nextID = $forum->getCount() + 1;
             $post = new Post(
                 $title,
-                $body
+                $body,
+                ['author' => $author, 'time' => $currentTime]
             );
             $forum->writePost($nextID, $post);
             $forum->appendIndex(new PostSummary(
@@ -162,10 +164,24 @@ $savePost = function ($vars, $forum) {
             echo $forum->template->render('base.twig', []);
             break;
         case 'edit':
-            // TODO: check if the editor is the original author
+            $existingPost = $forum->readPost($postID);
+            // check if the editor is the original author
+            if (!$forum->isAdmin($author) && ($existingPost->header['author'] !== $author)) {
+                throw new \Exception('you are not the original author of this post.');
+            }
+
+            // inherit header by default
+            $header = $existingPost->header;
+            if ($forum->isAdmin($author)) {
+                // admin can override user name
+                $header['author'] = $author;
+            }
+
+            // generate new post
             $post = new Post(
                 $title,
-                $body
+                $body,
+                $header
             );
             $forum->writePost($postID, $post);
             fclose($lock);
