@@ -82,7 +82,7 @@ class Post {
 
         // generate quote to replying post
         $quoteLine = function ($line) {
-            return "|$line";
+            return "| $line";
         };
         $header = implode("\n", array_map(
             $quoteLine,
