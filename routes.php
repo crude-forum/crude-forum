@@ -1,6 +1,8 @@
 <?php
 
 use ywsing\CrudeForum\Core;
+use ywsing\CrudeForum\Post;
+use ywsing\CrudeForum\PostSummary;
 use ywsing\CrudeForum\Iterator\Paged;
 
 $postPerPage = 100;
@@ -28,6 +30,7 @@ $router->addRoute('GET', '/post/{postID:\d+}/prev', function ($vars, $forum) {
         $prev = $forum->readPrevPostSummary($postID);
         fclose($lock);
         header('Refresh: 0; URL=' . Core::linkTo('post', $prev->id));
+        echo $forum->template->render('base.twig', []);
     } catch (Exception $e) {
         fclose($lock);
         die($e->getMessage());
@@ -41,6 +44,7 @@ $router->addRoute('GET', '/post/{postID:\d+}/next', function ($vars, $forum) {
         $next = $forum->readNextPostSummary($postID);
         fclose($lock);
         header('Refresh: 0; URL=' . Core::linkTo('post', $next->id));
+        echo $forum->template->render('base.twig', []);
     } catch (Exception $e) {
         fclose($lock);
         die($e->getMessage());
@@ -54,11 +58,124 @@ $router->addRoute('GET', '/post/{postID:\d+}/back', function ($vars, $forum) use
         $postSummary = $forum->readPostSummary($postID);
         fclose($lock);
         header('Refresh: 0; URL=' . Core::linkTo('forum', $postPerPage * floor ($postSummary->pos / $postPerPage)));
+        echo $forum->template->render('base.twig', []);
     } catch (Exception $e) {
         fclose($lock);
         die($e->getMessage());
     }
 });
+
+$showForm = function ($vars, $forum) {
+    $postID = $vars['postID'] ?? '';
+    $action = $vars['action'];
+
+    if ($action == 'edit') {
+        $post = $forum->readPost($postID);
+        // TODO: read current post author from post
+        // TODO: check if the post user is cookie user, or if user is admin
+        //$post->author = $_COOKIE['forumName'] ?? '';
+    } else if ($action == 'reply') {
+        $parent = $forum->readPost($postID);
+        $post = Post::replyFor($parent);
+        $post->author = $_COOKIE['forumName'] ?? '';
+        if ($parent == NULL) die('post not found');
+    } else if ($action == 'add' && empty($postID)) {
+        $post = new Post();
+        $post->author = $_COOKIE['forumName'] ?? '';
+    }
+
+    echo $forum->template->render('postForm.twig', [
+        'action' => $action,
+        'postID' => $postID,
+        'post' => $post,
+    ]);
+};
+$router->addRoute('GET', '/post/{postID:\d+}/{action:edit|reply}', $showForm);
+$router->addRoute('GET', '/post/{action:add}', $showForm);
+
+$savePost = function ($vars, $forum) {
+    $forum->log("say?");
+    $action = $vars['action'] ?? '';
+    $postID = $vars['postID'] ?? FALSE;
+
+    $author = stripslashes ($_POST["em_an"]);
+    $title = stripslashes ($_POST["tcejbus"]);
+    $body = stripslashes ($_POST["tx_et"]);
+    $currentTime = strftime ("%a %F %T");
+
+    // Characters to be avoided
+    $author = str_replace(["\n", "\r", "\t"], ' ', $author);
+    $title = str_replace (["\n", "\r", "\t"], ' ', $title);
+    $title = str_replace ("\022", "'", $title);
+    $body = "來自：" . $author . "\n時間：" . $currentTime . "\n\n" . $body;
+    $body = str_replace ("<", "&lt;", $body);
+    $body = str_replace (">", "&gt;", $body);
+    $body = str_replace ("\r\n", "\n", $body); // use UNIX linebreak
+    if ($author <> '')
+        setcookie ('forumName', $author, mktime (0, 0, 0, 1, 1, 2038), "/");
+
+    // TODO: display error message with the originally filled form
+    if (strlen($author) > 8) die('Name too long');
+    if ($author == '') die('Please Enter your name');
+    if ($title == '') die('Please Enter a subject');
+
+    $lock = $forum->getLock();
+
+    switch ($action) {
+        case 'add':
+            $nextID = $forum->getCount() + 1;
+            $post = new Post(
+                $title,
+                $body
+            );
+            $forum->writePost($nextID, $post);
+            $forum->appendIndex(new PostSummary(
+                $nextID,
+                0,
+                $title,
+                $author,
+                $currentTime
+            ), FALSE);
+            $forum->incCount();
+            fclose($lock);
+            header('Refresh: 0; URL=' . Core::linkTo('forum'));
+            echo $forum->template->render('base.twig', []);
+            break;
+        case 'reply':
+            $parentID = $postID;
+            $nextID = $forum->getCount() + 1;
+            $post = new Post(
+                $title,
+                $body
+            );
+            $forum->writePost($nextID, $post);
+            $forum->appendIndex(new PostSummary(
+                $nextID,
+                0,
+                $title,
+                $author,
+                $currentTime
+            ), $parentID);
+            $forum->incCount();
+            fclose($lock);
+            header('Refresh: 0; URL=' . Core::linkTo('post', $parentID, 'back'));
+            echo $forum->template->render('base.twig', []);
+            break;
+        case 'edit':
+            // TODO: check if the editor is the original author
+            $post = new Post(
+                $title,
+                $body
+            );
+            $forum->writePost($postID, $post);
+            fclose($lock);
+            header('Refresh: 0; URL=' . Core::linkTo('post', $postID));
+            echo $forum->template->render('base.twig', []);
+            break;
+    }
+};
+$router->addRoute('POST', '/post/{postID:\d+}/{action:edit|reply}', $savePost);
+$router->addRoute('POST', '/post/{action:add}', $savePost);
 
 $router->addRoute('GET', '/forum[/[{page:\d+}]]', function ($vars, $forum) use ($postPerPage) {
 
@@ -73,7 +190,7 @@ $router->addRoute('GET', '/forum[/[{page:\d+}]]', function ($vars, $forum) use (
         'linkForumHome' => Core::linkTo('forum'),
         'linkPrev' => Core::linkTo('forum', (($page > $postPerPage) ? $page - $postPerPage : 0)),
         'linkNext' => Core::linkTo('forum', ($page + $postPerPage)),
-        'linkSay' => Core::linkTo('forum', '', 'add'),
+        'linkSay' => Core::linkTo('post', NULL, 'add'),
         'postSummaries' => $index,
     ));
     fclose ($lock);
