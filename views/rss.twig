@@ -1,7 +1,7 @@
-<rss version="2.0">
-	<channel>
-        <title>{{ title }}</title>
-        <link>{{ link }}</link>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+    <channel>
+        <title>{{ configs.siteName }}</title>
+        <link>{{ configs.baseURL }}{{ configs.basePath }}</link>
         <description>{{ description }}</description>
         <language>{{ language }}</language>
         <pubDate>{{ pubDate }}</pubDate>
@@ -10,14 +10,15 @@
         <generator>{{ generator }}</generator>
         <managingEditor>{{ managingEditor }}</managingEditor>
         <webMaster>{{ webMaster }}</webMaster>
+        <atom:link href="{{ linkTo('rss', NULL, NULL, TRUE) }}" rel="self" type="application/rss+xml" />
         {% for post in posts %}
-			<item>
-				<title>{{ post.title }}</title>
-				<link>{{ sitePath }}{{ linkTo('post', post.id) }}</link>
-				<description>{{ post.body }}</description>
-				<pubDate>{{ postRssPubDate(post.time) }}</pubDate>
-				<guid>{{ sitePath }}{{ linkTo('post', post.id) }}</guid>
-			</item>
+            <item>
+                <title>{{ post.title }}</title>
+                <link>{{ linkTo('post', post.id, NULL, TRUE) }}</link>
+                <description>{{ post.body }}</description>
+                <pubDate>{{ postRssPubDate(post.time) }}</pubDate>
+                <guid>{{ linkTo('post', post.id, NULL, TRUE) }}</guid>
+            </item>
         {% endfor %}
-	</channel>
+    </channel>
 </rss>
