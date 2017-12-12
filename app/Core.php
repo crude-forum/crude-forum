@@ -12,11 +12,15 @@ class Core {
 
     private $storage;
     private $administrator;
+    private $baseURL;
+    private $basePath;
     public $template;
 
     public function __construct($config) {
         $this->storage = new Storage($config);
         $this->administrator = $config['administrator'] ?? '';
+        $this->baseURL = $config['baseURL'];
+        $this->basePath = rtrim($config['basePath'], '/');
         $this->template = new Environment(
             new FilesystemLoader(__DIR__ . '/../views'),
             [
@@ -24,7 +28,8 @@ class Core {
             ]);
         $this->template->addFunction(new TwigFunction('str_repeat', 'str_repeat'));
         $this->template->addFunction(new TwigFunction('linkTo',
-            '\ywsing\CrudeForum\Core::linkTo'));
+            array(&$this, 'linkTo')
+        ));
         $this->template->addFunction(new TwigFunction('postRssPubDate', function ($postTime) {
             return trim(preg_replace('/^(.+?) (.+?) (.+?) (\d\d)\:(\d\d):(\d\d) (\d\d\d\d)/', '$1, $3 $2 $7 $4:$5:$6 +0800', $postTime));
         }));
@@ -34,8 +39,24 @@ class Core {
         return (!empty($user) && $this->administrator === $user);
     }
 
-    public static function linkTo(string $entity, $id=NULL, $action=NULL) {
-        $path = [$entity];
+    public static function defaultBaseURL() {
+        $host = $_SERVER['SERVER_NAME'];
+        $scheme = strtolower($_SERVER['REQUEST_SCHEME'] ?? 'http');
+        $port = $_SERVER['SERVER_PORT'];
+        if (($scheme == 'http' && $port != 80) || ($scheme == 'https' && $port != 443)) {
+            return "{$scheme}://{$host}:${port}";
+        }
+        return "{$scheme}://{$host}";
+    }
+
+    public static function defaultBasePath() {
+        $filename = basename($_SERVER['SCRIPT_NAME'], '.php');
+        return ($filename === 'index') ?
+            dirname($_SERVER['SCRIPT_NAME']) : $_SERVER['SCRIPT_NAME'];
+    }
+
+    public function linkTo(string $entity, $id=NULL, $action=NULL, $absolute=FALSE) {
+        $path = ($absolute) ? [$this->baseURL, $entity] : ['', $entity];
         if (!empty($id)) $path[] = $id;
         if (!empty($action)) $path[] = $action;
 
@@ -43,10 +64,10 @@ class Core {
         switch ($entity) {
             case 'post':
                 // saving post with no postID equals create new post
-                if (empty($id) && $action === 'save') return '/post/add';
+                if (empty($id) && $action === 'save')
+                    return '/post/add';
         }
-
-        return '/' . implode('/', $path);
+        return implode('/', $path);
     }
 
     public static function bootstrap(Dispatcher $dispatcher, Core $forum, callable $route) {

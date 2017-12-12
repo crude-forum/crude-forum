@@ -1,10 +1,10 @@
 <!doctype html>
 <html>
 <meta http-equiv='Content-Type' content='text/html; charset=utf-8'>
-<link rel="alternate" type="application/rss+xml" title="Forum Threads - RSS" href="https://stupidsing.no-ip.org/rss.php?mode=thread" />
-<link rel="alternate" type="application/rss+xml" title="Forum Posts - RSS" href="https://stupidsing.no-ip.org/rss.php?mode=post" />
-<link rel=stylesheet href="/assets/forum.css">
-<title>{% block title %}Wandering and wonderings{% endblock %}</title>
+<link rel="alternate" type="application/rss+xml" title="Forum Threads - RSS" href="{{ linkTo('rss', '?mode=thread') }}" />
+<link rel="alternate" type="application/rss+xml" title="Forum Posts - RSS" href="{{ linkTo('rss', '?mode=post') }}" />
+<link rel=stylesheet href="{{ configs.cssPath }}">
+<title>{% block title %}{{ configs.siteName }}{% endblock %}</title>
 
 {% block header %}{% endblock %}
 
