@@ -64,8 +64,10 @@ class Core {
         switch ($entity) {
             case 'post':
                 // saving post with no postID equals create new post
-                if (empty($id) && $action === 'save')
-                    return '/post/add';
+                if (empty($id) && $action === 'save') {
+                    array_pop($path);
+                    array_push('add');
+                }
         }
         return implode('/', $path);
     }
