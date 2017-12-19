@@ -63,10 +63,17 @@ class Core {
             dirname($_SERVER['SCRIPT_NAME']) : $_SERVER['SCRIPT_NAME'];
     }
 
-    public function linkTo(string $entity, $id=NULL, $action=NULL, $absolute=FALSE) {
+    public function linkTo(string $entity, $id=NULL, $action=NULL, $options=[]) {
+        $absolute = (bool) ($options['absolute'] ?? FALSE);
         $path = ($absolute) ? [$this->baseURL, $entity] : [$this->basePath, $entity];
         if (!empty($id)) $path[] = $id;
         if (!empty($action)) $path[] = $action;
+
+        // build query, if in options
+        $query = '';
+        $queryData = $options['query'] ?? [];
+        $query = is_array($queryData) && !empty($queryData) ?
+            '?' . http_build_query($queryData) : '';
 
         // handle exceptions
         switch ($entity) {
@@ -77,7 +84,7 @@ class Core {
                     array_push('add');
                 }
         }
-        return implode('/', $path);
+        return implode('/', $path) . $query;
     }
 
     public static function bootstrap(Dispatcher $dispatcher, Core $forum, callable $route) {

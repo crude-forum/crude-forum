@@ -14,10 +14,10 @@
         {% for post in posts %}
             <item>
                 <title>{{ post.title }}</title>
-                <link>{{ linkTo('post', post.id, NULL, TRUE) }}</link>
+                <link>{{ linkTo('post', post.id, NULL, {'absolute': TRUE}) }}</link>
                 <description>{{ post.body }}</description>
                 <pubDate>{{ postRssPubDate(post.time) }}</pubDate>
-                <guid>{{ linkTo('post', post.id, NULL, TRUE) }}</guid>
+                <guid>{{ linkTo('post', post.id, NULL, {'absolute': TRUE}) }}</guid>
             </item>
         {% endfor %}
     </channel>

@@ -1,8 +1,8 @@
 <!doctype html>
 <html>
 <meta http-equiv='Content-Type' content='text/html; charset=utf-8'>
-<link rel="alternate" type="application/rss+xml" title="Forum Threads - RSS" href="{{ linkTo('rss', '?mode=thread') }}" />
-<link rel="alternate" type="application/rss+xml" title="Forum Posts - RSS" href="{{ linkTo('rss', '?mode=post') }}" />
+<link rel="alternate" type="application/rss+xml" title="Forum Threads - RSS" href="{{ linkTo('rss', NULL, NULL, {'query': {'mode': 'thread'}}) }}" />
+<link rel="alternate" type="application/rss+xml" title="Forum Posts - RSS" href="{{ linkTo('rss', NULL, NULL, {'query': {'mode': 'post'}}) }}" />
 <link rel=stylesheet href="{{ configs.assetsPath }}/forum.css">
 <title>{% block title %}{{ configs.siteName }}{% endblock %}</title>
 
