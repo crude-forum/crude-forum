@@ -81,6 +81,10 @@ $showForm = function ($vars, $forum) use ($configs) {
         // TODO: read current post author from post
         // TODO: check if the post user is cookie user, or if user is admin
         $post->author = $post->header['author'] ?? '';
+        $forumName = $_COOKIE['forumName'] ?? '';
+        if (($forumName === '' || $forumName !== $post->author) && !$forum->isAdmin($forumName)) {
+            throw new \Exception('permission denied');
+        }
     } else if ($action == 'reply') {
         $parent = $forum->readPost($postID);
         $post = Post::replyFor($parent);
