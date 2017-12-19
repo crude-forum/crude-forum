@@ -98,7 +98,11 @@ class Core {
             case Dispatcher::FOUND:
                 $handler = $routeInfo[1];
                 $vars = $routeInfo[2];
-                $handler($vars, $forum);
+                try {
+                    $handler($vars, $forum);
+                } catch (\Exception $e) {
+                    die($e->getMessage());
+                }
                 break;
         }
     }
