@@ -8,5 +8,5 @@ use \ywsing\CrudeForum\Core;
 Core::bootstrap(
     $dispatcher,
     $forum,
-    '\ywsing\CrudeForum\Core::routeURI'
+    Core::routeHome('/forum', Core::routeURI())
 );

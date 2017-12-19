@@ -108,17 +108,19 @@ class Core {
     }
 
     public static function routeURI() {
-        // Fetch method and URI from somewhere
-        $httpMethod = $_SERVER['REQUEST_METHOD'];
-        $uri = $_SERVER['REQUEST_URI'];
+        return function () {
+            // Fetch method and URI from somewhere
+            $httpMethod = $_SERVER['REQUEST_METHOD'];
+            $uri = $_SERVER['REQUEST_URI'];
 
-        // Strip query; string (?foo=bar) and decode URI
-        if (false !== $pos = strpos($uri, '?')) {
-            $uri = substr($uri, 0, $pos);
-        }
-        $uri = rawurldecode($uri);
+            // Strip query; string (?foo=bar) and decode URI
+            if (false !== $pos = strpos($uri, '?')) {
+                $uri = substr($uri, 0, $pos);
+            }
+            $uri = rawurldecode($uri);
 
-        return array($httpMethod, $uri);
+            return array($httpMethod, $uri);
+        };
     }
 
     public static function routeQueryString($basename='/', $suffix=NULL) {
@@ -136,6 +138,22 @@ class Core {
             $httpMethod = $_SERVER['REQUEST_METHOD'];
             $pathInfo = $_SERVER['PATH_INFO'] ?? '/';
             return array($httpMethod, $pathInfo);
+        };
+    }
+
+    /**
+     * routeHome serves as middle ware of route functions
+     * and add a home for the '/' route
+     *
+     * @param string $home
+     * @param callable $inner
+     * @return void
+     */
+    public static function routeHome(string $home, callable $inner) {
+        return function () use ($home, $inner) {
+            list($httpMethod, $path) = $inner();
+            $path = (rtrim($path, '/') == '') ? $home : $path;
+            return array($httpMethod, $path);
         };
     }
 

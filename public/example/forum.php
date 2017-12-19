@@ -12,5 +12,5 @@ $forum->setBaseURL('http://localhost:8080/example/forum.php');
 Core::bootstrap(
     $dispatcher,
     $forum,
-    Core::routePathInfo()
+    Core::routeHome('/forum', Core::routePathInfo())
 );
