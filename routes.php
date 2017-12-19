@@ -64,7 +64,7 @@ $router->addRoute('GET', '/post/{postID:\d+}/back', function ($vars, $forum) use
         fclose($lock);
         header('Refresh: 0; URL=' . $forum->linkTo('forum', $configs['postPerPage'] * floor ($postSummary->pos / $configs['postPerPage'])));
         echo $forum->template->render('base.twig', [
-            'configs' => configs,
+            'configs' => $configs,
         ]);
     } catch (Exception $e) {
         fclose($lock);
