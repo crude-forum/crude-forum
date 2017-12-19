@@ -20,7 +20,7 @@ class Core {
         $this->storage = new Storage($config);
         $this->administrator = $config['administrator'] ?? '';
         $this->baseURL = $config['baseURL'];
-        $this->basePath = rtrim($config['basePath'], '/');
+        $this->basePath = rtrim($config['basePath'] ?? '/', '/');
         $this->template = new Environment(
             new FilesystemLoader(__DIR__ . '/../views'),
             [
@@ -37,6 +37,14 @@ class Core {
 
     public function isAdmin(string $user) {
         return (!empty($user) && $this->administrator === $user);
+    }
+
+    public function setBaseUrl($baseURL) {
+        $this->baseURL = rtrim($baseURL, '/');
+    }
+
+    public function setBasePath($basePath) {
+        $this->basePath = rtrim($basePath, '/');
     }
 
     public static function defaultBaseURL() {
@@ -56,7 +64,7 @@ class Core {
     }
 
     public function linkTo(string $entity, $id=NULL, $action=NULL, $absolute=FALSE) {
-        $path = ($absolute) ? [$this->baseURL, $entity] : ['', $entity];
+        $path = ($absolute) ? [$this->baseURL, $entity] : [$this->basePath, $entity];
         if (!empty($id)) $path[] = $id;
         if (!empty($action)) $path[] = $action;
 
@@ -116,6 +124,14 @@ class Core {
             $queryString = !empty($queryString) ? '/' . $queryString : '';
             $suffix = !empty($suffix) ? '/' . $suffix : '';
             return array($httpMethod, $basename . $queryString . $suffix);
+        };
+    }
+
+    public static function routePathInfo() {
+        return function () {
+            $httpMethod = $_SERVER['REQUEST_METHOD'];
+            $pathInfo = $_SERVER['PATH_INFO'] ?? '/';
+            return array($httpMethod, $pathInfo);
         };
     }
 
