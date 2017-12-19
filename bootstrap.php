@@ -25,7 +25,6 @@ $forum = new \ywsing\CrudeForum\Core([
     'administrator' => CRUDE_ADMIN,
     'baseURL' => CRUDE_BASE_URL,
     'basePath' => CRUDE_BASE_PATH,
-    'routing' => CRUDE_ROUTING,
 ]);
 
 // initialize route dispatcher
@@ -40,7 +39,7 @@ $dispatcher = FastRoute\simpleDispatcher(function(FastRoute\RouteCollector $rout
         'sloganBottom' => CRUDE_SLOGAN_BOTTOM,
         'baseURL' => CRUDE_BASE_URL,
         'basePath' => CRUDE_BASE_PATH,
-        'cssPath' => CRUDE_CSS_PATH,
+        'assetsPath' => CRUDE_ASSETS_PATH,
     ];
 
     // use routes defined in routes.php

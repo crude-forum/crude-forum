@@ -40,8 +40,4 @@ define('CRUDE_RSS_POST_NUMBER', 10);
 // define('CRUDE_BASE_PATH', '/forum.php'); // for PATH_INFO routing
 
 // path to the CSS file
-// define('CRUDE_CSS_PATH', '/forum/assets/forum.css');
-
-// preferable routing
-// define('CRUDE_ROUTING', 'NORMAL'); // or
-// define('CRUDE_ROUTING', 'PATH_INFO');
+// define('CRUDE_ASSETS_PATH', '/forum/assets/');
