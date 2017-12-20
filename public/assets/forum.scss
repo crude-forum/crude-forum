@@ -1,6 +1,7 @@
 $primary-text-color: #CBDCBB;
 $secondary-text-color: #99AA88;
 $slogan-color: #CBDCBB;
+$screen-small: 600px;
 
 h1, h2, h3, h4, h5, h6 {
     font-size: 1em;
@@ -29,14 +30,9 @@ body, table {
 }
 
 header {
-    display: flex;
     width: 100%;
     margin-bottom: 2em;
-    > div {
-        flex: 1;
-    }
     .slogan{
-        text-align: right;
         color: $slogan-color;
     }
 }
@@ -46,15 +42,81 @@ main {
 }
 
 footer {
-    display: flex;
     margin-top: 2em;
     width: 100%;
-    > div {
-        flex: 1;
-    }
     .slogan{
-        text-align: right;
         color: $slogan-color;
+    }
+}
+
+.page-forum {
+
+    header {
+        display: flex;
+        flex-direction: row-reverse;
+        > div {
+            flex: 1;
+        }
+        .slogan{
+            text-align: right;
+        }
+        @media screen and (max-width: $screen-small) {
+            display: block;
+            .buttons {
+                margin-top: 0.7em;
+                a {
+                    font-size: 1.2em;
+                }
+            }
+        }
+    }
+
+    footer {
+        display: flex;
+        > div {
+            flex: 1;
+        }
+        .slogan{
+            text-align: right;
+        }
+        @media screen and (max-width: $screen-small) {
+            display: block;
+            .buttons {
+                margin-bottom: 0.7em;
+                a {
+                    font-size: 1.2em;
+                }
+            }
+        }
+    }
+
+    .post {
+        &.level-0 {
+            margin-top: 0.7em;
+        }
+        @for $i from 0 through 20 {
+            &.level-#{$i} {
+                margin-left: #{$i}em;
+            }
+        }
+        .authoring-info {
+            color: #809080;
+        }
+        @media screen and (max-width: $screen-small) {
+            margin-top: 0.4em;
+            &.level-0 {
+                margin-top: 1em;
+            }
+            .title {
+                font-size: 1.2em;
+            }
+            .authoring-info {
+                display: block;
+                .separator {
+                    display: none;
+                }
+            }
+        }
     }
 }
 
@@ -116,29 +178,4 @@ hr {
     background-color: #779966;
     color: $secondary-text-color    ;
     border-style: none;
-}
-
-.post {
-    &.level-0 {
-        margin-top: 0.7em;
-    }
-    @for $i from 0 through 20 {
-        &.level-#{$i} {
-            margin-left: #{$i}em;
-        }
-    }
-    .authoring-info {
-        color: #809080;
-    }
-    @media screen and (max-width: 600px) {
-        .title {
-            font-size: 1.2em;
-        }
-        .authoring-info {
-            display: block;
-            .separator {
-                display: none;
-            }
-        }
-    }
 }

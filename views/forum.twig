@@ -1,15 +1,15 @@
 {% extends 'base.twig' %}
 
+{% set pageClass = 'page-forum' %}
+
 {% block header %}
 <header>
+    <div class="slogan">{{ configs.sloganTop }}</div>
     <div class="buttons">
         <a href="{{ linkSay }}">發言</a>&nbsp;&nbsp;
         <a href="{{ linkPrev }}">上一頁</a>&nbsp;&nbsp;
         <a href="{{ linkForumHome }}">首頁</a>&nbsp;&nbsp;
         <a href="{{ linkHome }}">主頁</a>
-    </div>
-    <div class="slogan">
-        <div class=text>心意就如密友，長路裏相伴漫遊。</div>
     </div>
 </header>
 {% endblock %}
@@ -38,7 +38,6 @@
         <a href="{{ linkForumHome }}">首頁</a>&nbsp;&nbsp;
         <a href="{{ linkHome }}">回主頁</a>
     </div>
-    <div class="slogan">漫長漫長夜間，我伴我閒談；漫長漫長夜晚，從未覺是冷。
-    </div>
+    <div class="slogan">{{ configs.sloganBottom }}</div>
 </footer>
 {% endblock %}

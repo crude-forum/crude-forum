@@ -2,14 +2,18 @@
 
 {% block title %}{{ post.safeTitle() }}{% endblock %}
 
+{% set pageClass = 'page-post' %}
+
 {% block header %}
-<h1>{{ post.safeTitle() }}</h1>
-<div class=buttons>
-    <a href="{{ linkTo('post', postID, 'reply') }}">回覆</a>&nbsp;
-    <a href="{{ linkTo('post', postID, 'prev') }}">上一發言</a>&nbsp;
-    <a href="{{ linkTo('post', postID, 'next') }}">下一發言</a>&nbsp;
-    <a href="{{ linkTo('post', postID, 'back') }}">回論壇</a><br><br>
-</div>
+<header>
+    <h1>{{ post.safeTitle() }}</h1>
+    <div class=buttons>
+        <a href="{{ linkTo('post', postID, 'reply') }}">回覆</a>&nbsp;
+        <a href="{{ linkTo('post', postID, 'prev') }}">上一發言</a>&nbsp;
+        <a href="{{ linkTo('post', postID, 'next') }}">下一發言</a>&nbsp;
+        <a href="{{ linkTo('post', postID, 'back') }}">回論壇</a><br><br>
+    </div>
+</header>
 {% endblock %}
 
 {% block content %}
@@ -20,10 +24,12 @@
 {% endblock %}
 
 {% block footer %}
-<div class=buttons>
-    <a href="{{ linkTo('post', postID, 'reply') }}">回覆</a>&nbsp;
-    <a href="{{ linkTo('post', postID, 'prev') }}">上一發言</a>&nbsp;
-    <a href="{{ linkTo('post', postID, 'next') }}">下一發言</a>&nbsp;
-    <a href="{{ linkTo('post', postID, 'back') }}">回論壇</a><br><br>
-</div>
+<footer>
+    <div class=buttons>
+        <a href="{{ linkTo('post', postID, 'reply') }}">回覆</a>&nbsp;
+        <a href="{{ linkTo('post', postID, 'prev') }}">上一發言</a>&nbsp;
+        <a href="{{ linkTo('post', postID, 'next') }}">下一發言</a>&nbsp;
+        <a href="{{ linkTo('post', postID, 'back') }}">回論壇</a><br><br>
+    </div>
+</footer>
 {% endblock %}
