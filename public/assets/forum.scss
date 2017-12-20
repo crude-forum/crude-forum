@@ -2,10 +2,6 @@ $primary-text-color: #CBDCBB;
 $secondary-text-color: #99AA88;
 $slogan-color: #CBDCBB;
 
-.authoring-info {
-    color: #809080;
-}
-
 h1, h2, h3, h4, h5, h6 {
     font-size: 1em;
     font-weight: normal;
@@ -125,5 +121,24 @@ hr {
 .post {
     &.level-0 {
         margin-top: 0.7em;
+    }
+    @for $i from 0 through 20 {
+        &.level-#{$i} {
+            margin-left: #{$i}em;
+        }
+    }
+    .authoring-info {
+        color: #809080;
+    }
+    @media screen and (max-width: 600px) {
+        .title {
+            font-size: 1.2em;
+        }
+        .authoring-info {
+            display: block;
+            .separator {
+                display: none;
+            }
+        }
     }
 }
