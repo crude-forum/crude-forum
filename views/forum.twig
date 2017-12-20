@@ -20,12 +20,17 @@
             <div class="post level-{{ postSummary.level }}">
                 {{ str_repeat('&nbsp;&nbsp;&nbsp;&nbsp;', postSummary.level) | raw }}
                 <a href="{{ linkTo('post', postSummary.id) }}">{{ postSummary.title }}</a>
-                {% if postSummary.level == 0 %}
-                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;--
-                {% else %}
-                &nbsp;&nbsp;&nbsp;&nbsp;--
-                {% endif %}
-                {{ postSummary.author }} at {{ postSummary.time }}
+                <span class="authoring-info">
+                    <span class="separator">
+                        {% if postSummary.level == 0 %}
+                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;--
+                        {% else %}
+                        &nbsp;&nbsp;&nbsp;&nbsp;--
+                        {% endif %}
+                    </span>
+                    <span class="author">{{ postSummary.author }}</span> at
+                    <span class="time">{{ postSummary.time }}</span>
+                </span>
             </div>
         {% endfor %}
     </div>

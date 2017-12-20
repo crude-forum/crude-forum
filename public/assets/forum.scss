@@ -2,7 +2,7 @@ $primary-text-color: #CBDCBB;
 $secondary-text-color: #99AA88;
 $slogan-color: #CBDCBB;
 
-.miscs {
+.authoring-info {
     color: #809080;
 }
 
@@ -120,4 +120,10 @@ hr {
     background-color: #779966;
     color: $secondary-text-color    ;
     border-style: none;
+}
+
+.post {
+    &.level-0 {
+        margin-top: 0.7em;
+    }
 }
