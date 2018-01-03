@@ -136,6 +136,6 @@ class Post {
     }
 
     public function htmlBody(): string {
-        return nl2br($this->body);
+        return nl2br(Filter::quoteToBlockquote(trim($this->body)));
     }
 }

@@ -142,6 +142,15 @@ article, table {
     font-size: 12pt;
 }
 
+article {
+    blockquote {
+        display: block;
+        border-left: solid 1px $secondary-text-color;
+        margin: 0;
+        padding-left: 1em;
+    }
+}
+
 a{
     color: #FFF0CC;
     text-decoration: none;
