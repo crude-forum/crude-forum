@@ -142,7 +142,7 @@ class Post {
                 yield $line . "\n";
             }
         };
-        $lines = Filter::autoParagraph(Filter::quoteToBlockquote($getLines()));
+        $lines = Filter::autoLink(Filter::autoParagraph(Filter::quoteToBlockquote($getLines())));
         return nl2br(implode('', iterator_to_array($lines)), false);
     }
 }

@@ -33,6 +33,22 @@ class Filter
 {
 
     /**
+     * Turn URL into html href tags.
+     *
+     * @param Generator $lines Generator of text lines of a string.
+     *
+     * @return Generator Generator of text lines of a string.
+     */
+    public static function autoLink(Generator $lines): Generator {
+        return (function () use ($lines) {
+            $url = '~(?:(https?)://([^\s<]+)|(www\.[^\s<]+?\.[^\s<]+))(?<![\.,:])~i';
+            foreach ($lines as $line) {
+                yield preg_replace($url, '<a href="$0" target="_blank" title="$0">$0</a>', $line);
+            }
+        })();
+    }
+
+    /**
      * Turn double line breaked text blocks into html paragraphs
      *
      * @param Generator $lines Generator of text lines of a string.
