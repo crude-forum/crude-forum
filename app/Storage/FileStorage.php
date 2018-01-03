@@ -1,5 +1,19 @@
 <?php
 
+/**
+ * Bootstrapping the main objects to use in the forum
+ *
+ * PHP Version 7.1
+ *
+ * @file     FileStorage.php
+ * @category File
+ * @package  CrudeForum\CrudeForum\Storage
+ * @author   Koala Yeung <koalay@gmail.com>
+ * @license  https://opensource.org/licenses/MIT MIT License
+ * @link     https://github.com/crude-forum/crude-forum/blob/master/app/Storage/FileStorage.php
+ * Source Code
+ */
+
 namespace CrudeForum\CrudeForum\Storage;
 
 use \CrudeForum\CrudeForum\Iterator\FileObject;
@@ -8,30 +22,59 @@ use \CrudeForum\CrudeForum\Post;
 use \CrudeForum\CrudeForum\PostSummary;
 use \Exception;
 
-class FileStorage {
+/**
+ * FileStorage implements a storage engine for CrudeForum
+ *
+ * @category Class
+ * @package  CrudeForum\CrudeForum\Storage
+ * @author   Koala Yeung <koalay@gmail.com>
+ * @license  https://opensource.org/licenses/MIT MIT License
+ * @link     https://github.com/crude-forum/crude-forum/blob/master/app/Storage/FileStorage.php
+ * Source Code
+ */
+class FileStorage
+{
 
-    private $dataDirectory;
-    private $logDirectory;
-    private $lock;
+    private $_dataDirectory;
+    private $_logDirectory;
+    private $_lock;
 
-    public function __construct($config) {
-        $this->dataDirectory = rtrim($config['dataDirectory'] ?? '', '/');
-        $this->logDirectory = rtrim($config['logDirectory'] ?? '', '/');
+    /**
+     * Construct method
+     *
+     * @param array $config array of configuration
+     */
+    public function __construct(array $config)
+    {
+        $this->_dataDirectory = rtrim($config['dataDirectory'] ?? '', '/');
+        $this->_logDirectory = rtrim($config['logDirectory'] ?? '', '/');
     }
 
-    public function getIndex(): ?ForumIndex {
-        $indexfn = $this->dataDirectory . '/index';
-        if(!file_exists ($indexfn) && !touch ($indexfn)) {
+    /**
+     * Gets the ForumIndex from storage.
+     *
+     * @return ForumIndex|null
+     */
+    public function getIndex(): ?ForumIndex
+    {
+        $indexfn = $this->_dataDirectory . '/index';
+        if (!file_exists($indexfn) && !touch($indexfn)) {
             throw new Exception("unable to create index file: {$indexfn}");
-            return NULL;
+            return null;
         }
         return new ForumIndex(new FileObject(fopen($indexfn, 'r+')));
     }
 
-    public function getCount(): int {
+    /**
+     * Get the current post count from storage.
+     *
+     * @return integer number of post, as recorded by the storage.
+     */
+    public function getCount(): int
+    {
         // Gets messages count for assigning post number
-        $countfn = $this->dataDirectory . '/count';
-        if(!file_exists ($countfn) && !touch ($countfn)) {
+        $countfn = $this->_dataDirectory . '/count';
+        if (!file_exists($countfn) && !touch($countfn)) {
             throw new Exception("unable to create count file: {$countfn}");
         }
 
@@ -42,13 +85,19 @@ class FileStorage {
         }
         fscanf($countFile, "%d", $count);
         fclose($countFile);
-        return ($count === NULL) ? 0 : $count;
+        return ($count === null) ? 0 : $count;
     }
 
-    public function incCount() {
+    /**
+     * Increment the post count in storage.
+     *
+     * @return int The new count after increment.
+     */
+    public function incCount(): int
+    {
         // Gets messages count for assigning post number
-        $countfn = $this->dataDirectory . '/count';
-        if(!file_exists ($countfn) && !touch ($countfn)) {
+        $countfn = $this->_dataDirectory . '/count';
+        if (!file_exists($countfn) && !touch($countfn)) {
             throw new Exception("unable to create count file: {$countfn}");
         }
 
@@ -58,92 +107,127 @@ class FileStorage {
         }
         fscanf($countFile, "%d", $count);
         rewind($countFile);
-        $count = ($count === NULL) ? 0 : $count;
+        $count = ($count === null) ? 0 : $count;
         fputs($countFile, ++$count);
         fclose($countFile);
+
+        return $count;
     }
 
-    public function readPost(string $postID): ?Post {
+    /**
+     * Read a certain post of the given postID
+     *
+     * @param string $postID ID of the post
+     *
+     * @return Post|null The post, or null if not found
+     */
+    public function readPost(string $postID): ?Post
+    {
 
         // determine post file full path
         $subdir = ($postID === 'notes') ?
             '/' : '/' . floor((int) $postID / 1000) . '/';
-        $postFn = $this->dataDirectory . $subdir . $postID;
+        $postFn = $this->_dataDirectory . $subdir . $postID;
 
         // attempt to create if accessing note file
-        if(($postID === 'notes') && !file_exists($postFn) && !touch($postFn)) {
+        if (($postID === 'notes') && !file_exists($postFn) && !touch($postFn)) {
             throw new Exception('unable to create notes file');
-            return NULL;
+            return null;
         }
 
         // read post with text
         return Post::fromText(file_get_contents($postFn));
     }
 
-    public function writePost(int $postID, Post $post): bool {
+    /**
+     * Write a post into storage, of the given postID.
+     *
+     * @param integer $postID The ID of the post.
+     * @param Post    $post   The post object to store.
+     *
+     * @return boolean
+     */
+    public function writePost(int $postID, Post $post): bool
+    {
         // determine data folder for the post
         $subdir = floor((int) $postID / 1000);
-        if (!is_dir($this->dataDirectory . '/' . $subdir)) {
-            if (mkdir($this->dataDirectory . '/' . $subdir) === FALSE) {
+        if (!is_dir($this->_dataDirectory . '/' . $subdir)) {
+            if (mkdir($this->_dataDirectory . '/' . $subdir) === false) {
                 throw new Exception('failed to create subdirectory for the post');
-                return FALSE;
+                return false;
             }
-            if (chmod($this->dataDirectory . '/' . $subdir, 0777) === FALSE) {
+            if (chmod($this->_dataDirectory . '/' . $subdir, 0777) === false) {
                 throw new Exception('failed to chmod post subdirectory');
-                return FALSE;
+                return false;
             }
         }
-        $fh = fopen($this->dataDirectory . '/' . $subdir  . '/' . $postID, "w+");
+        $fh = fopen($this->_dataDirectory . '/' . $subdir  . '/' . $postID, "w+");
         if (!is_resource($fh)) {
             throw new Exception('failed to open post file to write');
-            return FALSE;
+            return false;
         }
-        if (!fputs($fh, sprintf("%s\n\n%s\n\n%s",
+
+        $logLine = sprintf(
+            "%s\n\n%s\n\n%s",
             $post->title,
             implode("\n", $post->storageHeader()),
             $post->body
-        ))) {
+        );
+        if (!fputs($fh, $logLine)) {
             throw new Exception('failed to write to post file');
-            return FALSE;
+            return false;
         }
         if (!fclose($fh)) {
             throw new Exception('failed to close post file');
-            return FALSE;
+            return false;
         }
-        return TRUE;
+        return true;
     }
 
-    public function appendIndex(PostSummary $postSummary, $parentID=FALSE): bool {
+    /**
+     * Append a PostSummary to the index in the storage.
+     *
+     * @param PostSummary $postSummary The PostSummary to store.
+     * @param string|null $parentID    The ID of the parent post.
+     *
+     * @return boolean
+     */
+    public function appendIndex(
+        PostSummary $postSummary,
+        ?string $parentID=null
+    ): bool {
 
         // swap the index out and prepare to rewrite index
-        if (!rename($this->dataDirectory . '/index', $this->dataDirectory . '/index.old')) {
+        $indexFn = $this->_dataDirectory . '/index';
+        $oldIndexFn = $this->_dataDirectory . '/index.old';
+        if (!rename($indexFn, $oldIndexFn)) {
             throw new Exception('unable to rename index as index.old');
-            return FALSE;
+            return false;
         }
 
         try {
-            $fh_old = fopen($this->dataDirectory . '/index.old', 'r+');
+            $fh_old = fopen($oldIndexFn, 'r+');
             if (!is_resource($fh_old)) {
                 throw new Exception('unable to open index.old for read');
-                return FALSE;
+                return false;
             }
             $oldIndex = new ForumIndex(new FileObject($fh_old));
 
-            $fh = fopen($this->dataDirectory . '/index', 'w+');
+            $fh = fopen($indexFn, 'w+');
             if (!is_resource($fh)) {
                 throw new Exception('unable to open index for write');
-                return FALSE;
+                return false;
             }
 
             // if this is not a reply
-            if ($parentID === FALSE) {
+            if ($parentID === null) {
                 fputs($fh, $postSummary->toIndexLine());
                 foreach ($oldIndex as $oldPostSummary) {
                     fputs($fh, $oldPostSummary->toIndexLine());
                 }
                 unset($index);
-                unlink($this->dataDirectory . '/index.old');
-                return TRUE;
+                unlink($oldIndexFn);
+                return true;
             }
 
             // if this is a reply
@@ -161,55 +245,76 @@ class FileStorage {
 
             // close and remove old index
             unset($oldIndex);
-            unlink($this->dataDirectory . '/index.old');
-            return TRUE;
+            unlink($oldIndexFn);
+            return true;
 
         } catch (Exception $e) {
             // restore index
-            if (!rename($this->dataDirectory . '/index.old', $this->dataDirectory . '/index')) {
+            if (!rename($oldIndexFn, $indexFn)) {
                 throw new Exception('unable to restore index.old as index');
-                return FALSE;
+                return false;
             }
             throw $e;
-            return FALSE;
+            return false;
         }
-        return FALSE;
+        return false;
     }
 
-    public function getLock() {
+    /**
+     * Get lock gets a file lock, which locks the forum read/write operations
+     *
+     * @return resource
+     */
+    public function getLock()
+    {
 
-        $lockfn = $this->dataDirectory . '/lock';
-        if(!file_exists ($lockfn) && !touch ($lockfn)) {
+        $lockfn = $this->_dataDirectory . '/lock';
+        if (!file_exists($lockfn) && !touch($lockfn)) {
             throw new Exception("unable to create lock file: {$lockfn}");
         }
-        $lock = fopen($lockfn, "r+");
-        if(!$lock || !flock ($lock, LOCK_EX)) {
+        $this->_lock = fopen($lockfn, "r+");
+        if (!$this->_lock || !flock($this->_lock, LOCK_EX)) {
             throw new Exception("Unable to get lock");
         }
 
-        return $lock;
+        return $this->_lock;
     }
 
-    public function writeLog($context, $msg='') {
+    /**
+     * Write a log, of given context, into storage.
+     *
+     * @param array  $context The context for logging.
+     * @param string $msg     The log message string.
+     *
+     * @return void
+     */
+    public function writeLog(array $context, $msg='')
+    {
 
-        $logfn = $this->logDirectory . '/log';
+        $logfn = $this->_logDirectory . '/log';
 
-        if (!file_exists ($logfn) && !touch ($logfn)) {
+        if (!file_exists($logfn) && !touch($logfn)) {
             throw new Exception("unable to create log file: {$logfn}");
         }
-        if (file_exists ($logfn) && filesize($logfn) >= 32768)
-            rename($logfn, $logfn . '.' . strftime ("%Y%m%d"));
+        if (file_exists($logfn) && filesize($logfn) >= 32768) {
+            rename($logfn, $logfn . '.' . strftime("%Y%m%d"));
+        }
 
         $logFile = fopen($logfn, "a");
-        if ($logFile)
-            fputs($logFile, sprintf("%s %s %s %s %s %s\n",
-                $context['time'],
-                $context['remoteAddr'],
-                $context['xForwardedFor'],
-                $context['user'],
-                $context['userAgent'],
-                $msg
-            ));
-        fclose ($logFile);
+        if ($logFile) {
+            fputs(
+                $logFile,
+                sprintf(
+                    "%s %s %s %s %s %s\n",
+                    $context['time'],
+                    $context['remoteAddr'],
+                    $context['xForwardedFor'],
+                    $context['user'],
+                    $context['userAgent'],
+                    $msg
+                )
+            );
+        }
+        fclose($logFile);
     }
 }
