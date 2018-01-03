@@ -5,7 +5,8 @@
     "require": {
         "php": "^7.1",
         "nikic/fast-route": "^1.2",
-        "twig/twig": "^2.0"
+        "twig/twig": "^2.0",
+        "symfony/dotenv": "^4.0"
     },
     "scripts": {
         "install-dev": [

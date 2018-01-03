@@ -1,7 +1,6 @@
 <?php
 
 use \FastRoute\RouteCollector;
-use \CrudeForum\CrudeForum\Core;
 use \CrudeForum\CrudeForum\Post;
 use \CrudeForum\CrudeForum\PostSummary;
 use \CrudeForum\CrudeForum\Iterator\Paged;

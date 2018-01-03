@@ -18,23 +18,20 @@ ini_set('display_errors', 1);
 error_reporting(E_ALL);
 
 // common bootstrap code
-require_once __DIR__ . '/configuration.php';
 require_once __DIR__ . '/vendor/autoload.php';
 
-// default paths
-if (!defined('CRUDE_BASE_URL')) define('CRUDE_BASE_URL', \CrudeForum\CrudeForum\Core::defaultBaseURL());
-if (!defined('CRUDE_BASE_PATH')) define('CRUDE_BASE_PATH', \CrudeForum\CrudeForum\Core::defaultBasePath());
-if (!defined('CRUDE_CSS_PATH')) define('CRUDE_CSS_PATH', CRUDE_BASE_PATH . '/assets/forum.css');
-if (!defined('CRUDE_ROUTING')) define('CRUDE_ROUTING', 'REQUEST_URI');
+// load env config
+use \CrudeForum\CrudeForum\Core;
+Core::loadDotenv(__DIR__);
 
 // set default timezone
-date_default_timezone_set('Asia/Hong_Kong');
+date_default_timezone_set(Core::env('CRUDE_TIMEZONE', 'UTC'));
 
 // initialize forum storage
 $storage = new \CrudeForum\CrudeForum\Storage\FileStorage(
     [
-        'logDirectory' => CRUDE_DIR_LOGS,
-        'dataDirectory' => CRUDE_DIR_DATA,
+        'logDirectory' => Core::env('CRUDE_DIR_LOGS', __DIR__ . '/data/logs'),
+        'dataDirectory' => Core::env('CRUDE_DIR_DATA', __DIR__ . '/data/forumdata_utf8'),
     ]
 );
 
@@ -42,19 +39,19 @@ $storage = new \CrudeForum\CrudeForum\Storage\FileStorage(
 $template = new \Twig\Environment(
     new \Twig\Loader\FilesystemLoader(__DIR__ . '/views'),
     [
-        //'cache' => __DIR__ . '/../data/cache/twig',
+        'cache' =>
+            (($cache_dir = Core::env('CRUDE_DIR_CACHE')) === NULL) ? false : $cache_dir . '/twig',
     ]
 );
 
 // initialize forum core
-$forum = new \CrudeForum\CrudeForum\Core(
+$forum = new Core(
     $storage,
     $template,
     [
-        'cacheDirectory' => CRUDE_DIR_CACHE,
-        'administrator' => CRUDE_ADMIN,
-        'baseURL' => CRUDE_BASE_URL,
-        'basePath' => CRUDE_BASE_PATH,
+        'administrator' => Core::env('CRUDE_ADMIN'),
+        'baseURL' => Core::env('CRUDE_BASE_URL', Core::defaultBaseURL()),
+        'basePath' => Core::env('CRUDE_BASE_PATH', Core::defaultBasePath()),
     ]
 );
 
@@ -64,14 +61,14 @@ $dispatcher = FastRoute\simpleDispatcher(
 
         // some configurations in routes and template rendering
         $configs = [
-            'postPerPage' => CRUDE_POST_PER_PAGE,
-            'rssPostLimit' => CRUDE_RSS_POST_NUMBER,
-            'siteName' => CRUDE_SITE_NAME,
-            'sloganTop' => CRUDE_SLOGAN_TOP,
-            'sloganBottom' => CRUDE_SLOGAN_BOTTOM,
-            'baseURL' => CRUDE_BASE_URL,
-            'basePath' => CRUDE_BASE_PATH,
-            'assetsPath' => CRUDE_ASSETS_PATH,
+            'postPerPage' => (int) Core::env('CRUDE_POST_PER_PAGE'),
+            'rssPostLimit' => (int) Core::env('CRUDE_RSS_POST_NUMBER'),
+            'siteName' => Core::env('CRUDE_SITE_NAME'),
+            'sloganTop' => Core::env('CRUDE_SLOGAN_TOP'),
+            'sloganBottom' => Core::env('CRUDE_SLOGAN_BOTTOM'),
+            'baseURL' => Core::env('CRUDE_BASE_URL'),
+            'basePath' => Core::env('CRUDE_BASE_PATH'),
+            'assetsPath' => Core::env('CRUDE_ASSETS_PATH'),
         ];
 
         // use routes defined in routes.php

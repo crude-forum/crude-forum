@@ -19,6 +19,7 @@ namespace CrudeForum\CrudeForum;
 use \FastRoute\Dispatcher;
 use \Twig\Environment;
 use \Twig\TwigFunction;
+use \Symfony\Component\Dotenv\Dotenv;
 use \CrudeForum\CrudeForum\Storage\FileStorage as Storage;
 
 /**
@@ -147,6 +148,50 @@ class Core
         $filename = basename($_SERVER['SCRIPT_NAME'], '.php');
         return ($filename === 'index') ?
             dirname($_SERVER['SCRIPT_NAME']) : $_SERVER['SCRIPT_NAME'];
+    }
+
+
+    /**
+     * Load environment variables or .env file
+     *
+     * @param string      $dir The installation dir of CrudeForum.
+     *
+     * @return Dotenv     The Dotenv instance for further operations.
+     */
+    public static function loadDotenv(string $dir): Dotenv
+    {
+        // load environment variable as config
+        $dotenv = new Dotenv();
+        $dotenv->populate(
+            [
+                'CRUDE_DIR' => $dir,
+                'CRUDE_ADMIN' => '',
+            ]
+        ); // populate default variables that requires PHP computations
+
+        // load .env.dist default
+        $dotenv->load($dir.'/.env.dist');
+
+        // load user overrides
+        if (file_exists($dir . '/.env')) {
+            $dotenv->load($dir . '/.env'); // load .env, if exists
+        }
+        return $dotenv;
+    }
+
+    /**
+     * Get environment variable loaded by Core::envLoad
+     *
+     * @param string      $name    Environment variable name to search for.
+     * @param string|null $default Default value, if no env is set.
+     *
+     * @return string|null The variable string value, or null if not exists.
+     */
+    public static function env(string $name, ?string $default=null): ?string {
+        if (($value = getenv($name)) === FALSE) {
+            return $default;
+        }
+        return $value;
     }
 
     /**

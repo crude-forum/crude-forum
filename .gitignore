@@ -1,8 +1,9 @@
 # ignore logs folder
-/logs
+/data/logs
 
-# ignore config file
+# ignore local config file
 configuration.php
+.env
 
 # ignore vim swap files
 .*.swp
