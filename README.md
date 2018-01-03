@@ -32,8 +32,15 @@ The installation depends on [composer] and [node-sass].
 ## Development
 
 You can run crude forum with modern PHP 7.1+ command line tools:
+
 ```
-php -S http://localhost:8080 -t ./public
+composer run --timeout=0 dev
+```
+
+which effectively runs
+
+```
+php -S localhost:8080 -t ./public
 ```
 
 If you want to continuously develop the CSS stylesheet, you may consider to use the watch mode of node-sass:

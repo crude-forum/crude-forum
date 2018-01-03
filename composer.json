@@ -10,6 +10,7 @@
         "install-dev": [
             "npm install -g node-sass"
         ],
+        "dev": "php -S localhost:8080 -t ./public",
         "watch": "node-sass --watch --recursive  --output ./public/assets --output-style compressed ./public/assets",
         "build": "node-sass --recursive --output ./public/assets --output-style compressed ./public/assets"
     },
