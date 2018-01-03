@@ -1,5 +1,19 @@
 <?php
 
+/**
+ * Bootstrapping the main objects to use in the forum
+ *
+ * PHP Version 7.1
+ *
+ * @file     FileStorage.php
+ * @category File
+ * @package  CrudeForum\CrudeForum\Storage
+ * @author   Koala Yeung <koalay@gmail.com>
+ * @license  https://opensource.org/licenses/MIT MIT License
+ * @link     https://github.com/crude-forum/crude-forum/blob/master/app/Storage/FileStorage.php
+ * Source Code
+ */
+
 namespace CrudeForum\CrudeForum;
 
 use \FastRoute\Dispatcher;
@@ -7,12 +21,24 @@ use \Twig\Environment;
 use \Twig\TwigFunction;
 use \CrudeForum\CrudeForum\Storage\FileStorage as Storage;
 
-class Core {
+/**
+ * Core provides access for bootstraping the forum.
+ *
+ * @category Class
+ * @package  CrudeForum\CrudeForum\Storage
+ * @author   Koala Yeung <koalay@gmail.com>
+ * @license  https://opensource.org/licenses/MIT MIT License
+ * @link     https://github.com/crude-forum/crude-forum/blob/master/app/Storage/FileStorage.php
+ * Source Code
+ */
+
+class Core
+{
 
     private $_storage;
-    private $administrator;
-    private $baseURL;
-    private $basePath;
+    private $_administrator;
+    private $_baseURL;
+    private $_basePath;
     public $template;
 
     /**
@@ -52,91 +78,127 @@ class Core {
         $this->_storage = $storage;
 
         // assign config parameters
-        $this->administrator = $config['administrator'] ?? '';
-        $this->baseURL = $config['baseURL'];
-        $this->basePath = rtrim($config['basePath'] ?? '/', '/');
+        $this->_administrator = $config['administrator'] ?? '';
+        $this->_baseURL = $config['baseURL'];
+        $this->_basePath = rtrim($config['basePath'] ?? '/', '/');
     }
 
-    public function isAdmin(string $user) {
-        return (!empty($user) && $this->administrator === $user);
+    /**
+     * Deterine if a given user name is the configured administrator
+     *
+     * @param string $user The name of the user.
+     *
+     * @return boolean
+     */
+    public function isAdmin(string $user)
+    {
+        return (!empty($user) && $this->_administrator === $user);
     }
 
-    public function setBaseUrl($baseURL) {
-        $this->baseURL = rtrim($baseURL, '/');
+    /**
+     * Set the default base URL
+     *
+     * @param string $baseURL Base URL to set
+     *
+     * @return void
+     */
+    public function setBaseUrl($baseURL)
+    {
+        $this->_baseURL = rtrim($baseURL, '/');
     }
 
-    public function setBasePath($basePath) {
-        $this->basePath = rtrim($basePath, '/');
+    /**
+     * Set the default base path
+     *
+     * @param string $basePath Base Path to set
+     *
+     * @return void
+     */
+    public function setBasePath($basePath)
+    {
+        $this->_basePath = rtrim($basePath, '/');
     }
 
-    public static function defaultBaseURL() {
+    /**
+     * Return the configured default base URL.
+     *
+     * @return void
+     */
+    public static function defaultBaseURL()
+    {
         $host = $_SERVER['SERVER_NAME'];
         $scheme = strtolower($_SERVER['REQUEST_SCHEME'] ?? 'http');
         $port = $_SERVER['SERVER_PORT'];
-        if (($scheme == 'http' && $port != 80) || ($scheme == 'https' && $port != 443)) {
+        if (($scheme == 'http' && $port != 80)
+            || ($scheme == 'https' && $port != 443)
+        ) {
             return "{$scheme}://{$host}:${port}";
         }
         return "{$scheme}://{$host}";
     }
 
-    public static function defaultBasePath() {
+    /**
+     * Return the configured default base path.
+     *
+     * @return string
+     */
+    public static function defaultBasePath(): string
+    {
         $filename = basename($_SERVER['SCRIPT_NAME'], '.php');
         return ($filename === 'index') ?
             dirname($_SERVER['SCRIPT_NAME']) : $_SERVER['SCRIPT_NAME'];
     }
 
-    public function linkTo(string $entity, $id=NULL, $action=NULL, $options=[]) {
-        $absolute = (bool) ($options['absolute'] ?? FALSE);
-        $path = ($absolute) ? [$this->baseURL, $entity] : [$this->basePath, $entity];
-        if (!empty($id)) $path[] = $id;
-        if (!empty($action)) $path[] = $action;
-
-        // build query, if in options
-        $query = '';
-        $queryData = $options['query'] ?? [];
-        $query = is_array($queryData) && !empty($queryData) ?
-            '?' . http_build_query($queryData) : '';
-
-        // handle exceptions
-        switch ($entity) {
-            case 'post':
-                // saving post with no postID equals create new post
-                if (empty($id) && $action === 'save') {
-                    array_pop($path);
-                    array_push('add');
-                }
-        }
-        return implode('/', $path) . $query;
-    }
-
-    public static function bootstrap(Dispatcher $dispatcher, Core $forum, callable $route) {
+    /**
+     * Bootstrap the routing with dispatcher, forum object and the route function.
+     *
+     * @param Dispatcher $dispatcher Route dispatcher that
+     *                               dispatch function for a route.
+     * @param Core       $forum      Forum object.
+     * @param callable   $route      Route function that returns request
+     *                               method and path for route.
+     *
+     * @return void
+     */
+    public static function bootstrap(
+        Dispatcher $dispatcher,
+        Core $forum,
+        callable $route
+    ) {
         list($httpMethod, $uri) = $route();
         $routeInfo = $dispatcher->dispatch($httpMethod, $uri);
         switch ($routeInfo[0]) {
-            case Dispatcher::NOT_FOUND:
-                // ... 404 Not Found
-                http_response_code(404);
-                die('not found');
-                break;
-            case Dispatcher::METHOD_NOT_ALLOWED:
-                $allowedMethods = $routeInfo[1];
-                // ... 405 Method Not Allowed
-                http_response_code(405);
-                die('method not allowed');
-                break;
-            case Dispatcher::FOUND:
-                $handler = $routeInfo[1];
-                $vars = $routeInfo[2];
-                try {
-                    $handler($vars, $forum);
-                } catch (\Exception $e) {
-                    die($e->getMessage());
-                }
-                break;
+        case Dispatcher::NOT_FOUND:
+            // ... 404 Not Found
+            http_response_code(404);
+            die('not found');
+            break;
+        case Dispatcher::METHOD_NOT_ALLOWED:
+            $allowedMethods = $routeInfo[1];
+            // ... 405 Method Not Allowed
+            http_response_code(405);
+            die('method not allowed');
+            break;
+        case Dispatcher::FOUND:
+            $handler = $routeInfo[1];
+            $vars = $routeInfo[2];
+            try {
+                $handler($vars, $forum);
+            } catch (\Exception $e) {
+                die($e->getMessage());
+            }
+            break;
         }
     }
 
-    public static function routeURI() {
+    /**
+     * Produces route function for a given $_SERVER['REQUEST_URI'].
+     * To route if you have web server properly setup for route file.
+     *
+     * @return callable A route function.
+     */
+    public static function routeURI()
+    {
         return function () {
             // Fetch method and URI from somewhere
             $httpMethod = $_SERVER['REQUEST_METHOD'];
@@ -152,7 +214,19 @@ class Core {
         };
     }
 
-    public static function routeQueryString($basename='/', $suffix=NULL) {
+    /**
+     * Produces route function for a given QUERY_STRING.
+     * A function for legacy file based routes like "/read.php?123".
+     *
+     * @param string|null $basename The base PHP name (e.g. "/read.php")
+     * @param string|null $suffix   The part of route after query string, if any.
+     *
+     * @return callable A route function.
+     */
+    public static function routeQueryString(
+        ?string $basename='/',
+        ?string $suffix=null
+    ) {
         return function () use ($basename, $suffix) {
             $httpMethod = $_SERVER['REQUEST_METHOD'];
             $queryString = rawurldecode($_SERVER['QUERY_STRING'] ?? '');
@@ -162,8 +236,14 @@ class Core {
         };
     }
 
-    public static function routePathInfo() {
-        return function () {
+    /**
+     * Produces route function for routing against $_SERVER['PATH_INFO'].
+     *
+     * @return callable A route function.
+     */
+    public static function routePathInfo()
+    {
+        return function (): array {
             $httpMethod = $_SERVER['REQUEST_METHOD'];
             $pathInfo = $_SERVER['PATH_INFO'] ?? '/';
             return array($httpMethod, $pathInfo);
@@ -171,14 +251,16 @@ class Core {
     }
 
     /**
-     * routeHome serves as middle ware of route functions
+     * Serves as middle ware of route functions
      * and add a home for the '/' route
      *
-     * @param string $home
-     * @param callable $inner
-     * @return void
+     * @param string   $home  The implicit route for the path '/'.
+     * @param callable $inner The inner routing callback.
+     *
+     * @return callable
      */
-    public static function routeHome(string $home, callable $inner) {
+    public static function routeHome(string $home, callable $inner): callable
+    {
         return function () use ($home, $inner) {
             list($httpMethod, $path) = $inner();
             $path = (rtrim($path, '/') == '') ? $home : $path;
@@ -186,94 +268,230 @@ class Core {
         };
     }
 
-    public function getIndex(): ?ForumIndex {
+    /**
+     * Produce link of a given entity and action to it.
+     *
+     * @param string      $entity  The type of the entity.
+     * @param string|null $id      The ID of the entity.
+     * @param string|null $action  The action on the entity.
+     * @param array       $options The options for rendering link.
+     *
+     * @return string URL link.
+     */
+    public function linkTo(
+        string $entity,
+        ?string $id=null,
+        ?string $action=null,
+        array $options=[]
+    ): string {
+        $absolute = (bool) ($options['absolute'] ?? false);
+        $path = ($absolute) ?
+            [$this->_baseURL, $entity] : [$this->_basePath, $entity];
+        if (!empty($id)) {
+            $path[] = $id;
+        }
+        if (!empty($action)) {
+            $path[] = $action;
+        }
+
+        // build query, if in options
+        $query = '';
+        $queryData = $options['query'] ?? [];
+        $query = is_array($queryData) && !empty($queryData) ?
+            '?' . http_build_query($queryData) : '';
+
+        // handle exceptions
+        switch ($entity) {
+        case 'post':
+            // saving post with no postID equals create new post
+            if (empty($id) && $action === 'save') {
+                array_pop($path);
+                array_push('add');
+            }
+        }
+        return implode('/', $path) . $query;
+    }
+
+    /**
+     * Gets the ForumIndex from storage.
+     *
+     * @return ForumIndex|null
+     */
+    public function getIndex(): ?ForumIndex
+    {
         return $this->_storage->getIndex();
     }
 
-    public function getCount(): int {
+    /**
+     * Get the current post count from storage.
+     *
+     * @return integer number of post, as recorded by the storage.
+     */
+    public function getCount(): int
+    {
         return $this->_storage->getCount();
     }
 
-    public function incCount() {
+    /**
+     * Increment the post count in storage.
+     *
+     * @return int The new count after increment.
+     */
+    public function incCount(): int
+    {
         return $this->_storage->incCount();
     }
 
-    public function readPost(string $postID): ?Post {
+    /**
+     * Read a certain post of the given postID
+     *
+     * @param string $postID ID of the post
+     *
+     * @return Post|null The post, or null if not found
+     */
+    public function readPost(string $postID): ?Post
+    {
         return $this->_storage->readPost($postID);
     }
 
-    public function writePost(int $postID, Post $post) {
+    /**
+     * Write a post into storage, of the given postID.
+     *
+     * @param integer $postID The ID of the post.
+     * @param Post    $post   The post object to store.
+     *
+     * @return boolean
+     */
+    public function writePost(int $postID, Post $post)
+    {
         return $this->_storage->writePost($postID, $post);
     }
 
-    public function appendIndex(PostSummary $postSummary, $parentID=FALSE) {
+    /**
+     * Append a PostSummary to the index in the storage.
+     *
+     * @param PostSummary $postSummary The PostSummary to store.
+     * @param string|null $parentID    The ID of the parent post.
+     *
+     * @return boolean
+     */
+    public function appendIndex(
+        PostSummary $postSummary,
+        ?string $parentID=null
+    ): bool {
         return $this->_storage->appendIndex($postSummary, $parentID);
     }
 
-    public function getLock() {
+    /**
+     * Get lock gets a file lock, which locks the forum read/write operations
+     *
+     * @return resource
+     */
+    public function getLock()
+    {
         return $this->_storage->getLock();
     }
 
-    public function readPrevPostSummary(string $postID): ?PostSummary {
-        $prevSummary = NULL;
+    /**
+     * Read the summary of previous post of the post of a given post ID.
+     *
+     * @param string $postID The postID
+     *
+     * @return PostSummary|null
+     */
+    public function readPrevPostSummary(string $postID): ?PostSummary
+    {
+        $prevSummary = null;
         try {
             $index = $this->_storage->getIndex();
             foreach ($index as $postSummary) {
                 if ($postSummary->id == $postID) {
-                    if ($prevSummary !== NULL) return $prevSummary;
+                    if ($prevSummary !== null) {
+                        return $prevSummary;
+                    }
                     throw new \Exception("post #{$postID} has no previous post");
                 }
                 $prevSummary = $postSummary;
             }
         } catch (\InvalidArgumentException $e) {
             throw new \Exception('failed to open forum index');
-            return NULL;
+            return null;
         }
         throw new \Exception("there is no post #{$postID} in forum index");
-        return NULL;
+        return null;
     }
 
-    public function readNextPostSummary(string $postID): ?PostSummary {
-        $prevSummary = NULL;
+    /**
+     * Read the summary of next post of the post of a given post ID.
+     *
+     * @param string $postID The postID
+     *
+     * @return PostSummary|null
+     */
+    public function readNextPostSummary(string $postID): ?PostSummary
+    {
+        $prevSummary = null;
         try {
             $index = $this->_storage->getIndex();
             foreach ($index as $postSummary) {
-                if (($prevSummary !== NULL) && ($prevSummary->id == $postID)) {
+                if (($prevSummary !== null) && ($prevSummary->id == $postID)) {
                     return $postSummary;
                 }
                 $prevSummary = $postSummary;
             }
         } catch (\InvalidArgumentException $e) {
             throw new \Exception('failed to open forum index');
-            return NULL;
+            return null;
         }
         throw new \Exception("there is no post #{$postID} in forum index");
-        return NULL;
+        return null;
     }
 
-    public function readPostSummary(string $postID): ?PostSummary {
+    /**
+     * Read a post summary of a given post ID from storage.
+     *
+     * @param string $postID The postID.
+     *
+     * @return PostSummary|null
+     */
+    public function readPostSummary(string $postID): ?PostSummary
+    {
         try {
             $index = $this->_storage->getIndex();
-            foreach ($index as $postSummary)
-                if ($postSummary->id == $postID) return $postSummary;
+            foreach ($index as $postSummary) {
+                if ($postSummary->id == $postID) {
+                    return $postSummary;
+                }
+            }
         } catch (\InvalidArgumentException $e) {
             throw new \Exception('failed to open forum index');
-            return NULL;
+            return null;
         }
         throw new \Exception("there is no post #{$postID} in forum index");
-        return NULL;
+        return null;
     }
 
-    public function log($msg) {
+    /**
+     * Log messages into log storage.
+     *
+     * @param string $msg The log message string.
+     *
+     * @return void
+     */
+    public function log(string $msg)
+    {
 
         // get the forumName of the current user
-        if(!isset ($_COOKIE["forumName"])) {
-            if(!isset ($_COOKIE["forumCDROM"])) {
-                $user = rand (0, 16384);
-                setcookie ("forumCDROM", $user, mktime (0, 0, 0, 1, 1, 2038), "/");
-            } else $user = $_COOKIE["forumCDROM"];
+        if (!isset($_COOKIE["forumName"])) {
+            if (!isset($_COOKIE["forumCDROM"])) {
+                $user = rand(0, 16384);
+                setcookie("forumCDROM", $user, mktime(0, 0, 0, 1, 1, 2038), "/");
+            } else {
+                $user = $_COOKIE["forumCDROM"];
+            }
+        } else {
+            $user = $_COOKIE["forumName"];
         }
-        else $user = $_COOKIE["forumName"];
         $userAgent = $_SERVER["HTTP_USER_AGENT"] ?? '';
 
         // context of the request
@@ -285,18 +503,16 @@ class Core {
             'userAgent' => $userAgent,
         );
 
-        if(
-            /* Do not log me */
-            (empty($this->administrator) || ($user != $this->administrator)) &&
-
-            /* Do not log bots */
-            !is_string(strstr($userAgent, "http://search.msn.com/msnbot.htm")) &&
-            !is_string(strstr($userAgent, "Free Eating Union")) &&
-            !is_string(strstr($userAgent, "ia_archiver")) &&
-            !is_string(strstr($userAgent, "sogou spider")) &&
-            !is_string(strstr($userAgent, "Baiduspider+(+")) &&
-            !is_string(strstr($userAgent, "Yahoo! Slurp")) &&
-            !is_string(strstr($userAgent, "Googlebot"))
+        // do not log to storage if it is administrator
+        // or is of some robot user agents.
+        if ((empty($this->_administrator) || ($user != $this->_administrator))
+            && !is_string(strstr($userAgent, "http://search.msn.com/msnbot.htm"))
+            && !is_string(strstr($userAgent, "Free Eating Union"))
+            && !is_string(strstr($userAgent, "ia_archiver"))
+            && !is_string(strstr($userAgent, "sogou spider"))
+            && !is_string(strstr($userAgent, "Baiduspider+(+"))
+            && !is_string(strstr($userAgent, "Yahoo! Slurp"))
+            && !is_string(strstr($userAgent, "Googlebot"))
         ) {
             // log the message to storage
             $this->_storage->writeLog($context, $msg);
