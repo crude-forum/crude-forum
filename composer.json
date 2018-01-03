@@ -1,5 +1,5 @@
 {
-    "name": "ywsing/crude-forum",
+    "name": "CrudeForum/CrudeForum",
     "description": "A very simple, crude and insecure web dicussion forum developed using PHP. Store data in text files in back-end.",
     "type": "project",
     "require": {
@@ -15,7 +15,7 @@
     },
     "autoload": {
         "psr-4": {
-            "ywsing\\CrudeForum\\": "app/"
+            "CrudeForum\\CrudeForum\\": "app/"
         }
     }
 }

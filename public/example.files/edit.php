@@ -2,7 +2,7 @@
 
 require __DIR__ . '/../../bootstrap.php';
 
-use ywsing\CrudeForum\Post;
+use \CrudeForum\CrudeForum\Post;
 
 Core::bootstrap(
 	$dispatcher,

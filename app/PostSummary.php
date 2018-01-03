@@ -1,6 +1,6 @@
 <?php
 
-namespace ywsing\CrudeForum;
+namespace CrudeForum\CrudeForum;
 
 class PostSummary {
 

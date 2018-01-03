@@ -1,8 +1,8 @@
 <?php
 
-namespace ywsing\CrudeForum;
+namespace CrudeForum\CrudeForum;
 
-use \ywsing\CrudeForum\Iterator\FileObject;
+use \CrudeForum\CrudeForum\Iterator\FileObject;
 
 class Storage {
 

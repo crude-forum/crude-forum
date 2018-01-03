@@ -1,8 +1,8 @@
 <?php
 
-namespace ywsing\CrudeForum;
+namespace CrudeForum\CrudeForum;
 
-use \ywsing\CrudeForum\Iterator\Proxy;
+use \CrudeForum\CrudeForum\Iterator\Proxy;
 
 class ForumIndex implements \Iterator {
     use Proxy;

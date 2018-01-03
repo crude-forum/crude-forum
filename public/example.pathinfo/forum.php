@@ -2,7 +2,7 @@
 
 require __DIR__ . '/../../bootstrap.php';
 
-use ywsing\CrudeForum\Core;
+use \CrudeForum\CrudeForum\Core;
 
 // hard code all paths to start with '/temp/forum.php/'
 $forum->setBasePath('/example.pathinfo/forum.php');

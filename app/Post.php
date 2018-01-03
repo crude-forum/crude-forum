@@ -1,6 +1,6 @@
 <?php
 
-namespace ywsing\CrudeForum;
+namespace CrudeForum\CrudeForum;
 
 define('POST_HEADER_NAMES', [
     'author' => '來自',

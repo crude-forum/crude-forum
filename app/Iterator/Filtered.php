@@ -1,6 +1,6 @@
 <?php
 
-namespace ywsing\CrudeForum\Iterator;
+namespace CrudeForum\CrudeForum\Iterator;
 
 class Filtered implements \Iterator {
 

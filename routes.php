@@ -1,11 +1,11 @@
 <?php
 
 use \FastRoute\RouteCollector;
-use \ywsing\CrudeForum\Core;
-use \ywsing\CrudeForum\Post;
-use \ywsing\CrudeForum\PostSummary;
-use \ywsing\CrudeForum\Iterator\Paged;
-use \ywsing\CrudeForum\Iterator\Filtered;
+use \CrudeForum\CrudeForum\Core;
+use \CrudeForum\CrudeForum\Post;
+use \CrudeForum\CrudeForum\PostSummary;
+use \CrudeForum\CrudeForum\Iterator\Paged;
+use \CrudeForum\CrudeForum\Iterator\Filtered;
 
 $router->addRoute('GET', '/post/{postID:\d+}', function ($vars, $forum) use ($configs) {
     $lock = $forum->getLock();
