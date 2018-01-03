@@ -1,5 +1,18 @@
 <?php
 
+/**
+ * Example configuration file
+ *
+ * PHP Version 7.1
+ *
+ * @category Configuration
+ * @package  None
+ * @author   Koala Yeung <koalay@gmail.com>
+ * @license  https://opensource.org/licenses/MIT MIT License
+ * @link     https://github.com/crude-forum/crude-forum/blob/master/app/configuration.example.php
+ * Source Code
+ */
+
 // base install folder for Crude Forum
 define('CRUDE_DIR', __DIR__);
 
