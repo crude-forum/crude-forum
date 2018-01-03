@@ -1,0 +1,22 @@
+#
+# Settings for Apache web server
+#
+
+
+#
+# Deny access to .htaccess
+#
+<FilesMatch "\.?htaccess$">
+    Order allow,deny
+    Deny from all
+</FilesMatch>
+
+#
+# Default routing to index.php
+#
+<IfModule mod_rewrite.c>
+    RewriteEngine on
+    RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteCond %{REQUEST_FILENAME} !-d
+    RewriteRule ^.+$ index.php [L]
+</IfModule>
