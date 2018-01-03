@@ -281,6 +281,7 @@ $router->addRoute('GET', '/rss', function ($vars, $forum) use ($configs) {
     fclose($lock);
 
     // render rss
+    header("Content-Type: text/xml; charset=utf-8");
     echo $forum->template->render('rss.twig', [
         'configs' => $configs,
         'link' => $forum->linkTo('forum', NULL, NULL, ['absolute' => true]),
