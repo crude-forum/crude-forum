@@ -283,7 +283,7 @@ $router->addRoute('GET', '/rss', function ($vars, $forum) use ($configs) {
     // render rss
     echo $forum->template->render('rss.twig', [
         'configs' => $configs,
-        'link' => $forum->linkTo('forum', NULL, NULL, TRUE),
+        'link' => $forum->linkTo('forum', NULL, NULL, ['absolute' => true]),
         'language' => 'zh-hk',
         'pubDate' => date('D, d M Y H:i:s ', time()),
         'lastBuildDate' => date('D, d M Y H:i:s ', time()),
