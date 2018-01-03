@@ -2,11 +2,11 @@
 
 namespace CrudeForum\CrudeForum;
 
-use \CrudeForum\CrudeForum\Iterator\FileObject;
 use \FastRoute\Dispatcher;
 use \Twig\Environment;
 use \Twig\TwigFunction;
 use \Twig\Loader\FilesystemLoader;
+use \CrudeForum\CrudeForum\Storage\FileStorage as Storage;
 
 class Core {
 

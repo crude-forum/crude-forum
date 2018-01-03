@@ -1,10 +1,14 @@
 <?php
 
-namespace CrudeForum\CrudeForum;
+namespace CrudeForum\CrudeForum\Storage;
 
 use \CrudeForum\CrudeForum\Iterator\FileObject;
+use \CrudeForum\CrudeForum\ForumIndex;
+use \CrudeForum\CrudeForum\Post;
+use \CrudeForum\CrudeForum\PostSummary;
+use \Exception;
 
-class Storage {
+class FileStorage {
 
     private $dataDirectory;
     private $logDirectory;
@@ -33,7 +37,7 @@ class Storage {
 
         $countFile = fopen($countfn, "r");
         if (!is_resource($countFile)) {
-            throw new \Exception('cannot open count file for reading');
+            throw new Exception('cannot open count file for reading');
             return 0;
         }
         fscanf($countFile, "%d", $count);
@@ -50,7 +54,7 @@ class Storage {
 
         $countFile = fopen($countfn, "r+");
         if (!is_resource($countFile)) {
-            throw new \Exception('cannot open count file for reading and writing');
+            throw new Exception('cannot open count file for reading and writing');
         }
         fscanf($countFile, "%d", $count);
         rewind($countFile);
@@ -81,17 +85,17 @@ class Storage {
         $subdir = floor((int) $postID / 1000);
         if (!is_dir($this->dataDirectory . '/' . $subdir)) {
             if (mkdir($this->dataDirectory . '/' . $subdir) === FALSE) {
-                throw new \Exception('failed to create subdirectory for the post');
+                throw new Exception('failed to create subdirectory for the post');
                 return FALSE;
             }
             if (chmod($this->dataDirectory . '/' . $subdir, 0777) === FALSE) {
-                throw new \Exception('failed to chmod post subdirectory');
+                throw new Exception('failed to chmod post subdirectory');
                 return FALSE;
             }
         }
         $fh = fopen($this->dataDirectory . '/' . $subdir  . '/' . $postID, "w+");
         if (!is_resource($fh)) {
-            throw new \Exception('failed to open post file to write');
+            throw new Exception('failed to open post file to write');
             return FALSE;
         }
         if (!fputs($fh, sprintf("%s\n\n%s\n\n%s",
@@ -99,11 +103,11 @@ class Storage {
             implode("\n", $post->storageHeader()),
             $post->body
         ))) {
-            throw new \Exception('failed to write to post file');
+            throw new Exception('failed to write to post file');
             return FALSE;
         }
         if (!fclose($fh)) {
-            throw new \Exception('failed to close post file');
+            throw new Exception('failed to close post file');
             return FALSE;
         }
         return TRUE;
@@ -113,21 +117,21 @@ class Storage {
 
         // swap the index out and prepare to rewrite index
         if (!rename($this->dataDirectory . '/index', $this->dataDirectory . '/index.old')) {
-            throw new \Exception('unable to rename index as index.old');
+            throw new Exception('unable to rename index as index.old');
             return FALSE;
         }
 
         try {
             $fh_old = fopen($this->dataDirectory . '/index.old', 'r+');
             if (!is_resource($fh_old)) {
-                throw new \Exception('unable to open index.old for read');
+                throw new Exception('unable to open index.old for read');
                 return FALSE;
             }
             $oldIndex = new ForumIndex(new FileObject($fh_old));
 
             $fh = fopen($this->dataDirectory . '/index', 'w+');
             if (!is_resource($fh)) {
-                throw new \Exception('unable to open index for write');
+                throw new Exception('unable to open index for write');
                 return FALSE;
             }
 
@@ -160,10 +164,10 @@ class Storage {
             unlink($this->dataDirectory . '/index.old');
             return TRUE;
 
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             // restore index
             if (!rename($this->dataDirectory . '/index.old', $this->dataDirectory . '/index')) {
-                throw new \Exception('unable to restore index.old as index');
+                throw new Exception('unable to restore index.old as index');
                 return FALSE;
             }
             throw $e;
