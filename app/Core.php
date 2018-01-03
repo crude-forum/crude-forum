@@ -5,34 +5,56 @@ namespace CrudeForum\CrudeForum;
 use \FastRoute\Dispatcher;
 use \Twig\Environment;
 use \Twig\TwigFunction;
-use \Twig\Loader\FilesystemLoader;
 use \CrudeForum\CrudeForum\Storage\FileStorage as Storage;
 
 class Core {
 
-    private $storage;
+    private $_storage;
     private $administrator;
     private $baseURL;
     private $basePath;
     public $template;
 
-    public function __construct($config) {
-        $this->storage = new Storage($config);
+    /**
+     * Class constructor
+     *
+     * @param FileStorage $storage Storage engine to use.
+     * @param Environment $twig    Twig template engine.
+     * @param array|null  $config  configurations for the forum.
+     */
+    public function __construct(Storage $storage, Environment $twig, ?array $config)
+    {
+
+        // add helper functions
+        $twig->addFunction(
+            new TwigFunction('linkTo', array(&$this, 'linkTo'))
+        );
+        $twig->addFunction(new TwigFunction('str_repeat', 'str_repeat'));
+        $twig->addFunction(
+            new TwigFunction(
+                'postRssPubDate',
+                function ($postTime) {
+                    return trim(
+                        preg_replace(
+                            '/^(.+?) (.+?) (.+?) (\d\d)\:(\d\d):(\d\d) (\d\d\d\d)/',
+                            '$1, $3 $2 $7 $4:$5:$6 +0800',
+                            $postTime
+                        )
+                    );
+                }
+            )
+        );
+
+        // assign template engine
+        $this->template = $twig;
+
+        // assign storage engine
+        $this->_storage = $storage;
+
+        // assign config parameters
         $this->administrator = $config['administrator'] ?? '';
         $this->baseURL = $config['baseURL'];
         $this->basePath = rtrim($config['basePath'] ?? '/', '/');
-        $this->template = new Environment(
-            new FilesystemLoader(__DIR__ . '/../views'),
-            [
-                //'cache' => __DIR__ . '/../data/cache/twig',
-            ]);
-        $this->template->addFunction(new TwigFunction('str_repeat', 'str_repeat'));
-        $this->template->addFunction(new TwigFunction('linkTo',
-            array(&$this, 'linkTo')
-        ));
-        $this->template->addFunction(new TwigFunction('postRssPubDate', function ($postTime) {
-            return trim(preg_replace('/^(.+?) (.+?) (.+?) (\d\d)\:(\d\d):(\d\d) (\d\d\d\d)/', '$1, $3 $2 $7 $4:$5:$6 +0800', $postTime));
-        }));
     }
 
     public function isAdmin(string $user) {
@@ -165,37 +187,37 @@ class Core {
     }
 
     public function getIndex(): ?ForumIndex {
-        return $this->storage->getIndex();
+        return $this->_storage->getIndex();
     }
 
     public function getCount(): int {
-        return $this->storage->getCount();
+        return $this->_storage->getCount();
     }
 
     public function incCount() {
-        return $this->storage->incCount();
+        return $this->_storage->incCount();
     }
 
     public function readPost(string $postID): ?Post {
-        return $this->storage->readPost($postID);
+        return $this->_storage->readPost($postID);
     }
 
     public function writePost(int $postID, Post $post) {
-        return $this->storage->writePost($postID, $post);
+        return $this->_storage->writePost($postID, $post);
     }
 
     public function appendIndex(PostSummary $postSummary, $parentID=FALSE) {
-        return $this->storage->appendIndex($postSummary, $parentID);
+        return $this->_storage->appendIndex($postSummary, $parentID);
     }
 
     public function getLock() {
-        return $this->storage->getLock();
+        return $this->_storage->getLock();
     }
 
     public function readPrevPostSummary(string $postID): ?PostSummary {
         $prevSummary = NULL;
         try {
-            $index = $this->storage->getIndex();
+            $index = $this->_storage->getIndex();
             foreach ($index as $postSummary) {
                 if ($postSummary->id == $postID) {
                     if ($prevSummary !== NULL) return $prevSummary;
@@ -214,7 +236,7 @@ class Core {
     public function readNextPostSummary(string $postID): ?PostSummary {
         $prevSummary = NULL;
         try {
-            $index = $this->storage->getIndex();
+            $index = $this->_storage->getIndex();
             foreach ($index as $postSummary) {
                 if (($prevSummary !== NULL) && ($prevSummary->id == $postID)) {
                     return $postSummary;
@@ -231,7 +253,7 @@ class Core {
 
     public function readPostSummary(string $postID): ?PostSummary {
         try {
-            $index = $this->storage->getIndex();
+            $index = $this->_storage->getIndex();
             foreach ($index as $postSummary)
                 if ($postSummary->id == $postID) return $postSummary;
         } catch (\InvalidArgumentException $e) {
@@ -277,7 +299,7 @@ class Core {
             !is_string(strstr($userAgent, "Googlebot"))
         ) {
             // log the message to storage
-            $this->storage->writeLog($context, $msg);
+            $this->_storage->writeLog($context, $msg);
         }
     }
 
