@@ -121,7 +121,7 @@ class Post {
     }
 
     public function htmlHeader(): string {
-        return nl2br($this->safeHeader());
+        return nl2br($this->safeHeader(), false);
     }
 
     public function filterBody(callable $lineCallback) {
@@ -136,6 +136,13 @@ class Post {
     }
 
     public function htmlBody(): string {
-        return nl2br(Filter::quoteToBlockquote(trim($this->body)));
+        $getLines = function () {
+            $lines = explode("\n", trim($this->body));
+            foreach ($lines as $line) {
+                yield $line . "\n";
+            }
+        };
+        $lines = Filter::autoParagraph(Filter::quoteToBlockquote($getLines()));
+        return nl2br(implode('', iterator_to_array($lines)), false);
     }
 }
