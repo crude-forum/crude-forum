@@ -82,7 +82,7 @@ $showForm = function ($vars, $forum) use ($configs) {
         $post->author = $post->header['author'] ?? '';
         $forumName = $_COOKIE['forumName'] ?? '';
         if (($forumName === '' || $forumName !== $post->author) && !$forum->isAdmin($forumName)) {
-            throw new \Exception('permission denied');
+            throw new Exception('permission denied');
         }
     } else if ($action == 'reply') {
         $parent = $forum->readPost($postID);
@@ -182,7 +182,7 @@ $savePost = function ($vars, $forum) use ($configs) {
             $existingPost = $forum->readPost($postID);
             // check if the editor is the original author
             if (!$forum->isAdmin($author) && ($existingPost->header['author'] !== $author)) {
-                throw new \Exception('you are not the original author of this post.');
+                throw new Exception('you are not the original author of this post.');
             }
 
             // inherit header by default
@@ -256,7 +256,7 @@ $router->addRoute('GET', '/rss', function ($vars, $forum) use ($configs) {
             );
             break;
         default:
-            throw new \Exception(sprintf('mode "%s" is not supported',
+            throw new Exception(sprintf('mode "%s" is not supported',
                 htmlspecialchars($mode)));
     }
 
