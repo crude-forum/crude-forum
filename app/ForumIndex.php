@@ -15,6 +15,7 @@
 namespace CrudeForum\CrudeForum;
 
 use \CrudeForum\CrudeForum\Iterator\ProxyTrait;
+use \CrudeForum\CrudeForum\Iterator\WrapperTrait;
 
 /**
  * Iterator for PostSummary wrapping an index lines iterator.
@@ -29,6 +30,7 @@ use \CrudeForum\CrudeForum\Iterator\ProxyTrait;
 class ForumIndex implements \Iterator
 {
     use ProxyTrait;
+    use WrapperTrait;
 
     /**
      * Returns the current line as PostSummary

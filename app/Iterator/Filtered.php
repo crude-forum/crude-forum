@@ -2,33 +2,37 @@
 
 namespace CrudeForum\CrudeForum\Iterator;
 
-class Filtered implements \Iterator {
+class Filtered implements \Iterator, Wrapper
+{
 
     use ProxyTrait;
+    use FilterTrait;
 
-    public $iter = 0;
-    private $callback;
+    private $_callback;
 
-    public function __construct(\Iterator $iter, callable $callback) {
-        $this->iter = $iter;
-        $this->callback = $callback;
+    public function __construct(callable $callback)
+    {
+        $this->_callback = $callback;
     }
 
-    private function tryUntilPass() {
-        while ($this->iter->valid() && !call_user_func($this->callback, $this->iter->current())) {
+    private function _tryUntilPass()
+    {
+        while ($this->iter->valid() && !call_user_func($this->_callback, $this->iter->current())) {
             // if not pass the callback,
             // skip to the next one
             $this->iter->next();
         }
     }
 
-    public function rewind() {
+    public function rewind()
+    {
         $this->iter->rewind();
-        $this->tryUntilPass();
+        $this->_tryUntilPass();
     }
 
-    public function next() {
+    public function next()
+    {
         $this->iter->next();
-        $this->tryUntilPass();
+        $this->_tryUntilPass();
     }
 }

@@ -15,6 +15,7 @@
 
 use \CrudeForum\CrudeForum\Post;
 use \CrudeForum\CrudeForum\PostSummary;
+use \CrudeForum\CrudeForum\Iterator\Utils;
 use \CrudeForum\CrudeForum\Iterator\Paged;
 use \CrudeForum\CrudeForum\Iterator\Filtered;
 
@@ -253,7 +254,7 @@ $router->addRoute(
         $forum->log("forum?" . $page);
 
         $lock = $forum->getLock();
-        $index = new Paged($forum->getIndex(), $page, $configs['postPerPage']);
+        $index = Utils::chain(new Paged($page, $configs['postPerPage']))->wrap($forum->getIndex());
         $contents = $forum->template->render(
             'forum.twig',
             [
@@ -281,21 +282,19 @@ $router->addRoute(
         switch ($mode) {
         case 'thread':
         case 'threads':
-            $postSummaries  = new Paged(
+            $postSummaries = Utils::chain(
                 new Filtered(
-                    $forum->getIndex(),
                     function ($postSummary) {
                         return ($postSummary->level == 0);
                     }
                 ),
-                0, $configs['rssPostLimit']
-            );
+                new Paged(0, $configs['rssPostLimit'])
+            )->wrap($forum->getIndex());
             break;
         case 'post':
-            $postSummaries = new Paged(
-                $forum->getIndex(),
-                0, $configs['rssPostLimit']
-            );
+            $postSummaries = Utils::chain(
+                new Paged(0, $configs['rssPostLimit'])
+            )->wrap($forum->getIndex());
             break;
         default:
             throw new Exception(
