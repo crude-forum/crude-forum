@@ -4,7 +4,7 @@ namespace CrudeForum\CrudeForum\Iterator;
 
 class Filtered implements \Iterator {
 
-    use Proxy;
+    use ProxyTrait;
 
     public $iter = 0;
     private $callback;

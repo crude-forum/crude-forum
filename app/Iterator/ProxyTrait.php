@@ -2,7 +2,7 @@
 
 namespace CrudeForum\CrudeForum\Iterator;
 
-trait Proxy {
+trait ProxyTrait {
 
     public function __construct(\Iterator $iter) {
         $this->iter = $iter;
