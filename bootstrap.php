@@ -13,16 +13,18 @@
  * @link     https://github.com/crude-forum/crude-forum/blob/master/bootstrap.php Source Code
  */
 
-// for debug
-ini_set('display_errors', 1);
-error_reporting(E_ALL);
-
 // common bootstrap code
 require_once __DIR__ . '/vendor/autoload.php';
 
 // load env config
 use \CrudeForum\CrudeForum\Core;
 Core::loadDotenv(__DIR__);
+
+// for debug
+if ((bool) Core::env('CRUDE_DEBUG', 'FALSE')) {
+    ini_set('display_errors', 1);
+    error_reporting(E_ALL);
+}
 
 // set default timezone
 date_default_timezone_set(Core::env('CRUDE_TIMEZONE', 'UTC'));
