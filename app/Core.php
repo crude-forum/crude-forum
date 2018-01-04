@@ -153,9 +153,9 @@ class Core
     /**
      * Load environment variables or .env file
      *
-     * @param string      $dir The installation dir of CrudeForum.
+     * @param string $dir The installation dir of CrudeForum.
      *
-     * @return Dotenv     The Dotenv instance for further operations.
+     * @return Dotenv The Dotenv instance for further operations.
      */
     public static function loadDotenv(string $dir): Dotenv
     {
@@ -186,8 +186,9 @@ class Core
      *
      * @return string|null The variable string value, or null if not exists.
      */
-    public static function env(string $name, ?string $default=null): ?string {
-        if (($value = getenv($name)) === FALSE) {
+    public static function env(string $name, ?string $default=null): ?string
+    {
+        if (($value = getenv($name)) === false) {
             return $default;
         }
         return $value;

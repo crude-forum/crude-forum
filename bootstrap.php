@@ -40,7 +40,7 @@ $template = new \Twig\Environment(
     new \Twig\Loader\FilesystemLoader(__DIR__ . '/views'),
     [
         'cache' =>
-            (($cache_dir = Core::env('CRUDE_DIR_CACHE')) === NULL) ? false : $cache_dir . '/twig',
+            (($cache_dir = Core::env('CRUDE_DIR_CACHE')) === null) ? false : $cache_dir . '/twig',
     ]
 );
 
