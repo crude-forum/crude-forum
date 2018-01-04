@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Bootstrapping the main objects to use in the forum
+ * Storage engine for storing index, post, post count and locking mechanism.
  *
  * PHP Version 7.1
  *
@@ -20,10 +20,12 @@ use \CrudeForum\CrudeForum\Iterator\FileObject;
 use \CrudeForum\CrudeForum\ForumIndex;
 use \CrudeForum\CrudeForum\Post;
 use \CrudeForum\CrudeForum\PostSummary;
+use \CrudeForum\CrudeForum\Storage;
+use \CrudeForum\CrudeForum\Lock;
 use \Exception;
 
 /**
- * FileStorage implements a storage engine for CrudeForum
+ * Storage engine for storing index, post, post count and locking mechanism.
  *
  * @category Class
  * @package  CrudeForum\CrudeForum\Storage
@@ -32,7 +34,7 @@ use \Exception;
  * @link     https://github.com/crude-forum/crude-forum/blob/master/app/Storage/FileStorage.php
  * Source Code
  */
-class FileStorage
+class FileStorage implements Storage
 {
 
     private $_dataDirectory;
@@ -265,18 +267,9 @@ class FileStorage
      *
      * @return resource
      */
-    public function getLock()
+    public function getLock(): Lock
     {
-
-        $lockfn = $this->_dataDirectory . '/lock';
-        if (!file_exists($lockfn) && !touch($lockfn)) {
-            throw new Exception("unable to create lock file: {$lockfn}");
-        }
-        $this->_lock = fopen($lockfn, "r+");
-        if (!$this->_lock || !flock($this->_lock, LOCK_EX)) {
-            throw new Exception("Unable to get lock");
-        }
-
+        $this->_lock = new FileStorageLock($this->_dataDirectory . '/lock');
         return $this->_lock;
     }
 
@@ -288,7 +281,7 @@ class FileStorage
      *
      * @return void
      */
-    public function writeLog(array $context, $msg='')
+    public function writeLog(array $context, string $msg='')
     {
 
         $logfn = $this->_logDirectory . '/log';

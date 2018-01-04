@@ -20,7 +20,6 @@ use \FastRoute\Dispatcher;
 use \Twig\Environment;
 use \Twig\TwigFunction;
 use \Symfony\Component\Dotenv\Dotenv;
-use \CrudeForum\CrudeForum\Storage\FileStorage as Storage;
 
 /**
  * Core provides access for bootstraping the forum.
@@ -428,11 +427,11 @@ class Core
     }
 
     /**
-     * Get lock gets a file lock, which locks the forum read/write operations
+     * Gets the lock for locking down forum index / post write.
      *
-     * @return resource
+     * @return Lock The lock interface for unlocking.
      */
-    public function getLock()
+    public function getLock(): Lock
     {
         return $this->_storage->getLock();
     }

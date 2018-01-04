@@ -28,13 +28,13 @@ $router->addRoute('GET', '/post/{postID:\d+}/prev', function ($vars, $forum) use
     $postID = $vars['postID'];
     try {
         $prev = $forum->readPrevPostSummary($postID);
-        fclose($lock);
+        $lock->unlock();
         header('Refresh: 0; URL=' . $forum->linkTo('post', $prev->id));
         echo $forum->template->render('base.twig', [
             'configs' => $configs,
         ]);
     } catch (Exception $e) {
-        fclose($lock);
+        $lock->unlock();
         die($e->getMessage());
     }
 });
@@ -44,13 +44,13 @@ $router->addRoute('GET', '/post/{postID:\d+}/next', function ($vars, $forum) use
     $postID = $vars['postID'];
     try {
         $next = $forum->readNextPostSummary($postID);
-        fclose($lock);
+        $lock->unlock();
         header('Refresh: 0; URL=' . $forum->linkTo('post', $next->id));
         echo $forum->template->render('base.twig', [
             'configs' => $configs,
         ]);
     } catch (Exception $e) {
-        fclose($lock);
+        $lock->unlock();
         die($e->getMessage());
     }
 });
@@ -60,13 +60,13 @@ $router->addRoute('GET', '/post/{postID:\d+}/back', function ($vars, $forum) use
     $postID = $vars['postID'];
     try {
         $postSummary = $forum->readPostSummary($postID);
-        fclose($lock);
+        $lock->unlock();
         header('Refresh: 0; URL=' . $forum->linkTo('forum', $configs['postPerPage'] * floor ($postSummary->pos / $configs['postPerPage'])));
         echo $forum->template->render('base.twig', [
             'configs' => $configs,
         ]);
     } catch (Exception $e) {
-        fclose($lock);
+        $lock->unlock();
         die($e->getMessage());
     }
 });
@@ -149,7 +149,7 @@ $savePost = function ($vars, $forum) use ($configs) {
                 $currentTime
             ), null);
             $forum->incCount();
-            fclose($lock);
+            $lock->unlock();
             header('Refresh: 0; URL=' . $forum->linkTo('forum'));
             echo $forum->template->render('base.twig', [
                 'configs' => $configs,
@@ -172,7 +172,7 @@ $savePost = function ($vars, $forum) use ($configs) {
                 $currentTime
             ), $parentID);
             $forum->incCount();
-            fclose($lock);
+            $lock->unlock();
             header('Refresh: 0; URL=' . $forum->linkTo('post', $parentID, 'back'));
             echo $forum->template->render('base.twig', [
                 'configs' => $configs,
@@ -199,7 +199,7 @@ $savePost = function ($vars, $forum) use ($configs) {
                 $header
             );
             $forum->writePost($postID, $post);
-            fclose($lock);
+            $lock->unlock();
             header('Refresh: 0; URL=' . $forum->linkTo('post', $postID));
             echo $forum->template->render('base.twig', [
                 'configs' => $configs,
@@ -227,7 +227,7 @@ $router->addRoute('GET', '/forum[/[{page:\d+}]]', function ($vars, $forum) use (
         'linkSay' => $forum->linkTo('post', NULL, 'add'),
         'postSummaries' => $index,
     ));
-    fclose ($lock);
+    $lock->unlock();
     echo $contents;
 });
 
@@ -278,7 +278,7 @@ $router->addRoute('GET', '/rss', function ($vars, $forum) use ($configs) {
         $posts[] = $post;
     }
     unset($postSummaries);
-    fclose($lock);
+    $lock->unlock();
 
     // render rss
     header("Content-Type: text/xml; charset=utf-8");

@@ -1,7 +1,8 @@
 <?php
 
 /**
- * Bootstrapping the main objects to use in the forum
+ * General text filtering functions collection that filter stream of text lines
+ * from Generator, and return Generator of filtered stream.
  *
  * PHP Version 7.1
  *
@@ -19,7 +20,8 @@ namespace CrudeForum\CrudeForum;
 use \Generator;
 
 /**
- * Core provides access for bootstraping the forum.
+ * General text filtering functions collection that filter stream of text lines
+ * from Generator, and return Generator of filtered stream.
  *
  * @category Class
  * @package  CrudeForum\CrudeForum
