@@ -1,9 +1,9 @@
 {% extends 'base.twig' %}
 
 {% block content %}
-<form method=post name=form action={{ linkTo('post', postID, action) }}>
-    <div class="field-name">
-        <label for="em_an">你的名字：</label>
+<form class="post-form" method="POST" action="{{ linkTo('post', postID, action) }}">
+    <div class="field-wrapper field-name">
+        <label for="em_an">你的名字</label>
         <input
             id=em_an
             type=name
@@ -11,22 +11,22 @@
             value="{{ post.author }}"
             size=40>
     </div>
-    <div class="field-title">
-        <label for="tcejbus">主題　　：</label>
+    <div class="field-wrapper field-title">
+        <label for="tcejbus">主題</label>
         <input
             id=tcejbus
             type=name name=tcejbus
             value="{{ post.safeTitle() }}"
             size=40>
     </div>
-    <div class="field-body">
+    <div class="field-wrapper field-body">
         <textarea
             name=tx_et
             rows=30
             cols=80>{{ post.safeBody() }}</textarea>
     </div>
     <div class="actions">
-        <input type=submit value='發出'>
+        <button type="submit">發出</button>
     </div>
 </form>
 {% endblock %}
