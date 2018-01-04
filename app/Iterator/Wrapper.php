@@ -29,7 +29,9 @@ use \Iterator;
 interface Wrapper extends Iterator
 {
     /**
-     * To wrap an Iterator into the current object.
+     * To wrap an Iterator as a Wrapper and return the Wrapper.
+     * Expect to use as a middleware layer to modify the behaviour
+     * of an Interator as another one.
      *
      * @param Iterator $iter An iterator to wrap with.
      *

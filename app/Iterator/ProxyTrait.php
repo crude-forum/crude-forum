@@ -13,6 +13,7 @@
  * Source Code
  */
 namespace CrudeForum\CrudeForum\Iterator;
+use \Iterator;
 
  /**
   * Trait implementation of \Iterator
@@ -27,7 +28,7 @@ namespace CrudeForum\CrudeForum\Iterator;
 trait ProxyTrait
 {
 
-    public $iter = null;
+    private $_iter = null;
 
     /**
      * Class constructor.
@@ -36,9 +37,9 @@ trait ProxyTrait
      *
      * @return void
      */
-    public function __construct(\Iterator $iter)
+    public function __construct(Iterator $iter)
     {
-        $this->iter = $iter;
+        $this->_iter = $iter;
     }
 
     /**
@@ -48,7 +49,17 @@ trait ProxyTrait
      */
     public function __destruct()
     {
-        unset($this->iter);
+        unset($this->_iter);
+    }
+
+    /**
+     * Method to access inner iterator
+     *
+     * @return Iterator The proxyed Iterator.
+     */
+    public function &iter(): Iterator
+    {
+        return $this->_iter;
     }
 
     /**
@@ -58,7 +69,7 @@ trait ProxyTrait
      */
     public function current()
     {
-        return $this->iter->current();
+        return $this->_iter->current();
     }
 
     /**
@@ -68,7 +79,7 @@ trait ProxyTrait
      */
     public function key()
     {
-        return $this->iter->key();
+        return $this->_iter->key();
     }
 
     /**
@@ -78,7 +89,7 @@ trait ProxyTrait
      */
     public function next()
     {
-        return $this->iter->next();
+        return $this->_iter->next();
     }
 
     /**
@@ -88,7 +99,7 @@ trait ProxyTrait
      */
     public function rewind()
     {
-        return $this->iter->rewind();
+        return $this->_iter->rewind();
     }
 
     /**
@@ -98,6 +109,6 @@ trait ProxyTrait
      */
     public function valid()
     {
-        return $this->iter->valid();
+        return $this->_iter->valid();
     }
 }

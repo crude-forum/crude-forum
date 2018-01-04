@@ -17,8 +17,7 @@ namespace CrudeForum\CrudeForum\Iterator;
 use \Iterator;
 
  /**
-  * Trait implementation of Wrapper, which expects the user to also
-  * use ProxyTrait, or somehow uses the $this->iter within.
+  * Trait implementation of Wrapper.
   *
   * @category Trait
   * @package  CrudeForum\CrudeForum\Iterator
@@ -30,7 +29,12 @@ use \Iterator;
 trait WrapperTrait
 {
 
-    public $iter = null;
+    /**
+     * An abstract method to access the wrapped iterator
+     *
+     * @return Iterator
+     */
+    abstract function &iter(): Iterator;
 
     /**
      * To wrap an Iterator into the current object.
@@ -41,7 +45,7 @@ trait WrapperTrait
      */
     public function wrap(Iterator $iter): Wrapper
     {
-        $this->iter = $iter;
+        $this->_iter = $iter;
         return $this;
     }
 }

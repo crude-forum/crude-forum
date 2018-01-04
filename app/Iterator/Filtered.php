@@ -2,7 +2,7 @@
 
 namespace CrudeForum\CrudeForum\Iterator;
 
-class Filtered implements \Iterator, Wrapper
+class Filtered implements Wrapper
 {
 
     use ProxyTrait;
@@ -17,22 +17,22 @@ class Filtered implements \Iterator, Wrapper
 
     private function _tryUntilPass()
     {
-        while ($this->iter->valid() && !call_user_func($this->_callback, $this->iter->current())) {
+        while ($this->iter()->valid() && !call_user_func($this->_callback, $this->iter()->current())) {
             // if not pass the callback,
             // skip to the next one
-            $this->iter->next();
+            $this->iter()->next();
         }
     }
 
     public function rewind()
     {
-        $this->iter->rewind();
+        $this->iter()->rewind();
         $this->_tryUntilPass();
     }
 
     public function next()
     {
-        $this->iter->next();
+        $this->iter()->next();
         $this->_tryUntilPass();
     }
 }

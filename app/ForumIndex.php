@@ -40,8 +40,8 @@ class ForumIndex implements \Iterator
     public function current()
     {
         return PostSummary::fromIndexLine(
-            trim($this->iter->current()),
-            $this->iter->key()
+            trim($this->iter()->current()),
+            $this->iter()->key()
         );
     }
 }
