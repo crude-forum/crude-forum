@@ -6,7 +6,7 @@
  * PHP Version 7.1
  *
  * @category File
- * @package  CrudeForum\CrudeForum\Storage
+ * @package  CrudeForum\CrudeForum
  * @author   Koala Yeung <koalay@gmail.com>
  * @license  https://opensource.org/licenses/MIT MIT License
  * @link     https://github.com/crude-forum/crude-forum/blob/master/app/Post.php
@@ -27,7 +27,7 @@ define('POST_HEADER_NAMES_LOOPUP', array_flip(POST_HEADER_NAMES));
  * Class for post content objects.
  *
  * @category Class
- * @package  CrudeForum\CrudeForum\Storage
+ * @package  CrudeForum\CrudeForum
  * @author   Koala Yeung <koalay@gmail.com>
  * @license  https://opensource.org/licenses/MIT MIT License
  * @link     https://github.com/crude-forum/crude-forum/blob/master/app/Post.php
@@ -258,13 +258,23 @@ class Post
      */
     public function htmlBody(): string
     {
-        $getLines = function () {
+        // define filter chain
+        $filter = Filter::pipe(
+            '\CrudeForum\CrudeForum\Filter::quoteToBlockquote',
+            '\CrudeForum\CrudeForum\Filter::autoParagraph',
+            '\CrudeForum\CrudeForum\Filter::autoLink'
+        );
+
+        // apply filter to the lines
+        $lines = $filter((function () {
             $lines = explode("\n", trim($this->body));
             foreach ($lines as $line) {
                 yield $line . "\n";
             }
-        };
-        $lines = Filter::autoLink(Filter::autoParagraph(Filter::quoteToBlockquote($getLines())));
+        })());
+
+        // concat filtered lines back into string
+        // and do auto br
         return nl2br(implode('', iterator_to_array($lines)), false);
     }
 }

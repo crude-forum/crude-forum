@@ -35,6 +35,26 @@ class Filter
 {
 
     /**
+     * Piping multiple filter
+     *
+     * @param callable ...$filters A list of filters to apply to a Generator.
+     *
+     * @return callable A single filter function that converts a Generator
+     *                  into another.
+     */
+    public static function pipe(callable ...$filters): callable
+    {
+        return function (Generator $lines) use ($filters): Generator {
+            $size = sizeof($filters);
+            $output = $lines;
+            for ($i = 0; $i < $size; $i++) {
+                $output = call_user_func($filters[$i], $output);
+            }
+            return $output;
+        };
+    }
+
+    /**
      * Turn URL into html href tags.
      *
      * @param Generator $lines Generator of text lines of a string.
