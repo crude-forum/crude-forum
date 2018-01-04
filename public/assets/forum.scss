@@ -37,10 +37,6 @@ header {
     }
 }
 
-main {
-    padding: 2em 0;
-}
-
 footer {
     margin-top: 2em;
     width: 100%;
@@ -50,6 +46,10 @@ footer {
 }
 
 .page-forum {
+
+    main {
+        padding: 2em 0;
+    }
 
     header {
         display: flex;
@@ -120,11 +120,6 @@ footer {
     }
 }
 
-.page-form {
-    main {
-        padding: 0;
-    }
-}
 .post-form {
     .field-wrapper, .actions {
         display: flex;
