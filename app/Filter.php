@@ -41,11 +41,14 @@ class Filter
      *
      * @return Generator Generator of text lines of a string.
      */
-    public static function autoLink(Generator $lines): Generator {
+    public static function autoLink(Generator $lines): Generator
+    {
         return (function () use ($lines) {
             $url = '~(?:(https?)://([^\s<]+)|(www\.[^\s<]+?\.[^\s<]+))(?<![\.,:])~i';
             foreach ($lines as $line) {
-                yield preg_replace($url, '<a href="$0" target="_blank" title="$0">$0</a>', $line);
+                yield preg_replace(
+                    $url, '<a href="$0" target="_blank" title="$0">$0</a>', $line
+                );
             }
         })();
     }
@@ -57,7 +60,8 @@ class Filter
      *
      * @return Generator Generator of text lines of a string.
      */
-    public static function autoParagraph(Generator $lines): Generator {
+    public static function autoParagraph(Generator $lines): Generator
+    {
         return (function () use ($lines) {
             $buffer = '';
             foreach ($lines as $line) {
@@ -101,7 +105,9 @@ class Filter
      *
      * @return Generator Generator of text lines of a string.
      */
-    public static function quoteToBlockquote(Generator $lines, string $quote='|'): Generator {
+    public static function quoteToBlockquote(
+        Generator $lines, string $quote='|'
+    ): Generator {
         return (function () use ($lines, $quote) {
             $regex = '/^([' . preg_quote($quote) . ' ]+)(.*)(\n*)$/A';
             $prevLevel = 0;

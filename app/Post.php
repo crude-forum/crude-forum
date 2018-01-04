@@ -1,45 +1,103 @@
 <?php
 
+/**
+ * Class for post content objects.
+ *
+ * PHP Version 7.1
+ *
+ * @category File
+ * @package  CrudeForum\CrudeForum\Storage
+ * @author   Koala Yeung <koalay@gmail.com>
+ * @license  https://opensource.org/licenses/MIT MIT License
+ * @link     https://github.com/crude-forum/crude-forum/blob/master/app/Post.php
+ * Source Code
+ */
 namespace CrudeForum\CrudeForum;
 
-define('POST_HEADER_NAMES', [
-    'author' => '來自',
-    'time' => '時間',
-]);
-define('POST_HEADER_NAMES_LOOPUP',
-    array_flip(POST_HEADER_NAMES));
+define(
+    'POST_HEADER_NAMES',
+    [
+        'author' => '來自',
+        'time' => '時間',
+    ]
+);
+define('POST_HEADER_NAMES_LOOPUP', array_flip(POST_HEADER_NAMES));
 
-class Post {
+/**
+ * Class for post content objects.
+ *
+ * @category Class
+ * @package  CrudeForum\CrudeForum\Storage
+ * @author   Koala Yeung <koalay@gmail.com>
+ * @license  https://opensource.org/licenses/MIT MIT License
+ * @link     https://github.com/crude-forum/crude-forum/blob/master/app/Post.php
+ * Source Code
+ */
+class Post
+{
     public $title = '';
     public $body = '';
     public $header = []; // author, time information (meta data)
-    public $noAutoBr = FALSE;
+    public $noAutoBr = false;
 
-    public function __construct($title='', $body='', $header=[], $noAutoBr=FALSE) {
+    /**
+     * Constructor of a Post.
+     *
+     * @param string  $title    Title of the post.
+     * @param string  $body     Body of the post.
+     * @param array   $header   Meta information of the post.
+     * @param boolean $noAutoBr Should the post be processed with auto br on browser.
+     */
+    public function __construct(string $title='', string $body='', array $header=[], bool $noAutoBr=false)
+    {
         $this->title = (string) $title;
         $this->body = (string) $body;
         $this->header = (array) $header;
         $this->noAutoBr = (bool) $noAutoBr;
     }
 
-    public static function headerName(string $humanName): string {
+    /**
+     * Look up the mahcine name of a header field by its human-readable name.
+     *
+     * @param string $humanName Human-readable name of a header field.
+     *
+     * @return string
+     */
+    public static function headerName(string $humanName): string
+    {
         return POST_HEADER_NAMES_LOOPUP[$humanName] ?? $humanName;
     }
 
-    public static function headerHumanName(string $name): string {
-        return POST_HEADER_NAMES[$name] ?? $name;
+    /**
+     * Look up the human-readable name of a header field by its machine name.
+     *
+     * @param string $machineName Machine name of a header field.
+     *
+     * @return string
+     */
+    public static function headerHumanName(string $machineName): string
+    {
+        return POST_HEADER_NAMES[$machineName] ?? $machineName;
     }
 
-    public static function fromText(string $text): ?Post {
+    /**
+     * Create a Post object from its plain text storage format.
+     *
+     * @param string $text Plain text storage format of a Post.
+     *
+     * @return Post|null The Post of no error, or null;
+     */
+    public static function fromText(string $text): ?Post
+    {
         if (empty($text)) throw new \InvalidArgumentException('expected non-empty string as parameter');
         $lines = explode("\n", str_replace("\r\n", "\n", $text), 3);
         $size = sizeof($lines);
         if ($size === 1) {
             throw new \Exception('the post is misformatted');
-            return NULL;
+            return null;
         } else if ($size === 2) {
             throw new \Exception('the post is missing a proper body');
-            return NULL;
+            return null;
         }
 
         // parse header
@@ -58,7 +116,7 @@ class Post {
             } else {
                 // throw error here
                 throw \Exception('the post is mis-formatted');
-                return NULL;
+                return null;
             }
         }
         if ($lineNum < 0) throw new \Exception('the post body has no header');
@@ -67,8 +125,17 @@ class Post {
         return new Post($title, $body, $header);
     }
 
-    public static function replyFor(?Post $parent): Post {
-        if ($parent === NULL) return new Post();
+    /**
+     * Generate a reply Post from the parent object. Or generate
+     * an empty post if $parent is null;
+     *
+     * @param Post|null $parent The parent post. If no parent post, use null.
+     *
+     * @return Post
+     */
+    public static function replyFor(?Post $parent): Post
+    {
+        if ($parent === null) return new Post();
         if (empty($parent->title) && empty($parent->body)) return new Post();
 
         // generate reply post
@@ -84,58 +151,113 @@ class Post {
         $quoteLine = function ($line) {
             return "| $line";
         };
-        $header = implode("\n", array_map(
-            $quoteLine,
-            [
-                "{$authorHeaderName}：{$author}",
-                "{$timeHeaderName}：{$time}",
-            ]));
+        $header = implode(
+            "\n",
+            array_map(
+                $quoteLine,
+                [
+                    "{$authorHeaderName}：{$author}",
+                    "{$timeHeaderName}：{$time}",
+                ]
+            )
+        );
         $mainBody = $parent->filterBody($quoteLine);
         $body = "{$header}\n|\n{$mainBody}\n\n";
 
         return new Post($title, $body);
     }
 
-    public function safeTitle(): string {
+    /**
+     * Return the title as HTML safe string.
+     *
+     * @return string
+     */
+    public function safeTitle(): string
+    {
         return htmlspecialchars($this->title);
     }
 
-    public function storageHeader(): array {
+    /**
+     * Return an array of header it the storage format
+     * (i.e. human-readable name as key).
+     *
+     * @return array
+     */
+    public function storageHeader(): array
+    {
         // encode all header values
         $header = $this->header;
-        return array_map(function ($key) use ($header) {
-            $name = Post::headerHumanName($key);
-            $value = $header[$key];
-            return "{$name}：{$value}";
-        }, array_keys($header));
+        return array_map(
+            function ($key) use ($header) {
+                $name = Post::headerHumanName($key);
+                $value = $header[$key];
+                return "{$name}：{$value}";
+            },
+            array_keys($header)
+        );
     }
 
-    public function safeHeader(): string {
+    /**
+     * Return a visitor suitable version of header in HTML safe string.
+     *
+     * @return string
+     */
+    public function safeHeader(): string
+    {
         // display limited header value here for public eyes
-        // TODO: escape line breaks to prevent header hack
-        $author = $this->header['author'] ?? '';
-        $authorHeaderName = Post::headerHumanName('author');
-        $time = $this->header['time'] ?? '';
-        $timeHeaderName = Post::headerHumanName('time');
+        $author = htmlspecialchars($this->header['author'] ?? '');
+        $authorHeaderName = htmlspecialchars(Post::headerHumanName('author'));
+        $time = htmlspecialchars($this->header['time'] ?? '');
+        $timeHeaderName = htmlspecialchars(Post::headerHumanName('time'));
         return "{$authorHeaderName}：{$author}\n{$timeHeaderName}：{$time}\n";
     }
 
-    public function htmlHeader(): string {
+    /**
+     * Return a visitor suitable version of header for HTML display.
+     *
+     * @return string
+     */
+    public function htmlHeader(): string
+    {
         return nl2br($this->safeHeader(), false);
     }
 
-    public function filterBody(callable $lineCallback) {
+    /**
+     * Filtering lines in body with the given line callback,
+     * implode the filtered lines as a string and return.
+     *
+     * @param callable $lineCallback Callback function to apply to
+     *                               every line of the body.
+     *
+     * @return void
+     */
+    public function filterBody(callable $lineCallback)
+    {
         $lines = array_map(
             $lineCallback,
-            explode("\n", trim($this->body)));
+            explode("\n", trim($this->body))
+        );
         return implode("\n", $lines);
     }
 
-    public function safeBody(): string {
+    /**
+     * Return an HTML safe version of body.
+     *
+     * @return string
+     */
+    public function safeBody(): string
+    {
         return htmlspecialchars($this->body);
     }
 
-    public function htmlBody(): string {
+    /**
+     * Return the body for proper HTML display
+     * for readers.
+     *
+     * @return string
+     */
+    public function htmlBody(): string
+    {
         $getLines = function () {
             $lines = explode("\n", trim($this->body));
             foreach ($lines as $line) {
