@@ -63,11 +63,11 @@ class Filter
      */
     public static function autoLink(Generator $lines): Generator
     {
-        return (function () use ($lines) {
-            $url = '~(?:(https?)://([^\s<]+)|(www\.[^\s<]+?\.[^\s<]+))(?<![\.,:])~i';
+        $regex = '~((?<![="\'])(https?)://([^\s<]+)|(?<!\/)(www\.[^\s<]+?\.[^\s<]+))(?<![\.,:])~i';
+        return (function () use ($lines, $regex) {
             foreach ($lines as $line) {
                 yield preg_replace(
-                    $url, '<a href="$0" target="_blank" title="$0">$0</a>', $line
+                    $regex, '<a href="$0" target="_blank" title="$0">$0</a>', $line
                 );
             }
         })();

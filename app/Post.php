@@ -261,8 +261,8 @@ class Post
         // define filter chain
         $filter = Filter::pipe(
             '\CrudeForum\CrudeForum\Filter::quoteToBlockquote',
-            '\CrudeForum\CrudeForum\Filter::autoParagraph',
-            '\CrudeForum\CrudeForum\Filter::autoLink'
+            '\CrudeForum\CrudeForum\Filter::autoLink',
+            '\CrudeForum\CrudeForum\Filter::autoParagraph'
         );
 
         // apply filter to the lines
