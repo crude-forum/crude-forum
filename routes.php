@@ -147,7 +147,7 @@ $savePost = function ($vars, $forum) use ($configs) {
                 $title,
                 $author,
                 $currentTime
-            ), FALSE);
+            ), null);
             $forum->incCount();
             fclose($lock);
             header('Refresh: 0; URL=' . $forum->linkTo('forum'));
