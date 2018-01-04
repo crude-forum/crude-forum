@@ -120,6 +120,11 @@ footer {
     }
 }
 
+.page-form {
+    main {
+        padding: 0;
+    }
+}
 .post-form {
     .field-wrapper, .actions {
         display: flex;
@@ -153,6 +158,7 @@ footer {
             max-width: calc(100% - 1em);
             padding: 0.5em;
             color: inherit;
+            resize: vertical;
             scrollbar-base-color: #000000;
             scrollbar-track-color: #000000;
             scrollbar-face-color: #000000;
@@ -195,6 +201,9 @@ footer {
             input, textarea {
                 display: block;
                 font-size: 1.2em;
+            }
+            textarea {
+                height: 60vh;
             }
             button {
                 width: 100%;

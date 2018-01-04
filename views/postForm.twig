@@ -3,27 +3,32 @@
 {% block content %}
 <form class="post-form" method="POST" action="{{ linkTo('post', postID, action) }}">
     <div class="field-wrapper field-name">
-        <label for="em_an">你的名字</label>
+        <label for="{{ configs.formPostAuthor }}">你的名字</label>
         <input
-            id=em_an
-            type=name
-            name=em_an
+            type="text"
+            id="{{ configs.formPostAuthor }}"
+            name="{{ configs.formPostAuthor }}"
             value="{{ post.author }}"
-            size=40>
+            size="40"
+        >
     </div>
     <div class="field-wrapper field-title">
-        <label for="tcejbus">主題</label>
+        <label for="{{ configs.formPostTitle }}">主題</label>
         <input
-            id=tcejbus
-            type=name name=tcejbus
+            type="text"
+            id="{{ configs.formPostTitle }}"
+            name="{{ configs.formPostTitle }}"
             value="{{ post.safeTitle() }}"
-            size=40>
+            size="40"
+        >
     </div>
     <div class="field-wrapper field-body">
         <textarea
-            name=tx_et
-            rows=30
-            cols=80>{{ post.safeBody() }}</textarea>
+            id="{{ configs.formPostBody }}"
+            name="{{ configs.formPostBody }}"
+            rows="30"
+            cols="80"
+        >{{ post.safeBody() }}</textarea>
     </div>
     <div class="actions">
         <button type="submit">發出</button>

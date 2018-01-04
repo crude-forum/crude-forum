@@ -127,6 +127,7 @@ $showForm = function ($vars, $forum) use ($configs) {
     echo $forum->template->render(
         'postForm.twig',
         [
+            'pageClass' => 'page-form',
             'configs' => $configs,
             'action' => $action,
             'postID' => $postID,
@@ -142,9 +143,9 @@ $savePost = function ($vars, $forum) use ($configs) {
     $action = $vars['action'] ?? '';
     $postID = $vars['postID'] ?? false;
 
-    $author = stripslashes($_POST["em_an"]);
-    $title = stripslashes($_POST["tcejbus"]);
-    $body = stripslashes($_POST["tx_et"]);
+    $author = stripslashes($_POST[$configs['formPostAuthor']]);
+    $title = stripslashes($_POST[$configs['formPostTitle']]);
+    $body = stripslashes($_POST[$configs['formPostBody']]);
     $currentTime = strftime("%a %F %T");
 
     // Characters to be avoided

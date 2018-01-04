@@ -63,6 +63,9 @@ $dispatcher = FastRoute\simpleDispatcher(
 
         // some configurations in routes and template rendering
         $configs = [
+            'formPostAuthor' => Core::env('CRUDE_FORM_POST_AUTHOR'),
+            'formPostTitle' => Core::env('CRUDE_FORM_POST_TITLE'),
+            'formPostBody' => Core::env('CRUDE_FORM_POST_BODY'),
             'postPerPage' => (int) Core::env('CRUDE_POST_PER_PAGE'),
             'rssPostLimit' => (int) Core::env('CRUDE_RSS_POST_NUMBER'),
             'siteName' => Core::env('CRUDE_SITE_NAME'),
