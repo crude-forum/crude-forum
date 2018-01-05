@@ -1,8 +1,11 @@
-# CrudeForum
+# CrudeForum [![Travis CI results][travis-badge]][travis]
 
 A very simple, crude and insecure web dicussion forum developed using PHP. Store data in text files in back-end.
 
 Originally forked from [github.com/stupidsing/crude_forum](https://github.com/stupidsing/crude_forum) but changed drastically since.
+
+[travis]: https://travis-ci.org/crude-forum/crude-forum
+[travis-badge]: https://api.travis-ci.org/crude-forum/crude-forum.svg?branch=master
 
 ## Prerequisites
 
