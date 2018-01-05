@@ -39,7 +39,12 @@ $storage = new \CrudeForum\CrudeForum\Storage\FileStorage(
 
 // initialize template engine
 $template = new \Twig\Environment(
-    new \Twig\Loader\FilesystemLoader(__DIR__ . '/views'),
+    new \Twig\Loader\FilesystemLoader(
+        [
+            __DIR__ . '/views/custom',
+            __DIR__ . '/views/dist',
+        ]
+    ),
     [
         'cache' =>
             (($cache_dir = Core::env('CRUDE_DIR_CACHE')) === null) ? false : $cache_dir . '/twig',
