@@ -261,6 +261,7 @@ class Post
         // define filter chain
         $filter = Filter::pipeString(
             '\CrudeForum\CrudeForum\Filter::quoteToBlockquote',
+            '\CrudeForum\CrudeForum\Filter::reduceFlashEmbed',
             '\CrudeForum\CrudeForum\Filter::autoLink',
             '\CrudeForum\CrudeForum\Filter::autoParagraph'
         );
