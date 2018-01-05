@@ -20,6 +20,7 @@ use \FastRoute\Dispatcher;
 use \Twig\Environment;
 use \Twig\TwigFunction;
 use \Symfony\Component\Dotenv\Dotenv;
+use \CrudeForum\CrudeForum\Storage\PostNotFound;
 
 /**
  * Core provides access for bootstraping the forum.
@@ -208,7 +209,8 @@ class Core
     public static function bootstrap(
         Dispatcher $dispatcher,
         Core $forum,
-        callable $route
+        callable $route,
+        array $configs=[]
     ) {
         list($httpMethod, $uri) = $route();
         $routeInfo = $dispatcher->dispatch($httpMethod, $uri);
@@ -216,13 +218,27 @@ class Core
         case Dispatcher::NOT_FOUND:
             // ... 404 Not Found
             http_response_code(404);
-            die('not found');
+            echo $forum->template->render(
+                'error.twig',
+                [
+                    'title' => 'not found',
+                    'configs' => $configs,
+                    'message' => 'not found',
+                ]
+            );
             break;
         case Dispatcher::METHOD_NOT_ALLOWED:
             $allowedMethods = $routeInfo[1];
             // ... 405 Method Not Allowed
             http_response_code(405);
-            die('method not allowed');
+            echo $forum->template->render(
+                'error.twig',
+                [
+                    'title' => 'method not allowed',
+                    'configs' => $configs,
+                    'message' => 'method ' . $httpMethod . ' is not allowed',
+                ]
+            );
             break;
         case Dispatcher::FOUND:
             $handler = $routeInfo[1];
@@ -230,7 +246,20 @@ class Core
             try {
                 $handler($vars, $forum);
             } catch (\Exception $e) {
-                die($e->getMessage());
+                switch (true) {
+                case ($e instanceof PostNotFound):
+                    echo $forum->template->render(
+                        'error.twig',
+                        [
+                            'title' => 'post not found',
+                            'configs' => $configs,
+                            'message' => 'post not found',
+                        ]
+                    );
+                    break;
+                default:
+                    die($e->getMessage());
+                }
             }
             break;
         }

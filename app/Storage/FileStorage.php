@@ -138,6 +138,9 @@ class FileStorage implements Storage
         }
 
         // read post with text
+        if (!file_exists($postFn)) {
+            throw new PostNotFound($postID);
+        }
         return Post::fromText(file_get_contents($postFn));
     }
 

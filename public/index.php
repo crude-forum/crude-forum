@@ -8,5 +8,6 @@ use \CrudeForum\CrudeForum\Core;
 Core::bootstrap(
     $dispatcher,
     $forum,
-    Core::routeHome('/forum', Core::routeURI())
+    Core::routeHome('/forum', Core::routeURI()),
+    $configs
 );

@@ -57,25 +57,24 @@ $forum = new Core(
     ]
 );
 
+// some configurations in routes and template rendering
+$configs = [
+    'formPostAuthor' => Core::env('CRUDE_FORM_POST_AUTHOR'),
+    'formPostTitle' => Core::env('CRUDE_FORM_POST_TITLE'),
+    'formPostBody' => Core::env('CRUDE_FORM_POST_BODY'),
+    'postPerPage' => (int) Core::env('CRUDE_POST_PER_PAGE'),
+    'rssPostLimit' => (int) Core::env('CRUDE_RSS_POST_NUMBER'),
+    'siteName' => Core::env('CRUDE_SITE_NAME'),
+    'sloganTop' => Core::env('CRUDE_SLOGAN_TOP'),
+    'sloganBottom' => Core::env('CRUDE_SLOGAN_BOTTOM'),
+    'baseURL' => Core::env('CRUDE_BASE_URL'),
+    'basePath' => Core::env('CRUDE_BASE_PATH'),
+    'assetsPath' => Core::env('CRUDE_ASSETS_PATH'),
+];
+
 // initialize route dispatcher
 $dispatcher = FastRoute\simpleDispatcher(
-    function (FastRoute\RouteCollector $router) {
-
-        // some configurations in routes and template rendering
-        $configs = [
-            'formPostAuthor' => Core::env('CRUDE_FORM_POST_AUTHOR'),
-            'formPostTitle' => Core::env('CRUDE_FORM_POST_TITLE'),
-            'formPostBody' => Core::env('CRUDE_FORM_POST_BODY'),
-            'postPerPage' => (int) Core::env('CRUDE_POST_PER_PAGE'),
-            'rssPostLimit' => (int) Core::env('CRUDE_RSS_POST_NUMBER'),
-            'siteName' => Core::env('CRUDE_SITE_NAME'),
-            'sloganTop' => Core::env('CRUDE_SLOGAN_TOP'),
-            'sloganBottom' => Core::env('CRUDE_SLOGAN_BOTTOM'),
-            'baseURL' => Core::env('CRUDE_BASE_URL'),
-            'basePath' => Core::env('CRUDE_BASE_PATH'),
-            'assetsPath' => Core::env('CRUDE_ASSETS_PATH'),
-        ];
-
+    function (FastRoute\RouteCollector $router) use ($configs) {
         // use routes defined in routes.php
         include __DIR__ . '/routes.php';
     }

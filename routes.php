@@ -26,6 +26,7 @@ $router->addRoute(
 
         $forum->log("read?" . $postID);
         $post = $forum->readPost($postID);
+        $lock->unlock();
         if ($post === null) die('post not found');
 
         echo $forum->template->render(
