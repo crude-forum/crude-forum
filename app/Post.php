@@ -259,12 +259,12 @@ class Post
     public function htmlBody(): string
     {
         // define filter chain
-        $filter = Filter::pipeString(
-            '\CrudeForum\CrudeForum\Filter::quoteToBlockquote',
-            '\CrudeForum\CrudeForum\Filter::reduceFlashEmbed',
-            '\CrudeForum\CrudeForum\Filter::autoWidgetfy',
-            '\CrudeForum\CrudeForum\Filter::autoLink',
-            '\CrudeForum\CrudeForum\Filter::autoParagraph'
+        $filter = StreamFilter::pipeString(
+            '\CrudeForum\CrudeForum\StreamFilter::quoteToBlockquote',
+            '\CrudeForum\CrudeForum\StreamFilter::reduceFlashEmbed',
+            '\CrudeForum\CrudeForum\StreamFilter::autoWidgetfy',
+            '\CrudeForum\CrudeForum\StreamFilter::autoLink',
+            '\CrudeForum\CrudeForum\StreamFilter::autoParagraph'
         );
 
         // concat filtered lines back into string

@@ -6,13 +6,11 @@
  *
  * PHP Version 7.1
  *
- * @file     Filter.php
  * @category File
  * @package  CrudeForum\CrudeForum
  * @author   Koala Yeung <koalay@gmail.com>
  * @license  https://opensource.org/licenses/MIT MIT License
- * @link     https://github.com/crude-forum/crude-forum/blob/master/app/Filter.php
- * Source Code
+ * @link     https://github.com/crude-forum/crude-forum Source Code
  */
 
 namespace CrudeForum\CrudeForum;
@@ -29,11 +27,10 @@ use \Generator;
  * @package  CrudeForum\CrudeForum
  * @author   Koala Yeung <koalay@gmail.com>
  * @license  https://opensource.org/licenses/MIT MIT License
- * @link     https://github.com/crude-forum/crude-forum/blob/master/app/Filter.php
- * Source Code
+ * @link     https://github.com/crude-forum/crude-forum Source Code
  */
 
-class Filter
+class StreamFilter
 {
 
     /**
@@ -97,8 +94,12 @@ class Filter
     public static function pipeString(callable ...$filters): callable
     {
         return function (string $string) use ($filters): string {
-            $filter = \call_user_func_array('\CrudeForum\CrudeForum\Filter::pipe', $filters);
-            return Filter::pipeToString($filter(Filter::stringToPipe($string)));
+            $filter = \call_user_func_array('\CrudeForum\CrudeForum\StreamFilter::pipe', $filters);
+            return StreamFilter::pipeToString(
+                $filter(
+                    StreamFilter::stringToPipe($string)
+                )
+            );
         };
     }
 
