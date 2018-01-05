@@ -17,11 +17,17 @@
         ],
         "dev": "php -S localhost:8080 -t ./public",
         "watch": "node-sass --watch --recursive  --output ./public/assets --output-style compressed ./public/assets",
-        "build": "node-sass --recursive --output ./public/assets --output-style compressed ./public/assets"
+        "build": "node-sass --recursive --output ./public/assets --output-style compressed ./public/assets",
+        "test": [
+            "./vendor/bin/kahlan --src=app"
+        ]
     },
     "autoload": {
         "psr-4": {
             "CrudeForum\\CrudeForum\\": "app/"
         }
+    },
+    "require-dev": {
+        "kahlan/kahlan": "^4.0"
     }
 }

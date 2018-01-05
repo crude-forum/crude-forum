@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "d4318dfe2aa2bca2b0cd114aba6dd5b6",
+    "content-hash": "9b224dbee68b2762c12e56125b1d399d",
     "packages": [
         {
             "name": "nikic/fast-route",
@@ -232,7 +232,62 @@
             "time": "2017-09-27T18:10:31+00:00"
         }
     ],
-    "packages-dev": [],
+    "packages-dev": [
+        {
+            "name": "kahlan/kahlan",
+            "version": "4.0.5",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/kahlan/kahlan.git",
+                "reference": "f28d97e268c1fd5054280932b880e06417eddb6f"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/kahlan/kahlan/zipball/f28d97e268c1fd5054280932b880e06417eddb6f",
+                "reference": "f28d97e268c1fd5054280932b880e06417eddb6f",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.5"
+            },
+            "require-dev": {
+                "squizlabs/php_codesniffer": "^2.7"
+            },
+            "bin": [
+                "bin/kahlan"
+            ],
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Kahlan\\": "src/"
+                },
+                "files": [
+                    "src/functions.php"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "CrysaLEAD"
+                }
+            ],
+            "description": "The PHP Test Framework for Freedom, Truth and Justice.",
+            "keywords": [
+                "BDD",
+                "Behavior-Driven Development",
+                "Monkey Patching",
+                "TDD",
+                "mock",
+                "stub",
+                "testing",
+                "unit test"
+            ],
+            "time": "2017-10-14T15:51:22+00:00"
+        }
+    ],
     "aliases": [],
     "minimum-stability": "stable",
     "stability-flags": [],

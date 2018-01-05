@@ -35,6 +35,37 @@ class Filter
 {
 
     /**
+     * Turn string into a generator of its lines.
+     *
+     * @param string $string    A string to be exploded.
+     * @param string $delimiter The delimiter string for exploded. (default "\n")
+     *
+     * @return Generator
+     */
+    public static function stringToPipe(string $string, string $delimiter="\n"): Generator
+    {
+        return (function () use ($string, $delimiter) {
+            $lines = explode($delimiter, trim($string));
+            foreach ($lines as $line) {
+                yield $line . "\n";
+            }
+        })();
+    }
+
+    /**
+     * Implode a generator of string with a given glue (default '').
+     *
+     * @param Generator $stream A Generator of strings.
+     * @param string    $glue   The glue for implode. (default: '')
+     *
+     * @return string The imploded string from the stream.
+     */
+    public static function pipeToString(Generator $stream, string $glue=''): string
+    {
+        return implode($glue, iterator_to_array($stream));
+    }
+
+    /**
      * Piping multiple filter
      *
      * @param callable ...$filters A list of filters to apply to a Generator.
@@ -51,6 +82,21 @@ class Filter
                 $output = call_user_func($filters[$i], $output);
             }
             return $output;
+        };
+    }
+
+    /**
+     * Create a pipe, from given filters, to filter string function.
+     *
+     * @param callable ...$filters A list of filters to apply to a string.
+     *
+     * @return callable A single filter function that filter a string.
+     */
+    public static function pipeString(callable ...$filters): callable
+    {
+        return function (string $string) use ($filters): string {
+            $filter = \call_user_func_array('\CrudeForum\CrudeForum\Filter::pipe', $filters);
+            return Filter::pipeToString($filter(Filter::stringToPipe($string)));
         };
     }
 
@@ -155,6 +201,27 @@ class Filter
 
                 // yield contents
                 yield $prefix . $matches[2] . $matches[3];
+            }
+        })();
+    }
+
+    /**
+     * Reduce <object> tags of flash embed back to URL for some embed.
+     * (e.g. Youtube).
+     *
+     * @param Generator $lines Generator of text lines to filter with.
+     *
+     * @return Generator
+     */
+    public static function reduceFlashEmbed(Generator $lines): Generator {
+        $regex = '~^(.*?)<object( .*?|)\>(.*?<embed .*?src=[\'"](.+?)[\'"].*?>.*?)</object>(.*?)$~mi';
+        return (function () use ($lines, $regex) {
+            foreach ($lines as $line) {
+                if (preg_match($regex, $line, $matches)) {
+                    yield $matches[1] . $matches[4] . $matches[5];
+                    continue;
+                }
+                yield $line;
             }
         })();
     }

@@ -259,22 +259,14 @@ class Post
     public function htmlBody(): string
     {
         // define filter chain
-        $filter = Filter::pipe(
+        $filter = Filter::pipeString(
             '\CrudeForum\CrudeForum\Filter::quoteToBlockquote',
             '\CrudeForum\CrudeForum\Filter::autoLink',
             '\CrudeForum\CrudeForum\Filter::autoParagraph'
         );
 
-        // apply filter to the lines
-        $lines = $filter((function () {
-            $lines = explode("\n", trim($this->body));
-            foreach ($lines as $line) {
-                yield $line . "\n";
-            }
-        })());
-
         // concat filtered lines back into string
         // and do auto br
-        return nl2br(implode('', iterator_to_array($lines)), false);
+        return nl2br($filter($this->body), false);
     }
 }
