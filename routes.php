@@ -151,11 +151,12 @@ $savePost = function ($vars, $forum) use ($configs) {
     $currentTime = strftime("%a %F %T");
 
     // Characters to be avoided
+    // TODO: rewrite sanatization with blacklist tag and attribute.
     $author = trim(str_replace(["\n", "\r", "\t"], ' ', $author));
     $title = str_replace(["\n", "\r", "\t"], ' ', $title);
     $title = trim(str_replace("\022", "'", $title));
-    //$body = str_replace("<", "&lt;", $body);
-    //$body = str_replace(">", "&gt;", $body);
+    $body = str_replace("<", "&lt;", $body);
+    $body = str_replace(">", "&gt;", $body);
     $body = trim(str_replace("\r\n", "\n", $body)); // use UNIX linebreak
 
     // validate the form
