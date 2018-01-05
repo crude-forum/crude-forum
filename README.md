@@ -26,7 +26,7 @@ The installation depends on [composer] and [node-sass].
 First, install CrudeForum into the folder `myForum` (which you may rename as you see fit):
 
 ```shell
-composer -vvv create-project --prefer-dist crude-forum/crude-forum myForum dev-master
+composer create-project --prefer-dist crude-forum/crude-forum myForum dev-master
 ```
 
 **Note:** If you do not have [node-sass] prior to running the composer `create-project` command,
@@ -41,6 +41,8 @@ composer run build
 Then setup your web server to use document of the full path to `myForum/public`. Please remember
 to setup your server to route to `myForum/public/index.php` by default.
 
+<details><summary>Nginx installation</summary><p>
+
 For [Nginx][nginx], assuming you have `$document_root` points to `myForum/public`, this means
 to have something like this in your config:
 
@@ -51,6 +53,11 @@ location /  {
     ...
 }
 ```
+
+</p>
+</details>
+
+<details><summary>Apache installation</summary><p>
 
 For [Apache][apache], please remember to setup [AllowOverride all][AllowOverride] in the appropriate
 [Directory] section so the [.htaccess](public/.htaccess) file can work for you. Probably something
@@ -64,6 +71,10 @@ like this:
     </Directory>
 </VirtualHost>
 ```
+
+</p>
+</details>
+
 
 [nginx]: https://nginx.org/en/
 [apache]: https://httpd.apache.org/
