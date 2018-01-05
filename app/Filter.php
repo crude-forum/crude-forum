@@ -17,6 +17,7 @@
 
 namespace CrudeForum\CrudeForum;
 
+use \Phata\Widgetfy\Core as Widgetfy;
 use \Generator;
 
 /**
@@ -159,6 +160,29 @@ class Filter
             // flush the remaining buffer, if not empty
             if (trim($buffer) !== '') {
                 yield '<p>' . trim($buffer) . '</p>';
+            }
+        })();
+    }
+
+    /**
+     * Turn lines with a single URL, if possible, a video embed widget.
+     *
+     * @param Generator $lines   Generator of text lines of a string.
+     * @param array     $options Options for Widgetfy::translate function
+     *
+     * @return Generator
+     */
+    public static function autoWidgetfy(Generator $lines, array $options=[]): Generator {
+        $regex = '~^((?<![="\'])(https?)://([^\s<]+)|(?<!\/)(www\.[^\s<]+?\.[^\s<]+))(?<![\.,:])$~i';
+        return (function () use ($lines, $regex, $options) {
+            foreach ($lines as $line) {
+                if (preg_match($regex, trim($line), $matches)) {
+                    if (($embed = Widgetfy::translate($matches[1])) !== null) {
+                        yield $embed['html'] . "\n";
+                        continue;
+                    }
+                }
+                yield $line;
             }
         })();
     }

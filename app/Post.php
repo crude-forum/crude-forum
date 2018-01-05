@@ -262,6 +262,7 @@ class Post
         $filter = Filter::pipeString(
             '\CrudeForum\CrudeForum\Filter::quoteToBlockquote',
             '\CrudeForum\CrudeForum\Filter::reduceFlashEmbed',
+            '\CrudeForum\CrudeForum\Filter::autoWidgetfy',
             '\CrudeForum\CrudeForum\Filter::autoLink',
             '\CrudeForum\CrudeForum\Filter::autoParagraph'
         );
