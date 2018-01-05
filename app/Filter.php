@@ -18,6 +18,7 @@
 namespace CrudeForum\CrudeForum;
 
 use \Phata\Widgetfy\Core as Widgetfy;
+use \Phata\Widgetfy\Theme as WidgetfyTheme;
 use \Generator;
 
 /**
@@ -178,7 +179,7 @@ class Filter
             foreach ($lines as $line) {
                 if (preg_match($regex, trim($line), $matches)) {
                     if (($embed = Widgetfy::translate($matches[1])) !== null) {
-                        yield $embed['html'] . "\n";
+                        yield WidgetfyTheme::toHTML($embed, true) . "\n";
                         continue;
                     }
                 }
