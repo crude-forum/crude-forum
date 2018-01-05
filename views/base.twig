@@ -11,6 +11,16 @@
 <body class="{{ pageClass }}">
 {% block header %}{% endblock %}
 
+{% if errors %}
+    <ul class="messages messages-error">
+    {% for id, idErrors in errors %}
+        {% for error in idErrors %}
+            <li><label for={{ id }}>{{ error }}</label></li>
+        {% endfor %}
+    {% endfor %}
+    </ul>
+{% endif %}
+
 <main>{% block content %}{% endblock %}</main>
 
 {% block footer %}{% endblock %}

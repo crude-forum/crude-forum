@@ -107,10 +107,11 @@ $showForm = function ($vars, $forum) use ($configs) {
 
     if ($action == 'edit') {
         $post = $forum->readPost($postID);
-        // TODO: read current post author from post
-        // TODO: check if the post user is cookie user, or if user is admin
         $post->author = $post->header['author'] ?? '';
         $forumName = $_COOKIE['forumName'] ?? '';
+
+        // read current post author from post
+        // check if the post user is cookie user, or if user is admin
         if (($forumName === '' || $forumName !== $post->author) && !$forum->isAdmin($forumName)) {
             throw new Exception('permission denied');
         }
@@ -143,26 +144,48 @@ $savePost = function ($vars, $forum) use ($configs) {
     $action = $vars['action'] ?? '';
     $postID = $vars['postID'] ?? false;
 
-    $author = stripslashes($_POST[$configs['formPostAuthor']]);
-    $title = stripslashes($_POST[$configs['formPostTitle']]);
-    $body = stripslashes($_POST[$configs['formPostBody']]);
+    $author = $_POST[$configs['formPostAuthor']];
+    $title = $_POST[$configs['formPostTitle']];
+    $body = $_POST[$configs['formPostBody']];
     $currentTime = strftime("%a %F %T");
 
     // Characters to be avoided
-    $author = str_replace(["\n", "\r", "\t"], ' ', $author);
+    $author = trim(str_replace(["\n", "\r", "\t"], ' ', $author));
     $title = str_replace(["\n", "\r", "\t"], ' ', $title);
-    $title = str_replace("\022", "'", $title);
-    $body = str_replace("<", "&lt;", $body);
-    $body = str_replace(">", "&gt;", $body);
-    $body = str_replace("\r\n", "\n", $body); // use UNIX linebreak
+    $title = trim(str_replace("\022", "'", $title));
+    //$body = str_replace("<", "&lt;", $body);
+    //$body = str_replace(">", "&gt;", $body);
+    $body = trim(str_replace("\r\n", "\n", $body)); // use UNIX linebreak
+
+    // validate the form
+    $errors = array();
+    if (strlen($author) > 8) $errors[$configs['formPostAuthor']][] = 'Name too long';
+    if ($author == '') $errors[$configs['formPostAuthor']][] = 'Please enter your name';
+    if ($title == '') $errors[$configs['formPostTitle']][] ='Please enter a subject';
+    if ($body == '') $errors[$configs['formPostBody']][] ='Please enter post content';
+
+    // display error message with the originally filled form
+    if (!empty($errors)) {
+        $post = new Post($title, $body);
+        $post->author = $author;
+        echo $forum->template->render(
+            'postForm.twig',
+            [
+                'pageClass' => 'page-form',
+                'errors' => $errors,
+                'configs' => $configs,
+                'action' => $action,
+                'postID' => $postID,
+                'post' => $post,
+            ]
+        );
+        return;
+    }
+
+    // set author to cookies
     if ($author <> '') {
         setcookie('forumName', $author, mktime(0, 0, 0, 1, 1, 2038), "/");
     }
-
-    // TODO: display error message with the originally filled form
-    if (strlen($author) > 8) die('Name too long');
-    if ($author == '') die('Please Enter your name');
-    if ($title == '') die('Please Enter a subject');
 
     $lock = $forum->getLock();
 

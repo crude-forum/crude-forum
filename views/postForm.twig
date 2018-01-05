@@ -7,9 +7,11 @@
         <input
             type="text"
             id="{{ configs.formPostAuthor }}"
+            class="{% if attribute(errors, configs.formPostAuthor) %}error{% endif %}"
             name="{{ configs.formPostAuthor }}"
             value="{{ post.author }}"
             size="40"
+            {% if post.author is empty %}autofocus{% endif %}
         >
     </div>
     <div class="field-wrapper field-title">
@@ -17,18 +19,22 @@
         <input
             type="text"
             id="{{ configs.formPostTitle }}"
+            class="{% if attribute(errors, configs.formPostTitle) %}error{% endif %}"
             name="{{ configs.formPostTitle }}"
-            value="{{ post.safeTitle() }}"
+            value="{{ post.safeTitle() | raw }}"
             size="40"
+            {% if not post.author is empty and post.title is empty %}autofocus{% endif %}
         >
     </div>
     <div class="field-wrapper field-body">
         <textarea
             id="{{ configs.formPostBody }}"
+            class="{% if attribute(errors, configs.formPostBody) %}error{% endif %}"
             name="{{ configs.formPostBody }}"
             rows="30"
             cols="80"
-        >{{ post.safeBody() }}</textarea>
+            {% if not post.author is empty and not post.title is empty and post.body is empty %}autofocus{% endif %}
+        >{{ post.safeBody() | raw }}</textarea>
     </div>
     <div class="actions">
         <button type="submit">發出</button>
