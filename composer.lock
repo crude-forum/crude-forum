@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "bef8b8baa94d60ec36015ed7089ed364",
+    "content-hash": "a94cff1e732543cfeffef0a3473806e6",
     "packages": [
         {
             "name": "nikic/fast-route",
@@ -51,16 +51,16 @@
         },
         {
             "name": "phata/widgetfy",
-            "version": "v2.0",
+            "version": "2.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/phata/widgetfy.git",
-                "reference": "d0a7d77e8afa84beee5fdaa465d039d781661f19"
+                "reference": "c9c049f22e001d6cfd336473ef5ec96b32094d44"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/phata/widgetfy/zipball/d0a7d77e8afa84beee5fdaa465d039d781661f19",
-                "reference": "d0a7d77e8afa84beee5fdaa465d039d781661f19",
+                "url": "https://api.github.com/repos/phata/widgetfy/zipball/c9c049f22e001d6cfd336473ef5ec96b32094d44",
+                "reference": "c9c049f22e001d6cfd336473ef5ec96b32094d44",
                 "shasum": ""
             },
             "require": {
@@ -96,7 +96,7 @@
                 "embed",
                 "url translate"
             ],
-            "time": "2018-01-05T08:44:00+00:00"
+            "time": "2018-01-05T09:44:44+00:00"
         },
         {
             "name": "symfony/dotenv",
@@ -343,7 +343,7 @@
     "prefer-stable": false,
     "prefer-lowest": false,
     "platform": {
-        "php": "^7.1"
+        "php": ">=7.1"
     },
     "platform-dev": []
 }
