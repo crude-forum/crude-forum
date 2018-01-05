@@ -2,13 +2,21 @@
     "name": "crude-forum/crude-forum",
     "description": "A very simple, crude and insecure web dicussion forum developed using PHP. Store data in text files in back-end.",
     "type": "project",
-    "require": {
-        "php": "^7.1",
-        "nikic/fast-route": "^1.2",
-        "twig/twig": "^2.0",
-        "symfony/dotenv": "^4.0",
-        "phata/widgetfy": "^2.0"
-    },
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Y W Sing",
+            "email": "stupidsing@yahoo.com",
+            "homepage": "https://github.com/stupidsing",
+            "role": "Developer"
+        },
+        {
+            "name": "Koala Yeung",
+            "email": "koalay@gmail.com",
+            "homepage": "https://github.com/yookoala",
+            "role": "Developer"
+        }
+    ],
     "scripts": {
         "install-dev": [
             "npm install -g node-sass"
@@ -27,6 +35,13 @@
         "psr-4": {
             "CrudeForum\\CrudeForum\\": "app/"
         }
+    },
+    "require": {
+        "php": ">=7.1",
+        "nikic/fast-route": "^1.2",
+        "phata/widgetfy": "^2.0",
+        "symfony/dotenv": "^4.0",
+        "twig/twig": "^2.0"
     },
     "require-dev": {
         "kahlan/kahlan": "^4.0"
