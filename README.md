@@ -101,3 +101,9 @@ If you want to continuously develop the CSS stylesheet, you may consider to use 
 ```shell
 composer run --timeout=0 watch
 ```
+
+# License
+
+This software is licensed under [the MIT License](https://opensource.org/licenses/MIT).
+
+You may get a copy of [the license](LICENSE.md) along with the software.
