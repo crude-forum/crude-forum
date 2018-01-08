@@ -39,7 +39,7 @@
     "require": {
         "php": ">=7.1",
         "nikic/fast-route": "^1.2",
-        "phata/widgetfy": "^2.1",
+        "phata/widgetfy": "^2.3",
         "symfony/dotenv": "^4.0",
         "twig/twig": "^2.0"
     },

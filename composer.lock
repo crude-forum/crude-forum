@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "a94cff1e732543cfeffef0a3473806e6",
+    "content-hash": "63363a49e42922f510615dae058f5c6e",
     "packages": [
         {
             "name": "nikic/fast-route",
@@ -51,16 +51,16 @@
         },
         {
             "name": "phata/widgetfy",
-            "version": "2.1",
+            "version": "v2.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/phata/widgetfy.git",
-                "reference": "c9c049f22e001d6cfd336473ef5ec96b32094d44"
+                "reference": "88230d2e5fc06152a133329fb0bd3f1739d4e70c"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/phata/widgetfy/zipball/c9c049f22e001d6cfd336473ef5ec96b32094d44",
-                "reference": "c9c049f22e001d6cfd336473ef5ec96b32094d44",
+                "url": "https://api.github.com/repos/phata/widgetfy/zipball/88230d2e5fc06152a133329fb0bd3f1739d4e70c",
+                "reference": "88230d2e5fc06152a133329fb0bd3f1739d4e70c",
                 "shasum": ""
             },
             "require": {
@@ -96,20 +96,20 @@
                 "embed",
                 "url translate"
             ],
-            "time": "2018-01-05T09:44:44+00:00"
+            "time": "2018-01-08T10:26:30+00:00"
         },
         {
             "name": "symfony/dotenv",
-            "version": "v4.0.2",
+            "version": "v4.0.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/dotenv.git",
-                "reference": "ffcaeab01e42b0c40669add2aa8e77f79ddb9389"
+                "reference": "afb6923923e22874dac20bd042167ccb8df1d158"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/dotenv/zipball/ffcaeab01e42b0c40669add2aa8e77f79ddb9389",
-                "reference": "ffcaeab01e42b0c40669add2aa8e77f79ddb9389",
+                "url": "https://api.github.com/repos/symfony/dotenv/zipball/afb6923923e22874dac20bd042167ccb8df1d158",
+                "reference": "afb6923923e22874dac20bd042167ccb8df1d158",
                 "shasum": ""
             },
             "require": {
@@ -153,7 +153,7 @@
                 "env",
                 "environment"
             ],
-            "time": "2017-12-08T15:46:13+00:00"
+            "time": "2018-01-03T17:15:19+00:00"
         },
         {
             "name": "symfony/polyfill-mbstring",
