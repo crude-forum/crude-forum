@@ -50,6 +50,46 @@ class FileStorage implements Storage
     {
         $this->_dataDirectory = rtrim($config['dataDirectory'] ?? '', '/');
         $this->_logDirectory = rtrim($config['logDirectory'] ?? '', '/');
+
+        // validate dataDirectory
+        FileStorage::_ensureDir(
+            'dataDirectory', 'CRUDE_DIR_DATA', $config['dataDirectory']
+        );
+        FileStorage::_ensureDir(
+            'logDirectory', 'CRUDE_DIR_LOG', $config['logDirectory']
+        );
+    }
+
+    /**
+     * Make sure that the configured directory exists in the file system
+     * and is writable
+     *
+     * @param string $configName The configuration variable name.
+     * @param string $envName    The expected environment variable name.
+     * @param string $dirname    The directory name.
+     *
+     * @return boolean Return true if the directory exists and writable.
+     *                 Return false otherwise.
+     */
+    private static function _ensureDir($configName, $envName, $dirname): bool
+    {
+        if (empty($dirname)) {
+            throw new Exception(sprintf('%s is empty.', $envName));
+            return false;
+        }
+        if (!file_exists($dirname) && !@mkdir($dirname, 0777, true)) {
+            throw new Exception(sprintf('unable to create directory: %s', $dirname));
+            return false;
+        }
+        if (!is_dir($dirname)) {
+            throw new Exception(sprintf('%s is not a directory.', $dirname));
+            return false;
+        }
+        if (!is_writable($dirname)) {
+            throw new Exception(sprintf('%s is not writable.', $dirname));
+            return false;
+        }
+        return true;
     }
 
     /**
