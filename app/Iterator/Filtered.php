@@ -30,7 +30,7 @@ class Filtered implements Wrapper
 {
 
     use ProxyTrait;
-    use FilterTrait;
+    use WrapperTrait;
 
     private $_callback;
 
