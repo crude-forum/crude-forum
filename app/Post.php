@@ -13,7 +13,9 @@
  * Source Code
  */
 namespace CrudeForum\CrudeForum;
-use Exception;
+use \Exception;
+use \InvalidArgumentException;
+use \CrudeForum\CrudeForum\Exception\PostInvalid;
 
 define(
     'POST_HEADER_NAMES',
@@ -90,14 +92,14 @@ class Post
      */
     public static function fromText(string $text): ?Post
     {
-        if (empty($text)) throw new \InvalidArgumentException('expected non-empty string as parameter');
+        if (empty($text)) throw new InvalidArgumentException('expected non-empty string as parameter');
         $lines = explode("\n", str_replace("\r\n", "\n", $text), 3);
         $size = sizeof($lines);
         if ($size === 1) {
-            throw new Exception('the post is misformatted');
+            throw new PostInvalid('the post is misformatted');
             return null;
         } else if ($size === 2) {
-            throw new Exception('the post is missing a proper body');
+            throw new PostInvalid('the post is missing a proper body');
             return null;
         }
 
@@ -109,18 +111,17 @@ class Post
         foreach ($bodyLines as $lineNum => $line) {
             // identify any colon (either ASCII unicode, in the line
             if (preg_match("/^(.+?)(:|\x{FE30}|\x{FF1A})(.+?)$/u", $line, $matches)) {
-                // $header["machine_name"] = "header_value"
                 $header[Post::headerName($matches[1])] = trim($matches[3]);
             } else if (empty(trim($line))) {
                 // header ended
                 break;
             } else {
                 // throw error here
-                throw new Exception('the post is mis-formatted');
+                throw new PostInvalid('the post header is misformatted');
                 return null;
             }
         }
-        if ($lineNum < 0) throw new Exception('the post body has no header');
+        if ($lineNum < 0) throw new PostInvalid('the post body has no header');
 
         $body = implode("\n", array_splice($bodyLines, $lineNum + 1));
         return new Post($title, $body, $header);
