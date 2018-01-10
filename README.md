@@ -29,7 +29,7 @@ The installation depends on [composer] and [node-sass].
 First, install CrudeForum into the folder `myForum` (which you may rename as you see fit):
 
 ```shell
-composer create-project --prefer-dist crude-forum/crude-forum myForum dev-master
+composer create-project --prefer-dist crude-forum/crude-forum myForum
 ```
 
 **Note:** If you do not have [node-sass] prior to running the composer `create-project` command,
