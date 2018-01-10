@@ -19,6 +19,7 @@ use \CrudeForum\CrudeForum\ForumIndex;
 use \CrudeForum\CrudeForum\Post;
 use \CrudeForum\CrudeForum\PostSummary;
 use \CrudeForum\CrudeForum\Lock;
+use \Generator;
 
 /**
  * Abstraction of storage engine of the CrudeForum
@@ -38,6 +39,14 @@ interface Storage
      * @return ForumIndex|null
      */
     public function getIndex(): ?ForumIndex;
+
+    /**
+     * Get a generator of post that would generate
+     * Post from newest to oldest.
+     *
+     * @return callable
+     */
+    public function getPosts(): Generator;
 
     /**
      * Get the current post count from storage.

@@ -38,6 +38,7 @@ define('POST_HEADER_NAMES_LOOPUP', array_flip(POST_HEADER_NAMES));
  */
 class Post
 {
+    public $id = null;
     public $title = '';
     public $body = '';
     public $header = []; // author, time information (meta data)
@@ -260,6 +261,18 @@ class Post
      */
     public function htmlBody(): string
     {
+        return Post::filterHtmlBody($this->body);
+    }
+
+    /**
+     * Standard body HTML filtering
+     *
+     * @param string $body Post body text to filter with.
+     *
+     * @return string The filtered HTML output.
+     */
+    public static function filterHtmlBody(string $body): string
+    {
         // define filter chain
         $filter = StreamFilter::pipeString(
             '\CrudeForum\CrudeForum\StreamFilter::quoteToBlockquote',
@@ -271,6 +284,6 @@ class Post
 
         // concat filtered lines back into string
         // and do auto br
-        return nl2br($filter($this->body), false);
+        return nl2br($filter($body), false);
     }
 }
