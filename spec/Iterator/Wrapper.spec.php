@@ -4,7 +4,7 @@ use CrudeForum\CrudeForum\Iterator\Wrapper;
 use CrudeForum\CrudeForum\Iterator\WrapperTrait;
 use CrudeForum\CrudeForum\Iterator\ProxyTrait;
 use CrudeForum\CrudeForum\Iterator\Utils;
-use \Iterator;
+use \Iterator as Iterator;
 
 class TestWrapper implements Wrapper, Iterator
 {
