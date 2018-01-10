@@ -15,7 +15,7 @@
             <item>
                 <title>{{ post.title }}</title>
                 <link>{{ linkTo('post', post.id, NULL, {'absolute': TRUE}) }}</link>
-                <description>{{ post.body }}</description>
+                <description>{{ post.rssBody }}</description>
                 <pubDate>{{ postRssPubDate(post.time) }}</pubDate>
                 <guid>{{ linkTo('post', post.id, NULL, {'absolute': TRUE}) }}</guid>
             </item>

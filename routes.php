@@ -305,6 +305,11 @@ $router->addRoute(
 
         // read post summaries as reference to the mode
         $lock = $forum->getLock();
+
+        // an array of PostSummary with additional attributes:
+        // post (Post object) and rssBody (string).
+        $rssPosts = [];
+
         switch ($mode) {
         case 'thread':
         case 'threads':
@@ -316,37 +321,58 @@ $router->addRoute(
                 ),
                 new Paged(0, $configs['rssPostLimit'])
             )->wrap($forum->getIndex());
+
+            // read post index and post contents
+            foreach ($postSummaries as $postSummary) {
+                $postSummary->post = $forum->readPost($postSummary->id);
+                $postSummary->rssBody = $forum->template->render(
+                    'rssPostBody.twig',
+                    [
+                        'configs' => $configs,
+                        'sitePath' => 'http://localhost:8080',
+                        'postSummary' => $postSummary,
+                        'post' => $postSummary->post,
+                        't' => [
+                            'author' => '作者',
+                            'reply' => '回覆',
+                            'forumIndex' => '回論壇',
+                        ],
+                    ]
+                );
+                $rssPosts[] = $postSummary;
+            }
             break;
         case 'post':
-            $postSummaries = Utils::chain(
+            $posts = Utils::chain(
+                //new Paged(0, $configs['rssPostLimit'])
                 new Paged(0, $configs['rssPostLimit'])
-            )->wrap($forum->getIndex());
+            )->wrap($forum->getPosts());
+
+            // parse post as postSummary and generate rssPosts
+            foreach ($posts as $post) {
+                $postSummary = PostSummary::fromPost($post);
+                $postSummary->post = $post;
+                $postSummary->rssBody = $forum->template->render(
+                    'rssPostBody.twig',
+                    [
+                        'configs' => $configs,
+                        'sitePath' => 'http://localhost:8080',
+                        'postSummary' => $postSummary,
+                        'post' => $postSummary->post,
+                        't' => [
+                            'author' => '作者',
+                            'reply' => '回覆',
+                            'forumIndex' => '回論壇',
+                        ],
+                    ]
+                );
+                $rssPosts[] = $postSummary;
+            }
             break;
         default:
             throw new Exception(
                 sprintf('mode "%s" is not supported', htmlspecialchars($mode))
             );
-        }
-
-        // read post index and post contents
-        $post = [];
-        foreach ($postSummaries as $postSummary) {
-            $post = $postSummary;
-            $post->body = $forum->template->render(
-                'rssPostBody.twig',
-                [
-                    'configs' => $configs,
-                    'sitePath' => 'http://localhost:8080',
-                    'postSummary' => $postSummary,
-                    'post' => $forum->readPost($postSummary->id),
-                    't' => [
-                        'author' => '作者',
-                        'reply' => '回覆',
-                        'forumIndex' => '回論壇',
-                    ],
-                ]
-            );
-            $posts[] = $post;
         }
         unset($postSummaries);
         $lock->unlock();
@@ -361,10 +387,10 @@ $router->addRoute(
                 'language' => 'zh-hk',
                 'pubDate' => date('D, d M Y H:i:s ', time()),
                 'lastBuildDate' => date('D, d M Y H:i:s ', time()),
-                'generator' => 'Custom PHP by Koala Yeung',
+                'generator' => 'CrudeForum',
                 'managingEditor' => 'stupidsing@yahoo.com (Y W Sing)',
                 'webMaster' => 'stupidsing@yahoo.com (Y W Sing)',
-                'posts' => $posts,
+                'posts' => $rssPosts,
             ]
         );
     }
