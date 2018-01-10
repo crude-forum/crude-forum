@@ -34,6 +34,7 @@ class Paged implements Wrapper, Iterator
 
     private $_offset = 0;
     private $_limit = -1;
+    private $_pagePos = 0;
 
     /**
      * Class constructor
@@ -60,6 +61,7 @@ class Paged implements Wrapper, Iterator
         for ($i=0; $this->iter()->valid() && ($i < $this->_offset); $i++) {
             $this->iter()->next(); // skip through items
         }
+        $this->_pagePos = 0;
     }
 
     /**
@@ -67,12 +69,25 @@ class Paged implements Wrapper, Iterator
      *
      * @inheritDoc
      *
-     * @return void
+     * @return mix
      */
-    public function valid()
+    public function next()
+    {
+        $this->iter()->next();
+        $this->_pagePos += 1;
+    }
+
+    /**
+     * Implements Iterator method
+     *
+     * @inheritDoc
+     *
+     * @return bool
+     */
+    public function valid(): bool
     {
         if ($this->_limit === -1) return $this->iter()->valid();
-        if ($this->iter()->key() > $this->_offset + $this->_limit - 1) return false;
-        return $this->iter()->valid();
+        return ($this->_pagePos >= $this->_limit) ?
+            false : $this->iter()->valid();
     }
 }
