@@ -32,18 +32,14 @@ class Utils
     /**
      * Chains wrappers into a single wrapper.
      *
-     * @param Wrapper $wrapper     The inner most wrapper.
      * @param Wrapper ...$wrappers Wrappers to apply to an Iterator
      *                             from inner to outer.
      *
      * @return callable
      */
-    public static function chainWrappers(Wrapper $wrapper, Wrapper ...$wrappers): ?Wrapper
-    {
-        $output = $wrapper;
-        foreach ($wrappers as $wrapper) {
-            $output = $wrapper->wrap($output);
-        }
-        return $output;
+    public static function chainWrappers(
+        Wrapper ...$wrappers
+    ): WrapperChain {
+        return new WrapperChain(...$wrappers);
     }
 }

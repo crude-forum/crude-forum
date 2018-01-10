@@ -55,9 +55,9 @@ trait ProxyTrait
     /**
      * Method to access inner iterator
      *
-     * @return Iterator The proxyed Iterator.
+     * @return Iterator|null The proxyed Iterator.
      */
-    public function &iter(): Iterator
+    public function &iter(): ?Iterator
     {
         return $this->_iter;
     }
