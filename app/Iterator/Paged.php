@@ -14,6 +14,8 @@
  */
 namespace CrudeForum\CrudeForum\Iterator;
 
+use \Iterator;
+
 /**
  * Page the inner iterator output with provided offset and limit.
  *
@@ -24,7 +26,7 @@ namespace CrudeForum\CrudeForum\Iterator;
  * @link     https://github.com/crude-forum/crude-forum/blob/master/app/Iterator/Filtered.php
  * Source Code
  */
-class Paged implements Wrapper
+class Paged implements Wrapper, Iterator
 {
 
     use ProxyTrait;

@@ -15,6 +15,8 @@
  */
 namespace CrudeForum\CrudeForum\Iterator;
 
+use \Iterator;
+
 /**
  * Filtering each iteration output of inner iterator with the
  * provided callable.
@@ -26,7 +28,7 @@ namespace CrudeForum\CrudeForum\Iterator;
  * @link     https://github.com/crude-forum/crude-forum/blob/master/app/Iterator/Filtered.php
  * Source Code
  */
-class Filtered implements Wrapper
+class Filtered implements Wrapper, Iterator
 {
 
     use ProxyTrait;
