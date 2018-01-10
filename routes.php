@@ -280,7 +280,7 @@ $router->addRoute(
         $forum->log("forum?" . $page);
 
         $lock = $forum->getLock();
-        $index = Utils::chain(new Paged($page, $configs['postPerPage']))->wrap($forum->getIndex());
+        $index = Utils::chainWrappers(new Paged($page, $configs['postPerPage']))->wrap($forum->getIndex());
         $contents = $forum->template->render(
             'forum.twig',
             [
@@ -313,7 +313,7 @@ $router->addRoute(
         switch ($mode) {
         case 'thread':
         case 'threads':
-            $postSummaries = Utils::chain(
+            $postSummaries = Utils::chainWrappers(
                 new Filtered(
                     function ($postSummary) {
                         return ($postSummary->level == 0);
@@ -344,7 +344,7 @@ $router->addRoute(
             }
             break;
         case 'post':
-            $posts = Utils::chain(
+            $posts = Utils::chainWrappers(
                 //new Paged(0, $configs['rssPostLimit'])
                 new Paged(0, $configs['rssPostLimit'])
             )->wrap($forum->getPosts());

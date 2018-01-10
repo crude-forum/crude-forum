@@ -38,7 +38,7 @@ class Utils
      *
      * @return callable
      */
-    public static function chain(Wrapper $wrapper, Wrapper ...$wrappers): ?Wrapper
+    public static function chainWrappers(Wrapper $wrapper, Wrapper ...$wrappers): ?Wrapper
     {
         $output = $wrapper;
         foreach ($wrappers as $wrapper) {
