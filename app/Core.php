@@ -20,7 +20,7 @@ use \FastRoute\Dispatcher;
 use \Twig\Environment;
 use \Twig\TwigFunction;
 use \Symfony\Component\Dotenv\Dotenv;
-use \CrudeForum\CrudeForum\Storage\PostNotFound;
+use \CrudeForum\CrudeForum\Exception\PostNotFound;
 
 /**
  * Core provides access for bootstraping the forum.

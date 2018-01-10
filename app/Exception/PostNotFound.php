@@ -12,7 +12,7 @@
  * @link     https://github.com/crude-forum/crude-forum Source Code
  */
 
-namespace CrudeForum\CrudeForum\Storage;
+namespace CrudeForum\CrudeForum\Exception;
 
 use \Exception;
 
