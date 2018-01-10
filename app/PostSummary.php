@@ -15,6 +15,8 @@
 
 namespace CrudeForum\CrudeForum;
 
+use \CrudeForum\CrudeForum\Exception\PostInvalid;
+
 /**
  * Class for post summary objects.
  *
@@ -58,6 +60,35 @@ class PostSummary
         $this->author = $author;
         $this->time = $time;
         $this->pos = $pos;
+    }
+
+    /**
+     * Create PostSummary from a given Post object.
+     * Note that the level is always 0.
+     *
+     * @param Post $post Post to create PostSummary from.
+     *
+     * @return PostSummary|null
+     */
+    public static function fromPost(Post $post): ?PostSummary
+    {
+        if ($post->id === null) {
+            throw PostInvalid('post has no id');
+            return null;
+        }
+        if (empty($post->title)) {
+            throw PostInvalid('post has no title');
+            return null;
+        }
+        if (!isset($post->header['author'])) {
+            throw PostInvalid('post has undefined author');
+            return null;
+        }
+        if (!isset($post->header['time'])) {
+            throw PostInvalid('post has undefined time');
+            return null;
+        }
+        return new PostSummary($post->id, 0, $post->title, $post->header['author'], $post->header['time']);
     }
 
     /**
