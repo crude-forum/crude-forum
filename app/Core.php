@@ -21,6 +21,7 @@ use \Twig\Environment;
 use \Twig\TwigFunction;
 use \Symfony\Component\Dotenv\Dotenv;
 use \CrudeForum\CrudeForum\Exception\PostNotFound;
+use \Generator;
 
 /**
  * Core provides access for bootstraping the forum.
@@ -394,6 +395,16 @@ class Core
     public function getIndex(): ?ForumIndex
     {
         return $this->_storage->getIndex();
+    }
+
+    /**
+     * Gets a generator of posts from newest to oldest.
+     *
+     * @return Generator|null
+     */
+    public function getPosts(): ?Generator
+    {
+        return $this->_storage->getPosts();
     }
 
     /**

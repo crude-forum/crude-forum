@@ -22,7 +22,10 @@ use \CrudeForum\CrudeForum\Post;
 use \CrudeForum\CrudeForum\PostSummary;
 use \CrudeForum\CrudeForum\Storage;
 use \CrudeForum\CrudeForum\Lock;
+use \CrudeForum\CrudeForum\Exception\PostNotFound;
+use \CrudeForum\CrudeForum\Exception\PostInvalid;
 use \Exception;
+use \Generator;
 
 /**
  * Storage engine for storing index, post, post count and locking mechanism.
@@ -108,6 +111,35 @@ class FileStorage implements Storage
     }
 
     /**
+     * Get a generator of post that would generate
+     * Post from newest to oldest.
+     *
+     * @return callable
+     */
+    public function getPosts(): Generator
+    {
+        return (function (FileStorage $forum) {
+            for ($i = $forum->getCount(); $i>0; $i--) {
+                try {
+                    if (($post = $forum->readPost($i)) != null) {
+                        yield $post;
+                    }
+                } catch (Exception $e) {
+                    // ignore normal post errors.
+                    switch (true) {
+                    case ($e instanceof PostNotFound):
+                        continue;
+                    case ($e instanceof PostInvalid):
+                        continue;
+                    default:
+                        throw $e;
+                    }
+                }
+            }
+        })($this);
+    }
+
+    /**
      * Get the current post count from storage.
      *
      * @return integer number of post, as recorded by the storage.
@@ -181,7 +213,9 @@ class FileStorage implements Storage
         if (!file_exists($postFn)) {
             throw new PostNotFound($postID);
         }
-        return Post::fromText(file_get_contents($postFn));
+        $post = Post::fromText(file_get_contents($postFn));
+        $post->id = $postID;
+        return $post;
     }
 
     /**
