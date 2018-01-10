@@ -334,6 +334,7 @@ $router->addRoute(
                         'post' => $postSummary->post,
                         't' => [
                             'author' => '作者',
+                            'time' => '時間',
                             'reply' => '回覆',
                             'forumIndex' => '回論壇',
                         ],
@@ -361,6 +362,7 @@ $router->addRoute(
                         'post' => $postSummary->post,
                         't' => [
                             'author' => '作者',
+                            'time' => '時間',
                             'reply' => '回覆',
                             'forumIndex' => '回論壇',
                         ],
