@@ -13,6 +13,7 @@
  * Source Code
  */
 namespace CrudeForum\CrudeForum;
+use Exception;
 
 define(
     'POST_HEADER_NAMES',
@@ -93,10 +94,10 @@ class Post
         $lines = explode("\n", str_replace("\r\n", "\n", $text), 3);
         $size = sizeof($lines);
         if ($size === 1) {
-            throw new \Exception('the post is misformatted');
+            throw new Exception('the post is misformatted');
             return null;
         } else if ($size === 2) {
-            throw new \Exception('the post is missing a proper body');
+            throw new Exception('the post is missing a proper body');
             return null;
         }
 
@@ -115,11 +116,11 @@ class Post
                 break;
             } else {
                 // throw error here
-                throw \Exception('the post is mis-formatted');
+                throw new Exception('the post is mis-formatted');
                 return null;
             }
         }
-        if ($lineNum < 0) throw new \Exception('the post body has no header');
+        if ($lineNum < 0) throw new Exception('the post body has no header');
 
         $body = implode("\n", array_splice($bodyLines, $lineNum + 1));
         return new Post($title, $body, $header);
