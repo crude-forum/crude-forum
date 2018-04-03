@@ -17,6 +17,7 @@ namespace CrudeForum\CrudeForum;
 
 use \Phata\Widgetfy\Core as Widgetfy;
 use \Phata\Widgetfy\Theme as WidgetfyTheme;
+use Fusonic\OpenGraph\Consumer;
 use \Generator;
 
 /**
@@ -177,10 +178,35 @@ class StreamFilter
     public static function autoWidgetfy(Generator $lines, array $options=[]): Generator {
         $regex = '~^((?<![="\'])(https?)://([^\s<]+)|(?<!\/)(www\.[^\s<]+?\.[^\s<]+))(?<![\.,:])$~i';
         return (function () use ($lines, $regex, $options) {
+            $ogConsumer = new Consumer();
             foreach ($lines as $line) {
                 if (preg_match($regex, trim($line), $matches)) {
                     if (($embed = Widgetfy::translate($matches[1])) !== null) {
                         yield WidgetfyTheme::toHTML($embed, true) . "\n";
+                        continue;
+                    }
+
+                    // load the URL opengraph information
+                    $og = $ogConsumer->loadUrl($matches[1]);
+                    if (isset($og->title) && !empty($og->title) && isset($og->images) && !empty($og->images)) {
+                        // theme this like a widget
+                        $url = $og->url ?? $matches[1];
+                        $host = parse_url($url)['host'];
+                        yield sprintf(
+                            '<div class="og-widget-wrapper"><a class="og-widget" target="_blank" href="%s">'.
+                                '<img src="%s" />'.
+                                '<div class="figure">'.
+                                    '<div class="title">%s</div>'.
+                                    '<div class="desc">%s</div>'.
+                                    '<div class="host">%s</div>'.
+                                '</div>'.
+                            '</a></div>',
+                            $url,
+                            $og->images[0]->url,
+                            $og->title,
+                            str_replace(["\r\n", "\n"], "", $og->description ?? ''),
+                            $host
+                        );
                         continue;
                     }
                 }
