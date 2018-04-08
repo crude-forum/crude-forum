@@ -187,26 +187,33 @@ class StreamFilter
                     }
 
                     // load the URL opengraph information
-                    $og = $ogConsumer->loadUrl($matches[1]);
-                    if (isset($og->title) && !empty($og->title) && isset($og->images) && !empty($og->images)) {
-                        // theme this like a widget
-                        $url = $og->url ?? $matches[1];
-                        $host = parse_url($url)['host'];
-                        yield sprintf(
-                            '<div class="og-widget-wrapper"><a class="og-widget" target="_blank" href="%s">'.
-                                '<img src="%s" />'.
-                                '<div class="figure">'.
-                                    '<div class="title">%s</div>'.
-                                    '<div class="desc">%s</div>'.
-                                    '<div class="host">%s</div>'.
-                                '</div>'.
-                            '</a></div>',
-                            $url,
-                            $og->images[0]->url,
-                            $og->title,
-                            str_replace(["\r\n", "\n"], "", $og->description ?? ''),
-                            $host
-                        );
+                    try {
+                        $og = $ogConsumer->loadUrl($matches[1]);
+                        if (isset($og->title) && !empty($og->title) && isset($og->images) && !empty($og->images)) {
+                            // theme this like a widget
+                            $url = $og->url ?? $matches[1];
+                            $host = parse_url($url)['host'] ?? '';
+                            yield sprintf(
+                                '<figure class="og-widget-wrapper">'.
+                                    '<a class="og-widget" target="_blank" href="%s">'.
+                                        '<img src="%s" />'.
+                                        '<figcaption>'.
+                                            '<div class="title">%s</div>'.
+                                            '<div class="desc">%s</div>'.
+                                            '<div class="host">%s</div>'.
+                                        '</figcaption>'.
+                                    '</a>'.
+                                '</figure>',
+                                $url,
+                                $og->images[0]->url,
+                                $og->title,
+                                str_replace(["\r\n", "\n"], "", strip_tags($og->description ?? '')),
+                                preg_replace('/^www\./', '', $host)
+                            );
+                            continue;
+                        }
+                    } catch (\Exception $e) {
+                        yield $matches[1];
                         continue;
                     }
                 }
