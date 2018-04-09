@@ -18,6 +18,7 @@ namespace CrudeForum\CrudeForum;
 use \Phata\Widgetfy\Core as Widgetfy;
 use \Phata\Widgetfy\Theme as WidgetfyTheme;
 use \Fusonic\OpenGraph\Consumer;
+use \GuzzleHttp\Client as HttpClient;
 use \Generator;
 
 /**
@@ -209,7 +210,9 @@ class StreamFilter
                             // load the URL opengraph information
                             try {
                                 $ogConsumer->useFallbackMode = true; // fallback to HTML title
-                                $og = $ogConsumer->loadUrl($url);
+                                $client = new HttpClient();
+                                $response = $client->get($url);
+                                $og = $ogConsumer->loadHtml($response->getBody()->__toString(), $url);
 
                                 // if there is no opengraph error
                                 if ($cacheItem != null) {
@@ -218,8 +221,52 @@ class StreamFilter
                                     $cache->save($cacheItem);
                                 }
                             } catch (\Exception $e) {
-                                yield $matches[1];
-                                continue;
+                                $og = new \StdClass();
+                                $html = $response->getBody()->__toString();
+                                $og->url = $url;
+                                if (preg_match_all('~<title>(.+?)</title>~', $html, $set_matches, PREG_SET_ORDER)) {
+                                    if (!empty($set_matches)) {
+                                        $og->title = $set_matches[0][1];
+                                    }
+                                }
+                                if (preg_match_all('~<meta property="og:image".+?content="(.+?)".+?/>~', $html, $set_matches, PREG_SET_ORDER)) {
+                                    if (!empty($set_matches)) {
+                                        $image = new \StdClass();
+                                        $image->url = $set_matches[0][1];
+                                        $og->images[] = $image;
+                                    }
+                                }
+                                if (preg_match_all('~<link rel="icon".+?href="(.+?)".+?>~', $html, $set_matches, PREG_SET_ORDER)) {
+                                    if (!empty($set_matches)) {
+                                        $image = new \StdClass();
+                                        $image->url = $set_matches[0][1];
+                                        if (!preg_match('~^(http|https)://~', $image->url)) {
+                                            $parsed_url = parse_url($url);
+                                            if (!preg_match('~/$~', $parsed_url['path'])) {
+                                                $parsed_url['path'] = dirname($parsed_url['path']) . '/';
+                                            }
+                                            $path = ($image->url[0] === '/') ? $image->url : $parsed_url['path'];
+                                            $image->url = "{$parsed_url['scheme']}://{$parsed_url['host']}{$path}";
+                                        }
+                                        $og->images[] = $image;
+                                    }
+                                }
+
+                                if (preg_match_all('~<meta name="description".+?content="(.+?)".+?/>~im', $html, $set_matches, PREG_SET_ORDER)) {
+                                    if (!empty($set_matches)) {
+                                        $og->description = $set_matches[0][1];
+                                    }
+                                }
+                                if (!isset($og->title) || !isset($og->images)) {
+                                    // if no valid og tags
+                                    yield $matches[1];
+                                    continue;
+                                }
+                                if ($cacheItem != null) {
+                                    // if cache system in-place
+                                    $cacheItem->set(json_encode($og));
+                                    $cache->save($cacheItem);
+                                }
                             }
                         }
 
