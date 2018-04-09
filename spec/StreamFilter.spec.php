@@ -23,9 +23,9 @@ describe('CrudeForum\CrudeForum\Filter', function () {
             $input = "Hello world\nhttps://www.youtube.com/watch?v=Ycf1fcom6So\nThats all\n";
 
             // discard the first run to remove css from output afterwards.
-            Filter::pipeToString(Filter::autoWidgetfy(Filter::stringToPipe($input)));
+            Filter::pipeToString(Filter::autoWidgetfy()(Filter::stringToPipe($input)));
 
-            $output = Filter::pipeToString(Filter::autoWidgetfy(Filter::stringToPipe($input)));
+            $output = Filter::pipeToString(Filter::autoWidgetfy()(Filter::stringToPipe($input)));
             $expected = "Hello world\n" . Theme::toHTML(Widgetfy::translate('https://www.youtube.com/watch?v=Ycf1fcom6So')) . "\nThats all\n";
             expect($output)->toBe($expected);
         });
@@ -34,7 +34,7 @@ describe('CrudeForum\CrudeForum\Filter', function () {
             Theme::toHTML(Widgetfy::translate('https://www.youtube.com/watch?v=Ycf1fcom6So'));
 
             $input = "Hello world\nhttp://www.youtube.com/v/WiGCOm8Bkco\nThats all\n";
-            $output = Filter::pipeToString(Filter::autoWidgetfy(Filter::stringToPipe($input)));
+            $output = Filter::pipeToString(Filter::autoWidgetfy()(Filter::stringToPipe($input)));
             $expected = "Hello world\n" . Theme::toHTML(Widgetfy::translate('https://www.youtube.com/watch?v=WiGCOm8Bkco&hl=zh_TW&fs=1')) . "\nThats all\n";
             expect($output)->toBe($expected);
         });

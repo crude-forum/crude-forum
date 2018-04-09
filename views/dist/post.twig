@@ -19,7 +19,7 @@
 {% block content %}
 <article>
     <p class="post-header">{{ post.htmlHeader() | raw }}</p>
-    {{ post.htmlBody() | raw }}
+    {{ post.body | bodyToHTML | raw }}
 </article>
 {% endblock %}
 

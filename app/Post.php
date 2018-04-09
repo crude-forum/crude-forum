@@ -252,38 +252,4 @@ class Post
     {
         return htmlspecialchars($this->body);
     }
-
-    /**
-     * Return the body for proper HTML display
-     * for readers.
-     *
-     * @return string
-     */
-    public function htmlBody(): string
-    {
-        return Post::filterHtmlBody($this->body);
-    }
-
-    /**
-     * Standard body HTML filtering
-     *
-     * @param string $body Post body text to filter with.
-     *
-     * @return string The filtered HTML output.
-     */
-    public static function filterHtmlBody(string $body): string
-    {
-        // define filter chain
-        $filter = StreamFilter::pipeString(
-            '\CrudeForum\CrudeForum\StreamFilter::quoteToBlockquote',
-            '\CrudeForum\CrudeForum\StreamFilter::reduceFlashEmbed',
-            '\CrudeForum\CrudeForum\StreamFilter::autoWidgetfy',
-            '\CrudeForum\CrudeForum\StreamFilter::autoLink',
-            '\CrudeForum\CrudeForum\StreamFilter::autoParagraph'
-        );
-
-        // concat filtered lines back into string
-        // and do auto br
-        return nl2br($filter($body), false);
-    }
 }

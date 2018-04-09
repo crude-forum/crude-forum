@@ -6,7 +6,7 @@
 {{ t.author }}: {{ postSummary.author }}<br/>
 {{ t.time }}: {{ postSummary.time }}
 </p>
-{{ post.htmlBody() | raw }}<br/>
+{{ post.body | bodyToHTML | raw }}<br/>
 ------------------<br/>
 [<a href="{{ sitePath }}{{ linkTo('post', postSummary.id) }}">{{ t.reply }}</a>]&nbsp;&nbsp;
 [<a href="{{ sitePath }}{{ linkTo('forum') }}">{{ t.forumIndex }}</a>]<br/>

@@ -306,3 +306,53 @@ hr {
     color: $secondary-text-color    ;
     border-style: none;
 }
+
+.og-widget-wrapper {
+    display: block;
+    margin: 0.5em 0;
+    max-width: 640px;
+}
+
+.og-widget {
+    display: block;
+    position: relative;
+    background-color: rgba(255, 255, 255, 1);
+    background: linear-gradient(to top, #403D3D, rgba(255, 255, 255, 1) 20%);
+    padding: 0;
+    transition: background-color 0.3s;
+    img {
+        display: block;
+        width: 100%;
+        margin: 0;
+        transition: opacity 0.3s;
+    }
+    figcaption {
+        transition: opacity 0.3s;
+        padding: 1em 0;
+        max-height: 50%;
+        background-color: rgba(0, 0, 0, 0.8);
+        .title {
+            font-weight: bold;
+            padding: 0.5em 1em;
+        }
+        .desc {
+            padding: 0.5em 1.3em;
+            font-size: 0.9em;
+        }
+        .host {
+            padding: 0.5em 1.6em;
+            font-size: 0.7em;
+            opacity: 0.9;
+        }
+    }
+
+    &:hover {
+        text-decoration: none;
+        img {
+            opacity: 0.8;
+        }
+        figcaption {
+            opacity: 0.8;
+        }
+    }
+}
