@@ -16,9 +16,13 @@
 // common bootstrap code
 require_once __DIR__ . '/vendor/autoload.php';
 
-// load env config
 use \CrudeForum\CrudeForum\Core;
 use \CrudeForum\CrudeForum\StreamFilter;
+use \League\Flysystem\Adapter\Local;
+use \League\Flysystem\Filesystem;
+use \Cache\Adapter\Filesystem\FilesystemCachePool;
+
+// load env config
 Core::loadDotenv(__DIR__);
 
 // for debug
@@ -52,14 +56,19 @@ $template = new \Twig\Environment(
     ]
 );
 
+// initialize cache pool
+$fsAdapter = new Local(Core::env('CRUDE_DIR_CACHE') . '/common');
+$fs = new Filesystem($fsAdapter);
+$cache = new FilesystemCachePool($fs);
+
 // define body-to-html filter
-$bodyToHTML = new \Twig\TwigFilter('bodyToHTML', function ($string) {
+$bodyToHTML = new \Twig\TwigFilter('bodyToHTML', function ($string) use ($cache) {
     $filter = StreamFilter::pipeString(
-        '\CrudeForum\CrudeForum\StreamFilter::quoteToBlockquote',
-        '\CrudeForum\CrudeForum\StreamFilter::reduceFlashEmbed',
-        '\CrudeForum\CrudeForum\StreamFilter::autoWidgetfy',
-        '\CrudeForum\CrudeForum\StreamFilter::autoLink',
-        '\CrudeForum\CrudeForum\StreamFilter::autoParagraph'
+        [\CrudeForum\CrudeForum\StreamFilter::class, 'quoteToBlockquote'],
+        [\CrudeForum\CrudeForum\StreamFilter::class, 'reduceFlashEmbed'],
+        \CrudeForum\CrudeForum\StreamFilter::autoWidgetfy($cache, []),
+        [\CrudeForum\CrudeForum\StreamFilter::class, 'autoLink'],
+        [\CrudeForum\CrudeForum\StreamFilter::class, 'autoParagraph']
     );
 
     // concat filtered lines back into string

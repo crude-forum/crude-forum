@@ -17,7 +17,7 @@ namespace CrudeForum\CrudeForum;
 
 use \Phata\Widgetfy\Core as Widgetfy;
 use \Phata\Widgetfy\Theme as WidgetfyTheme;
-use Fusonic\OpenGraph\Consumer;
+use \Fusonic\OpenGraph\Consumer;
 use \Generator;
 
 /**
@@ -170,29 +170,63 @@ class StreamFilter
     /**
      * Turn lines with a single URL, if possible, a video embed widget.
      *
-     * @param Generator $lines   Generator of text lines of a string.
+     * @param CacheInterface $cache ?CacheInterface of PHP Cache
      * @param array     $options Options for Widgetfy::translate function
      *
-     * @return Generator
+     * @return function (:Generator) :Generator
      */
-    public static function autoWidgetfy(Generator $lines, array $options=[]): Generator {
+    public static function autoWidgetfy($cache, array $options=[]): Callable
+    {
         $regex = '~^((?<![="\'])(https?)://([^\s<]+)|(?<!\/)(www\.[^\s<]+?\.[^\s<]+))(?<![\.,:])$~i';
-        return (function () use ($lines, $regex, $options) {
-            $ogConsumer = new Consumer();
-            foreach ($lines as $line) {
-                if (preg_match($regex, trim($line), $matches)) {
-                    if (($embed = Widgetfy::translate($matches[1])) !== null) {
-                        yield WidgetfyTheme::toHTML($embed, true) . "\n";
-                        continue;
-                    }
+        return function (Generator $lines) use ($regex, $cache, $options): Generator
+        {
+            return (function () use ($lines, $regex, $cache, $options)
+            {
+                $ogConsumer = new Consumer();
+                foreach ($lines as $line) {
+                    if (preg_match($regex, trim($line), $matches)) {
+                        $url = $matches[1];
+                        if (($embed = Widgetfy::translate($url)) !== null) {
+                            yield WidgetfyTheme::toHTML($embed, true) . "\n";
+                            continue;
+                        }
 
-                    // load the URL opengraph information
-                    try {
-                        $og = $ogConsumer->loadUrl($matches[1]);
+                        $cacheItem = null;
+                        $og = null;
+
+                        if ($cache != null) {
+                            // if cache system in-place
+                            $cacheKey = 'opengraph__' . rtrim(base64_encode($url), '=');
+                            $cacheItem = $cache->getItem($cacheKey);
+                            $cacheContent = $cacheItem->get();
+                            if ($cacheContent != null) {
+                                $og = json_decode($cacheContent);
+                            }
+                        }
+
+                        if ($og === null) {
+
+                            // load the URL opengraph information
+                            try {
+                                $og = $ogConsumer->loadUrl($url);
+
+                                // if there is no opengraph error
+                                if ($cacheItem != null) {
+                                    // if cache system in-place
+                                    $cacheItem->set(json_encode($og));
+                                    $cache->save($cacheItem);
+                                }
+                            } catch (\Exception $e) {
+                                yield $matches[1];
+                                continue;
+                            }
+                        }
+
+                        // parse opengraph item
                         if (isset($og->title) && !empty($og->title) && isset($og->images) && !empty($og->images)) {
                             // theme this like a widget
-                            $url = $og->url ?? $matches[1];
-                            $host = parse_url($url)['host'] ?? '';
+                            $href = $og->url ?? $url;
+                            $host = parse_url($href)['host'] ?? '';
                             yield sprintf(
                                 '<figure class="og-widget-wrapper">'.
                                     '<a class="og-widget" target="_blank" href="%s">'.
@@ -204,7 +238,7 @@ class StreamFilter
                                         '</figcaption>'.
                                     '</a>'.
                                 '</figure>',
-                                $url,
+                                $href,
                                 $og->images[0]->url,
                                 $og->title,
                                 str_replace(["\r\n", "\n"], "", strip_tags($og->description ?? '')),
@@ -212,14 +246,11 @@ class StreamFilter
                             );
                             continue;
                         }
-                    } catch (\Exception $e) {
-                        yield $matches[1];
-                        continue;
                     }
+                    yield $line;
                 }
-                yield $line;
-            }
-        })();
+            })();
+        };
     }
 
     /**

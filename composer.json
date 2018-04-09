@@ -43,7 +43,8 @@
         "phata/widgetfy": "^2.3",
         "symfony/dotenv": "^4.0",
         "twig/twig": "^2.0",
-        "fusonic/opengraph": "dev-master"
+        "fusonic/opengraph": "dev-master",
+        "cache/filesystem-adapter": "^1.0@dev"
     },
     "require-dev": {
         "kahlan/kahlan": "^4.0"
