@@ -208,6 +208,7 @@ class StreamFilter
 
                             // load the URL opengraph information
                             try {
+                                $ogConsumer->useFallbackMode = true; // fallback to HTML title
                                 $og = $ogConsumer->loadUrl($url);
 
                                 // if there is no opengraph error
