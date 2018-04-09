@@ -241,7 +241,7 @@ class StreamFilter
                                 '</figure>',
                                 $href,
                                 $og->images[0]->url,
-                                $og->title,
+                                htmlspecialchars($og->title),
                                 str_replace(["\r\n", "\n"], "", strip_tags($og->description ?? '')),
                                 preg_replace('/^www\./', '', $host)
                             );
