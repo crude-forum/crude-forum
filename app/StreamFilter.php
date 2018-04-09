@@ -175,7 +175,7 @@ class StreamFilter
      *
      * @return function (:Generator) :Generator
      */
-    public static function autoWidgetfy($cache, array $options=[]): Callable
+    public static function autoWidgetfy($cache=null, array $options=[]): Callable
     {
         $regex = '~^((?<![="\'])(https?)://([^\s<]+)|(?<!\/)(www\.[^\s<]+?\.[^\s<]+))(?<![\.,:])$~i';
         return function (Generator $lines) use ($regex, $cache, $options): Generator
