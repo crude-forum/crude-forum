@@ -18,6 +18,7 @@ require_once __DIR__ . '/vendor/autoload.php';
 
 // load env config
 use \CrudeForum\CrudeForum\Core;
+use \CrudeForum\CrudeForum\StreamFilter;
 Core::loadDotenv(__DIR__);
 
 // for debug
@@ -50,6 +51,22 @@ $template = new \Twig\Environment(
             (($cache_dir = Core::env('CRUDE_DIR_CACHE')) === null) ? false : $cache_dir . '/twig',
     ]
 );
+
+// define body-to-html filter
+$bodyToHTML = new \Twig\TwigFilter('bodyToHTML', function ($string) {
+    $filter = StreamFilter::pipeString(
+        '\CrudeForum\CrudeForum\StreamFilter::quoteToBlockquote',
+        '\CrudeForum\CrudeForum\StreamFilter::reduceFlashEmbed',
+        '\CrudeForum\CrudeForum\StreamFilter::autoWidgetfy',
+        '\CrudeForum\CrudeForum\StreamFilter::autoLink',
+        '\CrudeForum\CrudeForum\StreamFilter::autoParagraph'
+    );
+
+    // concat filtered lines back into string
+    // and do auto br
+    return nl2br($filter($string), false);
+});
+$template->addFilter($bodyToHTML);
 
 // initialize forum core
 $forum = new Core(
