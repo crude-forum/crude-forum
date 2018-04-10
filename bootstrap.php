@@ -57,9 +57,12 @@ $template = new \Twig\Environment(
 );
 
 // initialize cache pool
-$fsAdapter = new Local(Core::env('CRUDE_DIR_CACHE') . '/common');
-$fs = new Filesystem($fsAdapter);
-$cache = new FilesystemCachePool($fs);
+$cache = null;
+if (!empty(Core::env('CRUDE_DIR_CACHE'))) {
+    $fsAdapter = new Local(Core::env('CRUDE_DIR_CACHE') . '/common');
+    $fs = new Filesystem($fsAdapter);
+    $cache = new FilesystemCachePool($fs);
+}
 
 // define body-to-html filter
 $bodyToHTML = new \Twig\TwigFilter('bodyToHTML', function ($string) use ($cache) {
