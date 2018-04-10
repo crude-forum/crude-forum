@@ -34,8 +34,18 @@ $router->addRoute(
             'post.twig',
             [
                 'configs' => $configs,
-                'linkHome' => 'index.html',
-                'linkForumHome' => 'forum.php',
+                'topLinks' => [
+                    ['text' => '回覆', 'href' => $forum->linkTo('post', $postID, 'reply')],
+                    ['text' => '上一發言', 'href' => $forum->linkTo('post', $postID, 'prev')],
+                    ['text' => '下一發言', 'href' => $forum->linkTo('post', $postID, 'next')],
+                    ['text' => '回論壞', 'href' => $forum->linkTo('post', $postID, 'back')],
+                ],
+                'bottomLinks' => [
+                    ['text' => '回覆', 'href' => $forum->linkTo('post', $postID, 'reply')],
+                    ['text' => '上一發言', 'href' => $forum->linkTo('post', $postID, 'prev')],
+                    ['text' => '下一發言', 'href' => $forum->linkTo('post', $postID, 'next')],
+                    ['text' => '回論壞', 'href' => $forum->linkTo('post', $postID, 'back')],
+                ],
                 'postID' => $postID,
                 'post' => $post,
             ]
@@ -287,11 +297,20 @@ $router->addRoute(
             [
                 'configs' => $configs,
                 'page' => $page,
-                'linkHome' => 'index.html',
-                'linkForumHome' => $forum->linkTo('forum'),
-                'linkPrev' => $forum->linkTo('forum', (($page > $configs['postPerPage']) ? $page - $configs['postPerPage'] : 0)),
-                'linkNext' => $forum->linkTo('forum', ($page + $configs['postPerPage'])),
-                'linkSay' => $forum->linkTo('post', null, 'add'),
+                'topLinks' => [
+                    ['text' => '發言', 'href' => $forum->linkTo('post', null, 'add')],
+                    ['text' => '上一頁', 'href' => $forum->linkTo('forum', (($page > $configs['postPerPage']) ? $page - $configs['postPerPage'] : 0))],
+                    #['text' => '下一頁', 'href' => $forum->linkTo('forum', ($page + $configs['postPerPage']))],
+                    ['text' => '首頁', 'href' => $forum->linkTo('forum')],
+                    ['text' => '主頁', 'href' => '/'],
+                ],
+                'bottomLinks' => [
+                    ['text' => '發言', 'href' => $forum->linkTo('post', null, 'add')],
+                    #['text' => '上一頁', 'href' => $forum->linkTo('forum', (($page > $configs['postPerPage']) ? $page - $configs['postPerPage'] : 0))],
+                    ['text' => '下一頁', 'href' => $forum->linkTo('forum', ($page + $configs['postPerPage']))],
+                    ['text' => '首頁', 'href' => $forum->linkTo('forum')],
+                    ['text' => '主頁', 'href' => '/'],
+                ],
                 'postSummaries' => $index,
             ]
         );
@@ -323,16 +342,26 @@ $router->addRoute(
             ),
             new Paged($page, $configs['postPerPage'])
         )->wrap($forum->getIndex());
+        $user_path = 'user/' . $vars['username'];
         $contents = $forum->template->render(
             'forum.twig',
             [
                 'configs' => $configs,
                 'page' => $page,
-                'linkHome' => 'index.html',
-                'linkForumHome' => $forum->linkTo('forum'),
-                'linkPrev' => $forum->linkTo('user/' . $vars['username'], (($page > $configs['postPerPage']) ? $page - $configs['postPerPage'] : 0)),
-                'linkNext' => $forum->linkTo('user/' . $vars['username'], ($page + $configs['postPerPage'])),
-                'linkSay' => $forum->linkTo('post', null, 'add'),
+                'topLinks' => [
+                    ['text' => '發言', 'href' => $forum->linkTo('post', null, 'add')],
+                    ['text' => '上一頁', 'href' => $forum->linkTo($user_path, (($page > $configs['postPerPage']) ? $page - $configs['postPerPage'] : 0))],
+                    #['text' => '下一頁', 'href' => $forum->linkTo($user_path, ($page + $configs['postPerPage']))],
+                    ['text' => '首頁', 'href' => $forum->linkTo('forum')],
+                    ['text' => '主頁', 'href' => '/'],
+                ],
+                'bottomLinks' => [
+                    ['text' => '發言', 'href' => $forum->linkTo('post', null, 'add')],
+                    #['text' => '上一頁', 'href' => $forum->linkTo($user_path, (($page > $configs['postPerPage']) ? $page - $configs['postPerPage'] : 0))],
+                    ['text' => '下一頁', 'href' => $forum->linkTo($user_path, ($page + $configs['postPerPage']))],
+                    ['text' => '首頁', 'href' => $forum->linkTo('forum')],
+                    ['text' => '主頁', 'href' => '/'],
+                ],
                 'postSummaries' => $index,
             ]
         );

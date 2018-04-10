@@ -5,12 +5,7 @@
 {% block header %}
 <header>
     <div class="slogan">{{ configs.sloganTop }}</div>
-    <div class="buttons">
-        <a href="{{ linkSay }}">發言</a>&nbsp;&nbsp;
-        <a href="{{ linkPrev }}">上一頁</a>&nbsp;&nbsp;
-        <a href="{{ linkForumHome }}">首頁</a>&nbsp;&nbsp;
-        <a href="{{ linkHome }}">主頁</a>
-    </div>
+    {% include 'links.twig' with {'links': topLinks} only %}
 </header>
 {% endblock %}
 
@@ -34,12 +29,7 @@
 
 {% block footer %}
 <footer>
-    <div class="buttons">
-        <a href="{{ linkSay }}">發言</a>&nbsp;&nbsp;
-        <a href="{{ linkNext }}">下一頁</a>&nbsp;&nbsp;
-        <a href="{{ linkForumHome }}">首頁</a>&nbsp;&nbsp;
-        <a href="{{ linkHome }}">回主頁</a>
-    </div>
+    {% include 'links.twig' with {'links': bottomLinks} only %}
     <div class="slogan">{{ configs.sloganBottom }}</div>
 </footer>
 {% endblock %}
