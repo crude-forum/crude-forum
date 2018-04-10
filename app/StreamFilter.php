@@ -221,6 +221,14 @@ class StreamFilter
                                     $cache->save($cacheItem);
                                 }
                             } catch (\Exception $e) {
+
+                                // if it has not getting any proper response
+                                // simply yield the url
+                                if (!isset($response)) {
+                                    yield $url;
+                                    continue;
+                                }
+
                                 $og = new \StdClass();
                                 $html = $response->getBody()->__toString();
                                 $og->url = $url;
@@ -259,7 +267,7 @@ class StreamFilter
                                 }
                                 if (!isset($og->title) || !isset($og->images)) {
                                     // if no valid og tags
-                                    yield $matches[1];
+                                    yield $url;
                                     continue;
                                 }
                                 if ($cacheItem != null) {
