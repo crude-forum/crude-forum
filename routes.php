@@ -18,6 +18,7 @@ use \CrudeForum\CrudeForum\PostSummary;
 use \CrudeForum\CrudeForum\Iterator\Utils;
 use \CrudeForum\CrudeForum\Iterator\Paged;
 use \CrudeForum\CrudeForum\Iterator\Filtered;
+use \CrudeForum\CrudeForum\Iterator\Map;
 
 $router->addRoute(
     'GET', '/post/{postID:\d+}', function ($vars, $forum) use ($configs) {
@@ -298,6 +299,48 @@ $router->addRoute(
         echo $contents;
     }
 );
+
+$router->addRoute(
+    'GET', '/user/{username}[/[{page:\d+}]]', function ($vars, $forum) use ($configs) {
+        $page = $vars['page'] ?? 0;
+        $forum->log("forum?" . $page);
+
+        $lock = $forum->getLock();
+
+        // TODO: filter by username
+        // TODO: remove level from display
+        $index = Utils::chainWrappers(
+            new Map(
+                function ($postSummary) {
+                    $postSummary->level = 0;
+                    return $postSummary;
+                }
+            ),
+            new Filtered(
+                function ($postSummary) use ($vars) {
+                    return ($postSummary->author == $vars['username']);
+                }
+            ),
+            new Paged($page, $configs['postPerPage'])
+        )->wrap($forum->getIndex());
+        $contents = $forum->template->render(
+            'forum.twig',
+            [
+                'configs' => $configs,
+                'page' => $page,
+                'linkHome' => 'index.html',
+                'linkForumHome' => $forum->linkTo('forum'),
+                'linkPrev' => $forum->linkTo('user/' . $vars['username'], (($page > $configs['postPerPage']) ? $page - $configs['postPerPage'] : 0)),
+                'linkNext' => $forum->linkTo('user/' . $vars['username'], ($page + $configs['postPerPage'])),
+                'linkSay' => $forum->linkTo('post', null, 'add'),
+                'postSummaries' => $index,
+            ]
+        );
+        $lock->unlock();
+        echo $contents;
+    }
+);
+
 
 $router->addRoute(
     'GET', '/rss', function ($vars, $forum) use ($configs) {
