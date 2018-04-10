@@ -21,7 +21,9 @@
                 <a class="title" href="{{ linkTo('post', postSummary.id) }}">{{ postSummary.title }}</a>
                 <span class="authoring-info">
                     <span class="separator">--</span>
-                    <span class="author">{{ postSummary.author }}</span>
+                    <span class="author"><a
+                        class="author-link"
+                        href="{{ postSummary.author | link('user') }}">{{ postSummary.author }}</a></span>
                     <span class="connector">at</span>
                     <span class="time">{{ postSummary.time }}</span>
                 </span>

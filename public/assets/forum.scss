@@ -132,6 +132,9 @@ ul.messages-error {
         }
         .authoring-info {
             color: #809080;
+            .author-link {
+                color: inherit;
+            }
         }
         @media screen and (max-width: $screen-small) {
             margin-top: 0.4em;

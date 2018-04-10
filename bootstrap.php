@@ -80,6 +80,13 @@ $bodyToHTML = new \Twig\TwigFilter('bodyToHTML', function ($string) use ($cache)
 });
 $template->addFilter($bodyToHTML);
 
+// define linkTo filter
+$link = new \Twig\TwigFilter('link', function ($id, $type, $action=null) {
+    global $forum;
+    return $forum->linkTo($type, $id, $action);
+});
+$template->addFilter($link);
+
 // initialize forum core
 $forum = new Core(
     $storage,
