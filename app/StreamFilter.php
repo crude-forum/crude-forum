@@ -197,7 +197,7 @@ class StreamFilter
 
                         if ($cache != null) {
                             // if cache system in-place
-                            $cacheKey = 'opengraph__' . rtrim(str_replace(['+', '-'], '_', base64_encode($url)), '=');
+                            $cacheKey = 'opengraph__' . rtrim(str_replace(['+', '-', '/'], '_', base64_encode($url)), '=');
                             $cacheItem = $cache->getItem($cacheKey);
                             $cacheContent = $cacheItem->get();
                             if ($cacheContent != null) {
