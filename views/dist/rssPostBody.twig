@@ -1,6 +1,6 @@
 ------------------<br/>
-[<a href="{{ sitePath }}{{ linkTo('post', postSummary.id) }}">{{ t.reply }}</a>]&nbsp;&nbsp;
-[<a href="{{ sitePath }}{{ linkTo('forum') }}">{{ t.forumIndex }}</a>]<br/>
+[<a href="{{ linkTo('post', postSummary.id, null, {'absolute': true}) }}">{{ t.reply }}</a>]&nbsp;&nbsp;
+[<a href="{{ linkTo('forum', null, null, {'absolute': true}) }}">{{ t.forumIndex }}</a>]<br/>
 ------------------<br/>
 <p>
 {{ t.author }}: {{ postSummary.author }}<br/>
@@ -8,6 +8,6 @@
 </p>
 {{ post.body | bodyToHTML | raw }}<br/>
 ------------------<br/>
-[<a href="{{ sitePath }}{{ linkTo('post', postSummary.id) }}">{{ t.reply }}</a>]&nbsp;&nbsp;
-[<a href="{{ sitePath }}{{ linkTo('forum') }}">{{ t.forumIndex }}</a>]<br/>
+[<a href="{{ linkTo('post', postSummary.id, null, {'absolute': true}) }}">{{ t.reply }}</a>]&nbsp;&nbsp;
+[<a href="{{ linkTo('forum', null, null, {'absolute': true}) }}">{{ t.forumIndex }}</a>]<br/>
 ==============================
