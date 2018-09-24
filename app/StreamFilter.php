@@ -220,6 +220,7 @@ class StreamFilter
                                     $cacheItem->set(json_encode($og));
                                     $cache->save($cacheItem);
                                 }
+
                             } catch (\Exception $e) {
 
                                 // if it has not getting any proper response
@@ -267,6 +268,9 @@ class StreamFilter
                                 }
                                 if (!isset($og->title) || !isset($og->images)) {
                                     // if no valid og tags
+                                    $og = [ 'notValid' => true, ];
+                                    $cacheItem->set(json_encode($og));
+                                    $cache->save($cacheItem);
                                     yield $url;
                                     continue;
                                 }
@@ -279,7 +283,13 @@ class StreamFilter
                         }
 
                         // parse opengraph item
-                        if (isset($og->title) && !empty($og->title) && isset($og->images) && !empty($og->images)) {
+                        if (isset($og->notValid) && $og->notValid === true) {
+
+                            // if not a valid og target, simply retury the url
+                            yield $url;
+                            continue;
+
+                        } else if (isset($og->title) && !empty($og->title) && isset($og->images) && !empty($og->images)) {
                             // theme this like a widget
                             $href = $og->url ?? $url;
                             $host = parse_url($href)['host'] ?? '';
