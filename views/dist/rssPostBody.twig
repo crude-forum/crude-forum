@@ -1,5 +1,5 @@
 ------------------<br/>
-[<a href="{{ linkTo('post', postSummary.id, null, {'absolute': true}) }}">{{ t.reply }}</a>]&nbsp;&nbsp;
+[<a href="{{ linkTo('post', postSummary.id, 'reply', {'absolute': true}) }}">{{ t.reply }}</a>]&nbsp;&nbsp;
 [<a href="{{ linkTo('forum', null, null, {'absolute': true}) }}">{{ t.forumIndex }}</a>]<br/>
 ------------------<br/>
 <p>
@@ -8,6 +8,6 @@
 </p>
 {{ post.body | bodyToHTML | raw }}<br/>
 ------------------<br/>
-[<a href="{{ linkTo('post', postSummary.id, null, {'absolute': true}) }}">{{ t.reply }}</a>]&nbsp;&nbsp;
+[<a href="{{ linkTo('post', postSummary.id, 'reply', {'absolute': true}) }}">{{ t.reply }}</a>]&nbsp;&nbsp;
 [<a href="{{ linkTo('forum', null, null, {'absolute': true}) }}">{{ t.forumIndex }}</a>]<br/>
 ==============================
