@@ -106,6 +106,19 @@ If you want to continuously develop the CSS stylesheet, you may consider to use 
 composer watch
 ```
 
+Both `watch` and `build` requires [node-sass]. You may supply additional argument by using the `--` syntax.
+For example, to watch and build asset with embeded source map:
+
+```shell
+composer watch -- --source-map-embed
+```
+
+For detail descriptions for the composer scripts available, use the command:
+
+```shell
+composer list
+```
+
 # License
 
 This software is licensed under [the MIT License](https://opensource.org/licenses/MIT).
