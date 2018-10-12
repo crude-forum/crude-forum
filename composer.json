@@ -18,19 +18,35 @@
             "role": "Developer"
         }
     ],
+    "config": {
+        "process-timeout": 0
+    },
     "scripts": {
+        "build": [
+            "node-sass --recursive --output ./public/assets --output-style compressed ./public/assets"
+        ],
+        "dev": [
+            "@php -S localhost:8080 -t ./public"
+        ],
         "install-dev": [
             "npm install -g node-sass"
         ],
         "post-create-project-cmd": [
-            "composer run build"
+            "@build"
         ],
-        "dev": "php -S localhost:8080 -t ./public",
-        "watch": "node-sass --watch --recursive  --output ./public/assets --output-style compressed ./public/assets",
-        "build": "node-sass --recursive --output ./public/assets --output-style compressed ./public/assets",
         "test": [
-            "./vendor/bin/kahlan --src=app"
+            "kahlan --src=app"
+        ],
+        "watch": [
+            "@build",
+            "node-sass --watch --recursive --output ./public/assets --output-style compressed ./public/assets"
         ]
+    },
+    "scripts-descriptions": {
+        "build": "Build css and javascript assets.",
+        "dev": "Run the development PHP server on http://localhost:8080.",
+        "test": "Run Kahlan test scripts.",
+        "watch": "Watch the asset folder and rebuild on change."
     },
     "autoload": {
         "psr-4": {

@@ -95,7 +95,7 @@ Should all the setup correct, you can now browse your forum in browser.
 Simply clone this repository. You can run crude forum with modern PHP 7.1+ command line tools:
 
 ```shell
-composer run --timeout=0 dev
+composer dev
 ```
 
 which effectively runs `php -S localhost:8080 -t ./public`.
@@ -103,7 +103,20 @@ which effectively runs `php -S localhost:8080 -t ./public`.
 If you want to continuously develop the CSS stylesheet, you may consider to use the watch mode of node-sass:
 
 ```shell
-composer run --timeout=0 watch
+composer watch
+```
+
+Both `watch` and `build` requires [node-sass]. You may supply additional argument by using the `--` syntax.
+For example, to watch and build asset with embeded source map:
+
+```shell
+composer watch -- --source-map-embed
+```
+
+For detail descriptions for the composer scripts available, use the command:
+
+```shell
+composer list
 ```
 
 # License
