@@ -18,6 +18,9 @@
             "role": "Developer"
         }
     ],
+    "config": {
+        "process-timeout": 0
+    },
     "scripts": {
         "install-dev": [
             "npm install -g node-sass"
