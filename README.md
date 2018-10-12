@@ -1,4 +1,4 @@
-# CrudeForum [![Travis CI results][travis-badge]][travis]
+# CrudeForum [![Travis CI results][travis-badge]][travis] [![Stable Version][packagist-stable-badge]][packagist] [![Downloads][packagist-total-badge]][packagist] [![License][license-badge]](LICENSE.md)
 
 A very simple, crude and insecure web dicussion forum developed using PHP. Store data in text files in back-end.
 
@@ -6,6 +6,10 @@ Originally forked from [github.com/stupidsing/crude_forum](https://github.com/st
 
 [travis]: https://travis-ci.org/crude-forum/crude-forum
 [travis-badge]: https://api.travis-ci.org/crude-forum/crude-forum.svg?branch=master
+[packagist]: https://packagist.org/packages/crude-forum/crude-forum
+[packagist-stable-badge]: https://poser.pugx.org/crude-forum/crude-forum/v/stable
+[packagist-total-badge]: https://poser.pugx.org/crude-forum/crude-forum/downloads
+[license-badge]: https://poser.pugx.org/crude-forum/crude-forum/license
 
 ## Prerequisites
 
