@@ -162,7 +162,7 @@ class Core
     public static function loadDotenv(string $dir): Dotenv
     {
         // load environment variable as config
-        $dotenv = new Dotenv();
+        $dotenv = (new Dotenv())->usePutenv();
         $dotenv->populate(
             [
                 'CRUDE_DIR' => $dir,
