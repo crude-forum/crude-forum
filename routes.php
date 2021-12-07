@@ -300,13 +300,13 @@ $router->addRoute(
                 'topLinks' => [
                     ['text' => '發言', 'href' => $forum->linkTo('post', null, 'add')],
                     ['text' => '上一頁', 'href' => $forum->linkTo('forum', (($page > $configs['postPerPage']) ? $page - $configs['postPerPage'] : 0))],
-                    #['text' => '下一頁', 'href' => $forum->linkTo('forum', ($page + $configs['postPerPage']))],
+                    //['text' => '下一頁', 'href' => $forum->linkTo('forum', ($page + $configs['postPerPage']))],
                     ['text' => '首頁', 'href' => $forum->linkTo('forum')],
                     ['text' => '主頁', 'href' => '/'],
                 ],
                 'bottomLinks' => [
                     ['text' => '發言', 'href' => $forum->linkTo('post', null, 'add')],
-                    #['text' => '上一頁', 'href' => $forum->linkTo('forum', (($page > $configs['postPerPage']) ? $page - $configs['postPerPage'] : 0))],
+                    //['text' => '上一頁', 'href' => $forum->linkTo('forum', (($page > $configs['postPerPage']) ? $page - $configs['postPerPage'] : 0))],
                     ['text' => '下一頁', 'href' => $forum->linkTo('forum', ($page + $configs['postPerPage']))],
                     ['text' => '首頁', 'href' => $forum->linkTo('forum')],
                     ['text' => '主頁', 'href' => '/'],
@@ -351,13 +351,13 @@ $router->addRoute(
                 'topLinks' => [
                     ['text' => '發言', 'href' => $forum->linkTo('post', null, 'add')],
                     ['text' => '上一頁', 'href' => $forum->linkTo($user_path, (($page > $configs['postPerPage']) ? $page - $configs['postPerPage'] : 0))],
-                    #['text' => '下一頁', 'href' => $forum->linkTo($user_path, ($page + $configs['postPerPage']))],
+                    //['text' => '下一頁', 'href' => $forum->linkTo($user_path, ($page + $configs['postPerPage']))],
                     ['text' => '首頁', 'href' => $forum->linkTo('forum')],
                     ['text' => '主頁', 'href' => '/'],
                 ],
                 'bottomLinks' => [
                     ['text' => '發言', 'href' => $forum->linkTo('post', null, 'add')],
-                    #['text' => '上一頁', 'href' => $forum->linkTo($user_path, (($page > $configs['postPerPage']) ? $page - $configs['postPerPage'] : 0))],
+                    //['text' => '上一頁', 'href' => $forum->linkTo($user_path, (($page > $configs['postPerPage']) ? $page - $configs['postPerPage'] : 0))],
                     ['text' => '下一頁', 'href' => $forum->linkTo($user_path, ($page + $configs['postPerPage']))],
                     ['text' => '首頁', 'href' => $forum->linkTo('forum')],
                     ['text' => '主頁', 'href' => '/'],

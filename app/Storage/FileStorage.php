@@ -128,9 +128,9 @@ class FileStorage implements Storage
                     // ignore normal post errors.
                     switch (true) {
                     case ($e instanceof PostNotFound):
-                        continue;
+                        continue 2;
                     case ($e instanceof PostInvalid):
-                        continue;
+                        continue 2;
                     default:
                         throw $e;
                     }

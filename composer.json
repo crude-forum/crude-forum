@@ -57,7 +57,7 @@
         "php": ">=7.1",
         "nikic/fast-route": "^1.2",
         "phata/widgetfy": "^2.3",
-        "symfony/dotenv": "^4.0",
+        "symfony/dotenv": "^6.0",
         "twig/twig": "^2.0",
         "fusonic/opengraph": "dev-master",
         "cache/filesystem-adapter": "^1.0@dev"
