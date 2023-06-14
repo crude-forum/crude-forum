@@ -3,7 +3,7 @@
 /**
  * Iterator for PostSummary wrapping an index lines iterator.
  *
- * PHP Version 7.1
+ * PHP Version 8.0
  *
  * @category File
  * @package  CrudeForum\CrudeForum
@@ -35,9 +35,9 @@ class ForumIndex implements \Iterator
     /**
      * Returns the current line as PostSummary
      *
-     * @return void
+     * @return mixed
      */
-    public function current()
+    public function current(): mixed
     {
         return PostSummary::fromIndexLine(
             trim($this->iter()->current()),

@@ -55,7 +55,7 @@ class Paged implements Wrapper, Iterator
      *
      * @return void
      */
-    public function rewind()
+    public function rewind(): void
     {
         $this->iter()->rewind(); // rewind first
         for ($i=0; $this->iter()->valid() && ($i < $this->_offset); $i++) {
@@ -69,9 +69,9 @@ class Paged implements Wrapper, Iterator
      *
      * @inheritDoc
      *
-     * @return mix
+     * @return void
      */
-    public function next()
+    public function next(): void
     {
         $this->iter()->next();
         $this->_pagePos += 1;

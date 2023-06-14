@@ -4,7 +4,7 @@
  * A standalone Iterator implementation to read files. Will
  * close the file resource when the object is unset / destructed.
  *
- * PHP Version 7.1
+ * PHP Version 8.0
  *
  * @category File
  * @package  CrudeForum\CrudeForum\Iterator
@@ -79,7 +79,7 @@ class FileObject implements Iterator
      *
      * @return mixed
      */
-    public function current()
+    public function current(): mixed
     {
         if ($this->_fh === false)
             throw new \Exception('file has already closed');
@@ -111,7 +111,7 @@ class FileObject implements Iterator
      *
      * @return void
      */
-    public function next()
+    public function next(): void
     {
         if ($this->_fh === false)
             throw new \Exception('file has already closed');
@@ -130,7 +130,7 @@ class FileObject implements Iterator
      *
      * @return void
      */
-    public function rewind()
+    public function rewind(): void
     {
         if ($this->_fh === false)
             throw new \Exception('file has already closed');
@@ -146,9 +146,9 @@ class FileObject implements Iterator
      *
      * @inheritDoc
      *
-     * @return void
+     * @return bool
      */
-    public function valid()
+    public function valid(): bool
     {
         if ($this->_fh === false)
             throw new \Exception('file has already closed');

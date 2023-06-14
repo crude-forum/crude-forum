@@ -3,7 +3,7 @@
 /**
  * Trait implementation of \Iterator
  *
- * PHP Version 7.1
+ * PHP Version 8.0
  *
  * @category File
  * @package  CrudeForum\CrudeForum\Iterator
@@ -65,9 +65,9 @@ trait ProxyTrait
     /**
      * Pass on current() to inner iterator
      *
-     * @return void
+     * @return mixed
      */
-    public function current()
+    public function current(): mixed
     {
         return $this->_iter->current();
     }
@@ -75,9 +75,9 @@ trait ProxyTrait
     /**
      * Pass on key() to inner iterator
      *
-     * @return void
+     * @return mixed
      */
-    public function key()
+    public function key(): mixed
     {
         return $this->_iter->key();
     }
@@ -87,9 +87,9 @@ trait ProxyTrait
      *
      * @return void
      */
-    public function next()
+    public function next(): void
     {
-        return $this->_iter->next();
+        $this->_iter->next();
     }
 
     /**
@@ -97,17 +97,17 @@ trait ProxyTrait
      *
      * @return void
      */
-    public function rewind()
+    public function rewind(): void
     {
-        return $this->_iter->rewind();
+        $this->_iter->rewind();
     }
 
     /**
      * Pass on valid() to inner iterator
      *
-     * @return void
+     * @return bool
      */
-    public function valid()
+    public function valid(): bool
     {
         return $this->_iter->valid();
     }
