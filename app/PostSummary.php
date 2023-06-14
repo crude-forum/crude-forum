@@ -35,6 +35,7 @@ class PostSummary
     public $title = '';
     public $author = '';
     public $time = '';
+    public $pos = 0;
 
     /**
      * Constructor of a PostSummary
