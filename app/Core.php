@@ -134,7 +134,7 @@ class Core
         if (($scheme == 'http' && $port != 80)
             || ($scheme == 'https' && $port != 443)
         ) {
-            return "{$scheme}://{$host}:${port}";
+            return "{$scheme}://{$host}:{$port}";
         }
         return "{$scheme}://{$host}";
     }
@@ -581,7 +581,7 @@ class Core
 
         // context of the request
         $context = array(
-            'time' => strftime("%a %b %d %X %Y"),
+            'time' => date("D M d H:i:s Y"),
             'remoteAddr' => $_SERVER["REMOTE_ADDR"] ?? '',
             'xForwardedFor' => $_SERVER["HTTP_X_FORWARDED_FOR"] ?? '',
             'user' => $user,
