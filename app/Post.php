@@ -43,6 +43,7 @@ class Post
     public $title = '';
     public $body = '';
     public $header = []; // author, time information (meta data)
+    public $author = '';
     public $noAutoBr = false;
 
     /**
