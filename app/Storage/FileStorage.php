@@ -367,7 +367,7 @@ class FileStorage implements Storage
             throw new Exception("unable to create log file: {$logfn}");
         }
         if (file_exists($logfn) && filesize($logfn) >= 32768) {
-            rename($logfn, $logfn . '.' . strftime("%Y%m%d"));
+            rename($logfn, $logfn . '.' . date('Ymd'));
         }
 
         $logFile = fopen($logfn, "a");
