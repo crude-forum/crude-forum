@@ -16,13 +16,13 @@
 
 namespace CrudeForum\CrudeForum;
 
+use \DI\Container;
 use \FastRoute\Dispatcher;
 use \Twig\Environment;
 use \Twig\TwigFunction;
 use \Symfony\Component\Dotenv\Dotenv;
 use \CrudeForum\CrudeForum\Exception\PostNotFound;
 use \Generator;
-use Psr\Container\ContainerInterface;
 
 /**
  * Core provides access for bootstraping the forum.
@@ -198,7 +198,7 @@ class Core
     /**
      * Bootstrap the routing with dispatcher, forum object and the route function.
      *
-     * @param ContainerInterface $container
+     * @param Container $container
      *     Container instance for getting dispatcher, forum object and environment configs.
      * @param callable $route
      *     Route function that returns request method and path for route.
@@ -207,7 +207,7 @@ class Core
      * @return void
      */
     public static function bootstrap(
-        ContainerInterface $container,
+        Container $container,
         callable $route,
     ) {
 
@@ -250,7 +250,10 @@ class Core
             $handler = $routeInfo[1];
             $vars = $routeInfo[2];
             try {
-                $handler($vars, $forum, $configs);
+                $container->call($handler, [
+                    'vars' => $vars,
+                    'configs' => $configs,
+                ]);
             } catch (\Exception $e) {
                 switch (true) {
                 case ($e instanceof PostNotFound):
