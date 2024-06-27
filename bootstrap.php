@@ -16,12 +16,12 @@
 // common bootstrap code
 require_once __DIR__ . '/vendor/autoload.php';
 
-use \CrudeForum\CrudeForum\Core;
-use \CrudeForum\CrudeForum\Storage\FileStorage;
-use \CrudeForum\CrudeForum\StreamFilter;
-use \League\Flysystem\Adapter\Local;
-use \League\Flysystem\Filesystem;
-use \Cache\Adapter\Filesystem\FilesystemCachePool;
+use CrudeForum\CrudeForum\Core;
+use CrudeForum\CrudeForum\Storage\FileStorage;
+use CrudeForum\CrudeForum\StreamFilter;
+use League\Flysystem\Adapter\Local;
+use League\Flysystem\Filesystem;
+use Cache\Adapter\Filesystem\FilesystemCachePool;
 
 // load env config
 Core::loadDotenv(__DIR__);
