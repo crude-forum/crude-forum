@@ -113,6 +113,9 @@ $container = (function (): ContainerBuilder {
             });
             $twig->addFilter($link);
 
+            // Add configs as global variable
+            $twig->addGlobal('configs', $container->get('configs'));
+
             return $twig;
         },
 

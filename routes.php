@@ -24,7 +24,7 @@ use CrudeForum\CrudeForum\Iterator\Map;
 $router->addRoute(
     'GET',
     '/post/{postID:\d+}',
-    function (array $vars, Core $forum, array $configs) {
+    function (array $vars, Core $forum) {
         $lock = $forum->getLock();
         $postID = $vars['postID'];
 
@@ -38,7 +38,6 @@ $router->addRoute(
         echo $forum->template->render(
             'post.twig',
             [
-                'configs' => $configs,
                 'topLinks' => [
                     ['text' => '回覆', 'href' => $forum->linkTo('post', $postID, 'reply')],
                     ['text' => '上一發言', 'href' => $forum->linkTo('post', $postID, 'prev')],
@@ -61,17 +60,14 @@ $router->addRoute(
 $router->addRoute(
     'GET',
     '/post/{postID:\d+}/prev',
-    function (array $vars, Core $forum, array $configs) {
+    function (array $vars, Core $forum) {
         $lock = $forum->getLock();
         $postID = $vars['postID'];
         try {
             $prev = $forum->readPrevPostSummary($postID);
             $lock->unlock();
             header('Refresh: 0; URL=' . $forum->linkTo('post', $prev->id));
-            echo $forum->template->render(
-                'base.twig',
-                ['configs' => $configs]
-            );
+            echo $forum->template->render('base.twig');
         } catch (Exception $e) {
             $lock->unlock();
             die($e->getMessage());
@@ -82,17 +78,14 @@ $router->addRoute(
 $router->addRoute(
     'GET',
     '/post/{postID:\d+}/next',
-    function (array $vars, Core $forum, array $configs) {
+    function (array $vars, Core $forum) {
         $lock = $forum->getLock();
         $postID = $vars['postID'];
         try {
             $next = $forum->readNextPostSummary($postID);
             $lock->unlock();
             header('Refresh: 0; URL=' . $forum->linkTo('post', $next->id));
-            echo $forum->template->render(
-                'base.twig',
-                ['configs' => $configs]
-            );
+            echo $forum->template->render('base.twig');
         } catch (Exception $e) {
             $lock->unlock();
             die($e->getMessage());
@@ -116,10 +109,7 @@ $router->addRoute(
                     $configs['postPerPage'] * floor($postSummary->pos / $configs['postPerPage'])
                 )
             );
-            echo $forum->template->render(
-                'base.twig',
-                ['configs' => $configs]
-            );
+            echo $forum->template->render('base.twig');
         } catch (Exception $e) {
             $lock->unlock();
             die($e->getMessage());
@@ -127,7 +117,7 @@ $router->addRoute(
     }
 );
 
-$showForm = function (array $vars, Core $forum, array $configs) {
+$showForm = function (array $vars, Core $forum) {
     $postID = $vars['postID'] ?? '';
     $action = $vars['action'];
 
@@ -157,7 +147,6 @@ $showForm = function (array $vars, Core $forum, array $configs) {
         'postForm.twig',
         [
             'pageClass' => 'page-form',
-            'configs' => $configs,
             'action' => $action,
             'postID' => $postID,
             'post' => $post,
@@ -210,7 +199,6 @@ $savePost = function (array $vars, Core $forum, array $configs) {
             [
                 'pageClass' => 'page-form',
                 'errors' => $errors,
-                'configs' => $configs,
                 'action' => $action,
                 'postID' => $postID,
                 'post' => $post,
@@ -248,10 +236,7 @@ $savePost = function (array $vars, Core $forum, array $configs) {
             $forum->incCount();
             $lock->unlock();
             header('Refresh: 0; URL=' . $forum->linkTo('forum'));
-            echo $forum->template->render(
-                'base.twig',
-                ['configs' => $configs]
-            );
+            echo $forum->template->render('base.twig');
             break;
         case 'reply':
             $parentID = $postID;
@@ -275,10 +260,7 @@ $savePost = function (array $vars, Core $forum, array $configs) {
             $forum->incCount();
             $lock->unlock();
             header('Refresh: 0; URL=' . $forum->linkTo('post', $parentID, 'back'));
-            echo $forum->template->render(
-                'base.twig',
-                ['configs' => $configs]
-            );
+            echo $forum->template->render('base.twig');
             break;
         case 'edit':
             $existingPost = $forum->readPost($postID);
@@ -303,10 +285,7 @@ $savePost = function (array $vars, Core $forum, array $configs) {
             $forum->writePost($postID, $post);
             $lock->unlock();
             header('Refresh: 0; URL=' . $forum->linkTo('post', $postID));
-            echo $forum->template->render(
-                'base.twig',
-                ['configs' => $configs]
-            );
+            echo $forum->template->render('base.twig');
             break;
     }
 };
@@ -326,7 +305,6 @@ $router->addRoute(
         $contents = $forum->template->render(
             'forum.twig',
             [
-                'configs' => $configs,
                 'page' => $page,
                 'topLinks' => [
                     ['text' => '發言', 'href' => $forum->linkTo('post', null, 'add')],
@@ -379,7 +357,6 @@ $router->addRoute(
         $contents = $forum->template->render(
             'forum.twig',
             [
-                'configs' => $configs,
                 'page' => $page,
                 'topLinks' => [
                     ['text' => '發言', 'href' => $forum->linkTo('post', null, 'add')],
@@ -435,7 +412,6 @@ $router->addRoute(
                     $postSummary->rssBody = $forum->template->render(
                         'rssPostBody.twig',
                         [
-                            'configs' => $configs,
                             'sitePath' => 'http://localhost:8080',
                             'postSummary' => $postSummary,
                             'post' => $postSummary->post,
@@ -462,7 +438,6 @@ $router->addRoute(
                     $postSummary->rssBody = $forum->template->render(
                         'rssPostBody.twig',
                         [
-                            'configs' => $configs,
                             'sitePath' => 'http://localhost:8080',
                             'postSummary' => $postSummary,
                             'post' => $postSummary->post,
@@ -490,7 +465,6 @@ $router->addRoute(
         echo $forum->template->render(
             'rss.twig',
             [
-                'configs' => $configs,
                 'link' => $forum->linkTo('forum', null, null, ['absolute' => true]),
                 'language' => 'zh-hk',
                 'pubDate' => date('D, d M Y H:i:s ', time()),
