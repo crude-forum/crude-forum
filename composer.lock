@@ -914,23 +914,23 @@
         },
         {
             "name": "phata/widgetfy",
-            "version": "v2.4",
+            "version": "v2.5",
             "source": {
                 "type": "git",
                 "url": "https://gitlab.com/phata/widgetfy.git",
-                "reference": "e216ba04ff052144e70d0df84829806e030701ee"
+                "reference": "2b7e3050cd36272069385c4f1be4185e87ed42c6"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://gitlab.com/api/v4/projects/phata%2Fwidgetfy/repository/archive.zip?sha=e216ba04ff052144e70d0df84829806e030701ee",
-                "reference": "e216ba04ff052144e70d0df84829806e030701ee",
+                "url": "https://gitlab.com/api/v4/projects/phata%2Fwidgetfy/repository/archive.zip?sha=2b7e3050cd36272069385c4f1be4185e87ed42c6",
+                "reference": "2b7e3050cd36272069385c4f1be4185e87ed42c6",
                 "shasum": ""
             },
             "require": {
                 "php": ">=7.1"
             },
             "require-dev": {
-                "phpunit/phpunit": "^6.5"
+                "phpunit/phpunit": "^7"
             },
             "type": "library",
             "autoload": {
@@ -943,7 +943,7 @@
             },
             "notification-url": "https://packagist.org/downloads/",
             "license": [
-                "LGPL-3.0"
+                "LGPL-3.0-or-later"
             ],
             "authors": [
                 {
@@ -959,7 +959,11 @@
                 "embed",
                 "url translate"
             ],
-            "time": "2018-02-20T03:54:42+00:00"
+            "support": {
+                "issues": "https://gitlab.com/phata/widgetfy/-/issues",
+                "source": "https://gitlab.com/phata/widgetfy/-/tree/v2.5"
+            },
+            "time": "2024-06-27T17:58:49+00:00"
         },
         {
             "name": "php-di/invoker",
