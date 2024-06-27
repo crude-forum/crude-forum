@@ -3,7 +3,7 @@
 /**
  * Bootstrapping the main objects to use in the forum
  *
- * PHP Version 7.1
+ * PHP Version 8.1
  *
  * @file     bootstrap.php
  * @category File
@@ -67,11 +67,11 @@ if (!empty(Core::env('CRUDE_DIR_CACHE'))) {
 // define body-to-html filter
 $bodyToHTML = new \Twig\TwigFilter('bodyToHTML', function ($string) use ($cache) {
     $filter = StreamFilter::pipeString(
-        [\CrudeForum\CrudeForum\StreamFilter::class, 'quoteToBlockquote'],
-        [\CrudeForum\CrudeForum\StreamFilter::class, 'reduceFlashEmbed'],
-        \CrudeForum\CrudeForum\StreamFilter::autoWidgetfy($cache, []),
-        [\CrudeForum\CrudeForum\StreamFilter::class, 'autoLink'],
-        [\CrudeForum\CrudeForum\StreamFilter::class, 'autoParagraph']
+        StreamFilter::quoteToBlockquote(...),
+        StreamFilter::reduceFlashEmbed(...),
+        StreamFilter::autoWidgetfy($cache, [])(...),
+        StreamFilter::autoLink(...),
+        StreamFilter::autoParagraph(...),
     );
 
     // concat filtered lines back into string
