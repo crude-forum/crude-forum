@@ -96,7 +96,7 @@ class StreamFilter
     public static function pipeString(callable ...$filters): callable
     {
         return function (string $string) use ($filters): string {
-            $filter = static::pipe($filters);
+            $filter = static::pipe(...$filters);
             return static::pipeToString(
                 $filter(
                     static::stringToPipe($string)
