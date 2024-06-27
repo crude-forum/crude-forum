@@ -54,7 +54,12 @@ class FileStorage implements Storage
      */
     private string $logDirectory;
 
-    private $_lock;
+    /**
+     * Lock object for file locking.
+     *
+     * @var Lock|null
+     */
+    private Lock|null $lock = null;
 
     /**
      * Construct method
@@ -366,8 +371,8 @@ class FileStorage implements Storage
      */
     public function getLock(): Lock
     {
-        $this->_lock = new FileStorageLock($this->dataDirectory . '/lock');
-        return $this->_lock;
+        $this->lock = new FileStorageLock($this->dataDirectory . '/lock');
+        return $this->lock;
     }
 
     /**
