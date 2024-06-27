@@ -1,12 +1,11 @@
 <?php
 
-require __DIR__ . '/../../bootstrap.php';
-
 use \CrudeForum\CrudeForum\Core;
+
+require __DIR__ . '/../../bootstrap.php';
 
 $action = empty(trim($_SERVER['QUERY_STRING'])) ? 'add' : 'reply';
 Core::bootstrap(
-  $dispatcher,
-  $forum,
+  $container,
   Core::routeQueryString('/post', $action)
 );

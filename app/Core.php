@@ -16,6 +16,7 @@
 
 namespace CrudeForum\CrudeForum;
 
+use \DI\Container;
 use \FastRoute\Dispatcher;
 use \Twig\Environment;
 use \Twig\TwigFunction;
@@ -54,10 +55,8 @@ class Core
     {
 
         // add helper functions
-        $twig->addFunction(
-            new TwigFunction('linkTo', array(&$this, 'linkTo'))
-        );
-        $twig->addFunction(new TwigFunction('str_repeat', 'str_repeat'));
+        $twig->addFunction(new TwigFunction('linkTo', $this->linkTo(...)));
+        $twig->addFunction(new TwigFunction('str_repeat', \str_repeat(...)));
         $twig->addFunction(
             new TwigFunction(
                 'postRssPubDate',
@@ -124,9 +123,9 @@ class Core
     /**
      * Return the configured default base URL.
      *
-     * @return void
+     * @return string
      */
-    public static function defaultBaseURL()
+    public static function defaultBaseURL(): string
     {
         $host = $_SERVER['SERVER_NAME'];
         $scheme = strtolower($_SERVER['REQUEST_SCHEME'] ?? 'http');
@@ -199,20 +198,26 @@ class Core
     /**
      * Bootstrap the routing with dispatcher, forum object and the route function.
      *
-     * @param Dispatcher $dispatcher Route dispatcher that
-     *                               dispatch function for a route.
-     * @param Core       $forum      Forum object.
-     * @param callable   $route      Route function that returns request
-     *                               method and path for route.
+     * @param Container $container
+     *     Container instance for getting dispatcher, forum object and environment configs.
+     * @param callable $route
+     *     Route function that returns request method and path for route.
+     *     Function should retrun array of [method, path].
      *
      * @return void
      */
     public static function bootstrap(
-        Dispatcher $dispatcher,
-        Core $forum,
+        Container $container,
         callable $route,
-        array $configs=[]
     ) {
+
+        /** @var Dispatcher $dispatcher */
+        $dispatcher = $container->get('dispatcher');
+        /** @var Core $forum */
+        $forum = $container->get('forum');
+        /** @var array $configs */
+        $configs = $container->get('configs');
+
         list($httpMethod, $uri) = $route();
         $routeInfo = $dispatcher->dispatch($httpMethod, $uri);
         switch ($routeInfo[0]) {
@@ -245,7 +250,10 @@ class Core
             $handler = $routeInfo[1];
             $vars = $routeInfo[2];
             try {
-                $handler($vars, $forum);
+                $container->call($handler, [
+                    'vars' => $vars,
+                    'configs' => $configs,
+                ]);
             } catch (\Exception $e) {
                 switch (true) {
                 case ($e instanceof PostNotFound):
@@ -381,7 +389,7 @@ class Core
             // saving post with no postID equals create new post
             if (empty($id) && $action === 'save') {
                 array_pop($path);
-                array_push('add');
+                array_push($path, 'add');
             }
         }
         return implode('/', $path) . $query;

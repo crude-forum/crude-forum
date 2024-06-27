@@ -4,7 +4,7 @@
  * Map each iteration output of inner iterator with the
  * provided callable.
  *
- * PHP Version 7.1
+ * PHP Version 8.1
  *
  * @category File
  * @package  CrudeForum\CrudeForum\Iterator
@@ -47,9 +47,9 @@ class Map implements Wrapper, Iterator {
     /**
      * Pass on current() to inner iterator
      *
-     * @return void
+     * @return mixed
      */
-    public function current()
+    public function current(): mixed
     {
         return call_user_func($this->_callback, $this->_iter->current());
     }

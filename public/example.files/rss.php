@@ -1,11 +1,10 @@
 <?php
 
-require __DIR__ . '/../../bootstrap.php';
-
 use \CrudeForum\CrudeForum\Core;
 
+require __DIR__ . '/../../bootstrap.php';
+
 Core::bootstrap(
-    $dispatcher,
-    $forum,
+    $container,
     Core::routeQueryString('/rss')
 );

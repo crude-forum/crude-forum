@@ -17,6 +17,7 @@ namespace CrudeForum\CrudeForum;
 
 use \Phata\Widgetfy\Core as Widgetfy;
 use \Phata\Widgetfy\Theme as WidgetfyTheme;
+use \Psr\Cache\CacheItemPoolInterface;
 use \Fusonic\OpenGraph\Consumer;
 use \GuzzleHttp\Client as HttpClient;
 use \Generator;
@@ -96,10 +97,10 @@ class StreamFilter
     public static function pipeString(callable ...$filters): callable
     {
         return function (string $string) use ($filters): string {
-            $filter = \call_user_func_array('\CrudeForum\CrudeForum\StreamFilter::pipe', $filters);
-            return StreamFilter::pipeToString(
+            $filter = static::pipe(...$filters);
+            return static::pipeToString(
                 $filter(
-                    StreamFilter::stringToPipe($string)
+                    static::stringToPipe($string)
                 )
             );
         };
@@ -171,17 +172,16 @@ class StreamFilter
     /**
      * Turn lines with a single URL, if possible, a video embed widget.
      *
-     * @param CacheInterface $cache ?CacheInterface of PHP Cache
-     * @param array     $options Options for Widgetfy::translate function
+     * @param CacheItemPoolInterface|null  $cache    Cache instance for caching opengraph
      *
      * @return function (:Generator) :Generator
      */
-    public static function autoWidgetfy($cache=null, array $options=[]): Callable
+    public static function autoWidgetfy(CacheItemPoolInterface $cache=null): Callable
     {
         $regex = '~^((?<![="\'])(https?)://([^\s<]+)|(?<!\/)(www\.[^\s<]+?\.[^\s<]+))(?<![\.,:])$~i';
-        return function (Generator $lines) use ($regex, $cache, $options): Generator
+        return function (Generator $lines) use ($regex, $cache): Generator
         {
-            return (function () use ($lines, $regex, $cache, $options)
+            return (function () use ($lines, $regex, $cache)
             {
                 $ogConsumer = new Consumer();
                 foreach ($lines as $line) {
