@@ -173,16 +173,15 @@ class StreamFilter
      * Turn lines with a single URL, if possible, a video embed widget.
      *
      * @param CacheItemPoolInterface|null  $cache    Cache instance for caching opengraph
-     * @param array                        $options  Options for Widgetfy::translate function
      *
      * @return function (:Generator) :Generator
      */
-    public static function autoWidgetfy(CacheItemPoolInterface $cache=null, array $options=[]): Callable
+    public static function autoWidgetfy(CacheItemPoolInterface $cache=null): Callable
     {
         $regex = '~^((?<![="\'])(https?)://([^\s<]+)|(?<!\/)(www\.[^\s<]+?\.[^\s<]+))(?<![\.,:])$~i';
-        return function (Generator $lines) use ($regex, $cache, $options): Generator
+        return function (Generator $lines) use ($regex, $cache): Generator
         {
-            return (function () use ($lines, $regex, $cache, $options)
+            return (function () use ($lines, $regex, $cache)
             {
                 $ogConsumer = new Consumer();
                 foreach ($lines as $line) {
