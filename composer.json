@@ -61,7 +61,8 @@
         "twig/twig": "^2.0",
         "fusonic/opengraph": "dev-master",
         "cache/filesystem-adapter": "^1.0@dev",
-        "guzzlehttp/guzzle": "7.9.x-dev"
+        "guzzlehttp/guzzle": "7.9.x-dev",
+        "php-di/php-di": "^7.0"
     },
     "require-dev": {
         "kahlan/kahlan": "^4.0"
