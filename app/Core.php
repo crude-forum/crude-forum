@@ -381,7 +381,7 @@ class Core
             // saving post with no postID equals create new post
             if (empty($id) && $action === 'save') {
                 array_pop($path);
-                array_push('add');
+                array_push($path, 'add');
             }
         }
         return implode('/', $path) . $query;
