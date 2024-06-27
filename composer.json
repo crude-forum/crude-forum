@@ -3,7 +3,7 @@
     "description": "A very simple, crude and insecure web dicussion forum developed using PHP. Store data in text files in back-end.",
     "type": "project",
     "license": "MIT",
-    "minimum-stability": "dev",
+    "minimum-stability": "stable",
     "authors": [
         {
             "name": "Y W Sing",
@@ -54,7 +54,7 @@
         }
     },
     "require": {
-        "php": ">=7.1",
+        "php": ">=8.1",
         "nikic/fast-route": "^1.2",
         "phata/widgetfy": "^2.3",
         "symfony/dotenv": "^6.0",
