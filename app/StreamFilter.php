@@ -96,10 +96,10 @@ class StreamFilter
     public static function pipeString(callable ...$filters): callable
     {
         return function (string $string) use ($filters): string {
-            $filter = \call_user_func_array('\CrudeForum\CrudeForum\StreamFilter::pipe', $filters);
-            return StreamFilter::pipeToString(
+            $filter = static::pipe($filters);
+            return static::pipeToString(
                 $filter(
-                    StreamFilter::stringToPipe($string)
+                    static::stringToPipe($string)
                 )
             );
         };
