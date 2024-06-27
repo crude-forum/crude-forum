@@ -30,12 +30,14 @@ use \CrudeForum\CrudeForum\Exception\PostInvalid;
 class PostSummary
 {
 
-    public $id = '';
-    public $level = 0;
-    public $title = '';
-    public $author = '';
-    public $time = '';
-    public $pos = 0;
+    public string $id = '';
+    public int $level = 0;
+    public string $title = '';
+    public string $author = '';
+    public string $time = '';
+    public int $pos = 0;
+    public string|null $post = null;
+    public string $rssBody = '';
 
     /**
      * Constructor of a PostSummary
@@ -48,12 +50,12 @@ class PostSummary
      * @param integer $pos    Position of the Post within the forum index.
      */
     public function __construct(
-        $id='',
-        $level=0,
-        $title='',
-        $author='',
-        $time='',
-        $pos=0
+        string $id='',
+        int $level=0,
+        string $title='',
+        string $author='',
+        string $time='',
+        int $pos=0
     ) {
         $this->id = $id;
         $this->level = $level;
@@ -74,19 +76,19 @@ class PostSummary
     public static function fromPost(Post $post): ?PostSummary
     {
         if ($post->id === null) {
-            throw PostInvalid('post has no id');
+            throw new PostInvalid('post has no id');
             return null;
         }
         if (empty($post->title)) {
-            throw PostInvalid('post has no title');
+            throw new PostInvalid('post has no title');
             return null;
         }
         if (!isset($post->header['author'])) {
-            throw PostInvalid('post has undefined author');
+            throw new PostInvalid('post has undefined author');
             return null;
         }
         if (!isset($post->header['time'])) {
-            throw PostInvalid('post has undefined time');
+            throw new PostInvalid('post has undefined time');
             return null;
         }
         return new PostSummary($post->id, 0, $post->title, $post->header['author'], $post->header['time']);
