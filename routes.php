@@ -20,6 +20,13 @@ use CrudeForum\CrudeForum\Iterator\Utils;
 use CrudeForum\CrudeForum\Iterator\Paged;
 use CrudeForum\CrudeForum\Iterator\Filtered;
 use CrudeForum\CrudeForum\Iterator\Map;
+use FastRoute\RouteCollector;
+
+/**
+ * Router object passed on by dispatcher's factory function in bootstrap.php
+ *
+ * @var RouteCollector $router
+ */
 
 $router->addRoute(
     'GET',
@@ -138,9 +145,14 @@ $showForm = function (array $vars, Core $forum) {
         if ($parent == null) {
             die('post not found');
         }
-    } else if ($action == 'add' && empty($postID)) {
+    } else if ($action == 'add') {
+        if ($postID !== '') {
+            throw new \Exception('not supposed to create post with postID');
+        }
         $post = new Post();
         $post->author = $_COOKIE['forumName'] ?? '';
+    } else {
+        throw new \Exception('invalid action');
     }
 
     echo $forum->template->render(
