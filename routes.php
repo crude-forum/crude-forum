@@ -13,17 +13,18 @@
  * @link     https://github.com/crude-forum/crude-forum/blob/master/routes.php Source Code
  */
 
-use \CrudeForum\CrudeForum\Post;
-use \CrudeForum\CrudeForum\PostSummary;
-use \CrudeForum\CrudeForum\Iterator\Utils;
-use \CrudeForum\CrudeForum\Iterator\Paged;
-use \CrudeForum\CrudeForum\Iterator\Filtered;
-use \CrudeForum\CrudeForum\Iterator\Map;
+use CrudeForum\CrudeForum\Core;
+use CrudeForum\CrudeForum\Post;
+use CrudeForum\CrudeForum\PostSummary;
+use CrudeForum\CrudeForum\Iterator\Utils;
+use CrudeForum\CrudeForum\Iterator\Paged;
+use CrudeForum\CrudeForum\Iterator\Filtered;
+use CrudeForum\CrudeForum\Iterator\Map;
 
 $router->addRoute(
     'GET',
     '/post/{postID:\d+}',
-    function ($vars, $forum, $configs) {
+    function (array $vars, Core $forum, array $configs) {
         $lock = $forum->getLock();
         $postID = $vars['postID'];
 
@@ -60,7 +61,7 @@ $router->addRoute(
 $router->addRoute(
     'GET',
     '/post/{postID:\d+}/prev',
-    function ($vars, $forum, $configs) {
+    function (array $vars, Core $forum, array $configs) {
         $lock = $forum->getLock();
         $postID = $vars['postID'];
         try {
@@ -81,7 +82,7 @@ $router->addRoute(
 $router->addRoute(
     'GET',
     '/post/{postID:\d+}/next',
-    function ($vars, $forum, $configs) {
+    function (array $vars, Core $forum, array $configs) {
         $lock = $forum->getLock();
         $postID = $vars['postID'];
         try {
@@ -102,7 +103,7 @@ $router->addRoute(
 $router->addRoute(
     'GET',
     '/post/{postID:\d+}/back',
-    function ($vars, $forum, $configs) {
+    function (array $vars, Core $forum, array $configs) {
         $lock = $forum->getLock();
         $postID = $vars['postID'];
         try {
@@ -126,7 +127,7 @@ $router->addRoute(
     }
 );
 
-$showForm = function ($vars, $forum, $configs) {
+$showForm = function (array $vars, Core $forum, array $configs) {
     $postID = $vars['postID'] ?? '';
     $action = $vars['action'];
 
@@ -166,7 +167,7 @@ $showForm = function ($vars, $forum, $configs) {
 $router->addRoute('GET', '/post/{postID:\d+}/{action:edit|reply}', $showForm);
 $router->addRoute('GET', '/post/{action:add}', $showForm);
 
-$savePost = function ($vars, $forum, $configs) {
+$savePost = function (array $vars, Core $forum, array $configs) {
     $forum->log("say?");
     $action = $vars['action'] ?? '';
     $postID = $vars['postID'] ?? false;
@@ -315,7 +316,7 @@ $router->addRoute('POST', '/post/{action:add}', $savePost);
 $router->addRoute(
     'GET',
     '/forum[/[{page:\d+}]]',
-    function ($vars, $forum, $configs) {
+    function (array $vars, Core $forum, array $configs) {
 
         $page = $vars['page'] ?? 0;
         $forum->log("forum?" . $page);
@@ -352,7 +353,7 @@ $router->addRoute(
 $router->addRoute(
     'GET',
     '/user/{username}[/[{page:\d+}]]',
-    function ($vars, $forum, $configs) {
+    function (array $vars, Core $forum, array $configs) {
         $page = $vars['page'] ?? 0;
         $forum->log("forum?" . $page);
 
@@ -406,7 +407,7 @@ $router->addRoute(
 $router->addRoute(
     'GET',
     '/rss',
-    function ($vars, $forum, $configs) {
+    function (array $vars, Core $forum, array $configs) {
         $mode = $_GET['mode'] ?? 'post';
 
         // read post summaries as reference to the mode
