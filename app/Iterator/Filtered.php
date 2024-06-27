@@ -4,7 +4,7 @@
  * Filtering each iteration output of inner iterator with the
  * provided callable.
  *
- * PHP Version 7.1
+ * PHP Version 8.1
  *
  * @category File
  * @package  CrudeForum\CrudeForum\Iterator
@@ -74,7 +74,7 @@ class Filtered implements Wrapper, Iterator
      *
      * @return void
      */
-    public function rewind()
+    public function rewind(): void
     {
         $this->iter()->rewind();
         $this->_tryUntilPass();
@@ -90,7 +90,7 @@ class Filtered implements Wrapper, Iterator
      *
      * @return void
      */
-    public function next()
+    public function next(): void
     {
         $this->iter()->next();
         $this->_tryUntilPass();

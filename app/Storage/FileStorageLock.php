@@ -3,7 +3,7 @@
 /**
  * A file based lock with mandatory lock mechanism of flock.
  *
- * PHP Version 7.1
+ * PHP Version 8.1
  *
  * @category File
  * @package  CrudeForum\CrudeForum\Storage
@@ -42,11 +42,11 @@ class FileStorageLock implements Lock
     public function __construct(string $filename)
     {
         if (!file_exists($filename) && !touch($filename)) {
-            throw new Exception("unable to create lock file: {$filename}");
+            throw new \Exception("unable to create lock file: {$filename}");
         }
         $this->_fh = fopen($filename, "r+");
         if (!$this->_fh || !flock($this->_fh, LOCK_EX)) {
-            throw new Exception("Unable to get lock");
+            throw new \Exception("Unable to get lock");
         }
     }
 
