@@ -16,16 +16,19 @@
 // common bootstrap code
 require_once __DIR__ . '/vendor/autoload.php';
 
-use Cache\Adapter\Common\AbstractCachePool;
 use Cache\Adapter\Filesystem\FilesystemCachePool;
 use CrudeForum\CrudeForum\Core;
+use CrudeForum\CrudeForum\Storage;
 use CrudeForum\CrudeForum\Storage\FileStorage;
 use CrudeForum\CrudeForum\StreamFilter;
 use DI\ContainerBuilder;
+use FastRoute\Dispatcher;
 use FastRoute\RouteCollector;
 use League\Flysystem\Adapter\Local;
 use League\Flysystem\Filesystem;
+use Psr\Cache\CacheItemPoolInterface;
 use Psr\Container\ContainerInterface;
+use Twig\Environment;
 
 // load env config
 Core::loadDotenv(__DIR__);
@@ -47,14 +50,16 @@ $container = (function (): ContainerBuilder {
 
     $builder->addDefinitions([
 
-        'storage' => function () {
+        'storage' => DI\get(Storage::class),
+        Storage::class => function () {
             return new FileStorage(
                 logDirectory: Core::env('CRUDE_DIR_LOGS', __DIR__ . '/data/logs'),
                 dataDirectory: Core::env('CRUDE_DIR_DATA', __DIR__ . '/data/forumdata_utf8'),
             );
         },
 
-        'cache' => function () {
+        'cache' => DI\get(CacheItemPoolInterface::class),
+        CacheItemPoolInterface::class => function () {
             $cache = null;
             if (!empty(Core::env('CRUDE_DIR_CACHE'))) {
                 $fsAdapter = new Local(Core::env('CRUDE_DIR_CACHE') . '/common');
@@ -64,7 +69,8 @@ $container = (function (): ContainerBuilder {
             return $cache;
         },
 
-        'twig' => function (ContainerInterface $container) {
+        'twig' => DI\get(Environment::class),
+        Environment::class => function (ContainerInterface $container) {
             $twig = new \Twig\Environment(
                 new \Twig\Loader\FilesystemLoader(
                     [
@@ -81,13 +87,13 @@ $container = (function (): ContainerBuilder {
             // define body-to-html filter
             $bodyToHTML = new \Twig\TwigFilter('bodyToHTML', function ($string) use ($container) {
 
-                /** @var AbstractCachePool */
+                /** @var CacheItemPoolInterface */
                 $cache = $container->get('cache');
 
                 $filter = StreamFilter::pipeString(
                     StreamFilter::quoteToBlockquote(...),
                     StreamFilter::reduceFlashEmbed(...),
-                    StreamFilter::autoWidgetfy($cache, [])(...),
+                    StreamFilter::autoWidgetfy($cache)(...),
                     StreamFilter::autoLink(...),
                     StreamFilter::autoParagraph(...),
                 );
@@ -110,7 +116,8 @@ $container = (function (): ContainerBuilder {
             return $twig;
         },
 
-        'forum' => function (ContainerInterface $container) {
+        'forum' => DI\get(Core::class),
+        Core::class => function (ContainerInterface $container) {
             /** @var FileStorage */
             $storage = $container->get('storage');
 
@@ -147,7 +154,8 @@ $container = (function (): ContainerBuilder {
             ];
         },
 
-        'dispatcher' => function () {
+        'dispatcher' => DI\get(Dispatcher::class),
+        Dispatcher::class => function () {
             // use routes defined in routes.php
             return FastRoute\simpleDispatcher(fn(RouteCollector $router)  => include __DIR__ . '/routes.php');
         },
