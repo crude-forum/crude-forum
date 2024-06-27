@@ -329,7 +329,7 @@ class FileStorage implements Storage
                 foreach ($oldIndex as $oldPostSummary) {
                     fputs($fh, $oldPostSummary->toIndexLine());
                 }
-                unset($index);
+                unset($oldIndex);
                 unlink($oldIndexFn);
                 return true;
             }
