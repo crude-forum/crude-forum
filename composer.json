@@ -68,7 +68,7 @@
         "php-di/php-di": "^7.0"
     },
     "require-dev": {
-        "kahlan/kahlan": "^4.0",
+        "kahlan/kahlan": "^5",
         "phpstan/phpstan": "^1.11"
     }
 }
