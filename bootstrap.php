@@ -22,7 +22,7 @@ use CrudeForum\CrudeForum\Core;
 use CrudeForum\CrudeForum\Storage\FileStorage;
 use CrudeForum\CrudeForum\StreamFilter;
 use DI\ContainerBuilder;
-use FastRoute\Dispatcher;
+use FastRoute\RouteCollector;
 use League\Flysystem\Adapter\Local;
 use League\Flysystem\Filesystem;
 use Psr\Container\ContainerInterface;
@@ -65,8 +65,6 @@ $container = (function (): ContainerBuilder {
         },
 
         'twig' => function (ContainerInterface $container) {
-            /** @var AbstractCachePool */
-            $cache = $container->get('cache');
             $twig = new \Twig\Environment(
                 new \Twig\Loader\FilesystemLoader(
                     [
@@ -81,7 +79,11 @@ $container = (function (): ContainerBuilder {
             );
 
             // define body-to-html filter
-            $bodyToHTML = new \Twig\TwigFilter('bodyToHTML', function ($string) use ($cache) {
+            $bodyToHTML = new \Twig\TwigFilter('bodyToHTML', function ($string) use ($container) {
+
+                /** @var AbstractCachePool */
+                $cache = $container->get('cache');
+
                 $filter = StreamFilter::pipeString(
                     StreamFilter::quoteToBlockquote(...),
                     StreamFilter::reduceFlashEmbed(...),
@@ -96,9 +98,11 @@ $container = (function (): ContainerBuilder {
             });
             $twig->addFilter($bodyToHTML);
 
-            // define linkTo filter
-            $link = new \Twig\TwigFilter('link', function ($id, $type, $action=null) {
-                global $forum;
+            // define "link" filter, a short cut to "linkTo"
+            // `userId | link('user', 'action')` equals to `linkTo('user', userId, 'action')`
+            $link = new \Twig\TwigFilter('link', function ($id, $type, $action=null) use ($container) {
+                /** @var Core */
+                $forum = $container->get('forum');
                 return $forum->linkTo($type, $id, $action);
             });
             $twig->addFilter($link);
@@ -146,7 +150,7 @@ $container = (function (): ContainerBuilder {
         'dispatcher' => function (ContainerInterface $container) {
             $configs = $container->get('configs');
             return FastRoute\simpleDispatcher(
-                function (FastRoute\RouteCollector $router) use ($configs) {
+                function (RouteCollector $router) use ($configs) {
                     // use routes defined in routes.php
                     include __DIR__ . '/routes.php';
                 }
@@ -156,14 +160,3 @@ $container = (function (): ContainerBuilder {
 
     return $builder;
 })()->build();
-
-// Build the essential global variables from container
-
-/** @var Dispatcher */
-$dispatcher = $container->get('dispatcher');
-
-/** @var Core */
-$forum = $container->get('forum');
-
-/** @var array */
-$configs = $container->get('configs');

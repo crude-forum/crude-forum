@@ -22,6 +22,7 @@ use \Twig\TwigFunction;
 use \Symfony\Component\Dotenv\Dotenv;
 use \CrudeForum\CrudeForum\Exception\PostNotFound;
 use \Generator;
+use Psr\Container\ContainerInterface;
 
 /**
  * Core provides access for bootstraping the forum.
@@ -54,10 +55,8 @@ class Core
     {
 
         // add helper functions
-        $twig->addFunction(
-            new TwigFunction('linkTo', array(&$this, 'linkTo'))
-        );
-        $twig->addFunction(new TwigFunction('str_repeat', 'str_repeat'));
+        $twig->addFunction(new TwigFunction('linkTo', $this->linkTo(...)));
+        $twig->addFunction(new TwigFunction('str_repeat', \str_repeat(...)));
         $twig->addFunction(
             new TwigFunction(
                 'postRssPubDate',
@@ -199,20 +198,26 @@ class Core
     /**
      * Bootstrap the routing with dispatcher, forum object and the route function.
      *
-     * @param Dispatcher $dispatcher Route dispatcher that
-     *                               dispatch function for a route.
-     * @param Core       $forum      Forum object.
-     * @param callable   $route      Route function that returns request
-     *                               method and path for route.
+     * @param ContainerInterface $container
+     *     Container instance for getting dispatcher, forum object and environment configs.
+     * @param callable $route
+     *     Route function that returns request method and path for route.
+     *     Function should retrun array of [method, path].
      *
      * @return void
      */
     public static function bootstrap(
-        Dispatcher $dispatcher,
-        Core $forum,
+        ContainerInterface $container,
         callable $route,
-        array $configs=[]
     ) {
+
+        /** @var Dispatcher $dispatcher */
+        $dispatcher = $container->get('dispatcher');
+        /** @var Core $forum */
+        $forum = $container->get('forum');
+        /** @var array $configs */
+        $configs = $container->get('configs');
+
         list($httpMethod, $uri) = $route();
         $routeInfo = $dispatcher->dispatch($httpMethod, $uri);
         switch ($routeInfo[0]) {

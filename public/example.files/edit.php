@@ -1,11 +1,10 @@
 <?php
 
+use \CrudeForum\CrudeForum\Core;
+
 require __DIR__ . '/../../bootstrap.php';
 
-use \CrudeForum\CrudeForum\Post;
-
 Core::bootstrap(
-	$dispatcher,
-	$forum,
+	$container,
 	Core::routeQueryString('/post', 'edit')
 );
