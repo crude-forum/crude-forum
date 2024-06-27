@@ -35,7 +35,7 @@ class Utils
      * @param Wrapper ...$wrappers Wrappers to apply to an Iterator
      *                             from inner to outer.
      *
-     * @return callable
+     * @return WrapperChain
      */
     public static function chainWrappers(
         Wrapper ...$wrappers
