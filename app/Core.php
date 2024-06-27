@@ -250,7 +250,7 @@ class Core
             $handler = $routeInfo[1];
             $vars = $routeInfo[2];
             try {
-                $handler($vars, $forum);
+                $handler($vars, $forum, $configs);
             } catch (\Exception $e) {
                 switch (true) {
                 case ($e instanceof PostNotFound):

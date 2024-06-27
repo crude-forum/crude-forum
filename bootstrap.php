@@ -147,14 +147,9 @@ $container = (function (): ContainerBuilder {
             ];
         },
 
-        'dispatcher' => function (ContainerInterface $container) {
-            $configs = $container->get('configs');
-            return FastRoute\simpleDispatcher(
-                function (RouteCollector $router) use ($configs) {
-                    // use routes defined in routes.php
-                    include __DIR__ . '/routes.php';
-                }
-            );
+        'dispatcher' => function () {
+            // use routes defined in routes.php
+            return FastRoute\simpleDispatcher(fn(RouteCollector $router)  => include __DIR__ . '/routes.php');
         },
     ]);
 
