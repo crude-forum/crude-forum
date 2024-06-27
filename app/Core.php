@@ -124,9 +124,9 @@ class Core
     /**
      * Return the configured default base URL.
      *
-     * @return void
+     * @return string
      */
-    public static function defaultBaseURL()
+    public static function defaultBaseURL(): string
     {
         $host = $_SERVER['SERVER_NAME'];
         $scheme = strtolower($_SERVER['REQUEST_SCHEME'] ?? 'http');
