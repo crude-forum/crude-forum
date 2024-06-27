@@ -40,26 +40,46 @@ use \Generator;
 class FileStorage implements Storage
 {
 
-    private $_dataDirectory;
-    private $_logDirectory;
+    /**
+     * Directory path to the data directory (stores post data) without trailing slash.
+     *
+     * @var string
+     */
+    private string $dataDirectory;
+
+    /**
+     * Directory path to the log directory (stores logs) without trailing slash.
+     *
+     * @var string
+     */
+    private string $logDirectory;
+
     private $_lock;
 
     /**
      * Construct method
      *
-     * @param array $config array of configuration
+     * @param array $dataDirectory String path to the data directory (stores post data).
+     * @param array $logDirectory  String path to the log directory (stores logs).
      */
-    public function __construct(array $config)
+    public function __construct(
+        string $dataDirectory = '',
+        string $logDirectory = '',
+    )
     {
-        $this->_dataDirectory = rtrim($config['dataDirectory'] ?? '', '/');
-        $this->_logDirectory = rtrim($config['logDirectory'] ?? '', '/');
+        $this->dataDirectory = rtrim($dataDirectory, '/');
+        $this->logDirectory = rtrim($logDirectory, '/');
 
         // validate dataDirectory
-        FileStorage::_ensureDir(
-            'dataDirectory', 'CRUDE_DIR_DATA', $config['dataDirectory']
+        static::_ensureDir(
+            'dataDirectory',
+            'CRUDE_DIR_DATA',
+            $this->dataDirectory,
         );
-        FileStorage::_ensureDir(
-            'logDirectory', 'CRUDE_DIR_LOG', $config['logDirectory']
+        static::_ensureDir(
+            'logDirectory',
+            'CRUDE_DIR_LOG',
+            $this->logDirectory,
         );
     }
 
@@ -102,7 +122,7 @@ class FileStorage implements Storage
      */
     public function getIndex(): ?ForumIndex
     {
-        $indexfn = $this->_dataDirectory . '/index';
+        $indexfn = $this->dataDirectory . '/index';
         if (!file_exists($indexfn) && !touch($indexfn)) {
             throw new Exception("unable to create index file: {$indexfn}");
             return null;
@@ -147,7 +167,7 @@ class FileStorage implements Storage
     public function getCount(): int
     {
         // Gets messages count for assigning post number
-        $countfn = $this->_dataDirectory . '/count';
+        $countfn = $this->dataDirectory . '/count';
         if (!file_exists($countfn) && !touch($countfn)) {
             throw new Exception("unable to create count file: {$countfn}");
         }
@@ -170,7 +190,7 @@ class FileStorage implements Storage
     public function incCount(): int
     {
         // Gets messages count for assigning post number
-        $countfn = $this->_dataDirectory . '/count';
+        $countfn = $this->dataDirectory . '/count';
         if (!file_exists($countfn) && !touch($countfn)) {
             throw new Exception("unable to create count file: {$countfn}");
         }
@@ -201,7 +221,7 @@ class FileStorage implements Storage
         // determine post file full path
         $subdir = ($postID === 'notes') ?
             '/' : '/' . floor((int) $postID / 1000) . '/';
-        $postFn = $this->_dataDirectory . $subdir . $postID;
+        $postFn = $this->dataDirectory . $subdir . $postID;
 
         // attempt to create if accessing note file
         if (($postID === 'notes') && !file_exists($postFn) && !touch($postFn)) {
@@ -230,17 +250,17 @@ class FileStorage implements Storage
     {
         // determine data folder for the post
         $subdir = floor((int) $postID / 1000);
-        if (!is_dir($this->_dataDirectory . '/' . $subdir)) {
-            if (mkdir($this->_dataDirectory . '/' . $subdir) === false) {
+        if (!is_dir($this->dataDirectory . '/' . $subdir)) {
+            if (mkdir($this->dataDirectory . '/' . $subdir) === false) {
                 throw new Exception('failed to create subdirectory for the post');
                 return false;
             }
-            if (chmod($this->_dataDirectory . '/' . $subdir, 0777) === false) {
+            if (chmod($this->dataDirectory . '/' . $subdir, 0777) === false) {
                 throw new Exception('failed to chmod post subdirectory');
                 return false;
             }
         }
-        $fh = fopen($this->_dataDirectory . '/' . $subdir  . '/' . $postID, "w+");
+        $fh = fopen($this->dataDirectory . '/' . $subdir  . '/' . $postID, "w+");
         if (!is_resource($fh)) {
             throw new Exception('failed to open post file to write');
             return false;
@@ -277,8 +297,8 @@ class FileStorage implements Storage
     ): bool {
 
         // swap the index out and prepare to rewrite index
-        $indexFn = $this->_dataDirectory . '/index';
-        $oldIndexFn = $this->_dataDirectory . '/index.old';
+        $indexFn = $this->dataDirectory . '/index';
+        $oldIndexFn = $this->dataDirectory . '/index.old';
         if (!rename($indexFn, $oldIndexFn)) {
             throw new Exception('unable to rename index as index.old');
             return false;
@@ -346,7 +366,7 @@ class FileStorage implements Storage
      */
     public function getLock(): Lock
     {
-        $this->_lock = new FileStorageLock($this->_dataDirectory . '/lock');
+        $this->_lock = new FileStorageLock($this->dataDirectory . '/lock');
         return $this->_lock;
     }
 
@@ -361,7 +381,7 @@ class FileStorage implements Storage
     public function writeLog(array $context, string $msg='')
     {
 
-        $logfn = $this->_logDirectory . '/log';
+        $logfn = $this->logDirectory . '/log';
 
         if (!file_exists($logfn) && !touch($logfn)) {
             throw new Exception("unable to create log file: {$logfn}");

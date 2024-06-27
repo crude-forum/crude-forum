@@ -17,6 +17,7 @@
 require_once __DIR__ . '/vendor/autoload.php';
 
 use \CrudeForum\CrudeForum\Core;
+use \CrudeForum\CrudeForum\Storage\FileStorage;
 use \CrudeForum\CrudeForum\StreamFilter;
 use \League\Flysystem\Adapter\Local;
 use \League\Flysystem\Filesystem;
@@ -35,11 +36,9 @@ if ((bool) Core::env('CRUDE_DEBUG', 'FALSE')) {
 date_default_timezone_set(Core::env('CRUDE_TIMEZONE', 'UTC'));
 
 // initialize forum storage
-$storage = new \CrudeForum\CrudeForum\Storage\FileStorage(
-    [
-        'logDirectory' => Core::env('CRUDE_DIR_LOGS', __DIR__ . '/data/logs'),
-        'dataDirectory' => Core::env('CRUDE_DIR_DATA', __DIR__ . '/data/forumdata_utf8'),
-    ]
+$storage = new FileStorage(
+    logDirectory: Core::env('CRUDE_DIR_LOGS', __DIR__ . '/data/logs'),
+    dataDirectory: Core::env('CRUDE_DIR_DATA', __DIR__ . '/data/forumdata_utf8'),
 );
 
 // initialize template engine
