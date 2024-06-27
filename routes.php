@@ -174,7 +174,7 @@ $savePost = function ($vars, $forum, $configs) {
     $author = $_POST[$configs['formPostAuthor']];
     $title = $_POST[$configs['formPostTitle']];
     $body = $_POST[$configs['formPostBody']];
-    $currentTime = strftime("%a %F %T");
+    $currentTime = date('D Y-m-d H:i:s');
 
     // Characters to be avoided
     // TODO: rewrite sanatization with blacklist tag and attribute.
