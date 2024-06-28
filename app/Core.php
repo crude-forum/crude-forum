@@ -132,9 +132,9 @@ class Core
      */
     public static function defaultBaseURL(): string
     {
-        $host = $_SERVER['SERVER_NAME'];
+        $host = $_SERVER['SERVER_NAME'] ?? 'localhost';
         $scheme = strtolower($_SERVER['REQUEST_SCHEME'] ?? 'http');
-        $port = $_SERVER['SERVER_PORT'];
+        $port = $_SERVER['SERVER_PORT'] ?? 80;
         if (($scheme == 'http' && $port != 80)
             || ($scheme == 'https' && $port != 443)
         ) {
