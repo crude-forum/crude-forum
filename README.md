@@ -13,18 +13,24 @@ Originally forked from [github.com/stupidsing/crude_forum](https://github.com/st
 
 ## Prerequisites
 
-The installation depends on [composer] and [node-sass].
+The installation depends on [composer]. Install [composer] to your system `$PATH`.
 
-1. Install [composer] to your system `$PATH`.
-
-1. Install [npm] to your system. Then, with `npm`, install `node-sass` to anywhere in your `$PATH`. Probably with this command:
-
-   ```shell
-   npm install -g node-sass
-   ```
 [composer]: https://getcomposer.org/download/
-[node-sass]: https://www.npmjs.com/package/node-sass
+
+## Development
+
+All style changes should be done in forum.scss and built by [sass]. To setup for development:
+
+1. Install [nodejs] to your system. The package manager [npm] will be installed along.
+1. Then with `npm`, install `sass` to anywhere in your `$PATH`. Probably with this command:
+
+```shell
+npm install -g sass
+```
+
+[nodejs]: https://nodejs.org/
 [npm]: https://www.npmjs.com/package/npm
+[sass]: https://www.npmjs.com/package/sass
 
 ## Basic Install
 
@@ -36,7 +42,7 @@ First, install CrudeForum into the folder `myForum` (which you may rename as you
 composer create-project --prefer-dist crude-forum/crude-forum myForum
 ```
 
-**Note:** If you do not have [node-sass] prior to running the composer `create-project` command,
+**Note:** If you do not have [sass] prior to running the composer `create-project` command,
 you'd need to run the composer build command to rebuild static assets after install:
 
 ```shell

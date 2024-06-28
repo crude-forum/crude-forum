@@ -16,8 +16,8 @@ configuration.php
 # ignore vendor folder
 /vendor
 
-# ignore built css file
-/public/assets/forum.css
+# ignore built css map file (only use for development)
+/public/assets/*.css.map
 
 # ignore user overrides
 /views/custom/*.twig
