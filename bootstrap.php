@@ -13,16 +13,12 @@
  * @link     https://github.com/crude-forum/crude-forum/blob/master/bootstrap.php Source Code
  */
 
-// common bootstrap code
-require_once __DIR__ . '/vendor/autoload.php';
-
 use Cache\Adapter\Filesystem\FilesystemCachePool;
 use CrudeForum\CrudeForum\Config;
 use CrudeForum\CrudeForum\Core;
 use CrudeForum\CrudeForum\Storage;
 use CrudeForum\CrudeForum\Storage\FileStorage;
 use CrudeForum\CrudeForum\StreamFilter;
-use DI\Container;
 use DI\ContainerBuilder;
 use FastRoute\Dispatcher;
 use FastRoute\RouteCollector;
@@ -30,8 +26,64 @@ use League\Flysystem\Adapter\Local;
 use League\Flysystem\Filesystem;
 use Psr\Cache\CacheItemPoolInterface;
 use Psr\Container\ContainerInterface;
-use Symfony\Component\Dotenv\Dotenv;
 use Twig\Environment;
+
+define('SETUP_ERROR_HTML', <<<HTML
+<!DOCTYPE html>
+<head>
+<title>Setup Error</title>
+<style>
+* {
+    box-sizing: border-box;
+}
+body {
+    font-family: sans-serif;
+    margin: 0;
+    min-height: 100vh;
+    background-color: rgba(255, 230, 230, 1);
+}
+main {
+    position: relative;
+    margin: 0 auto;
+    padding: 1em;
+    width: 50%;
+    text-align: center;
+    border: 1px solid rgba(200, 0, 0, 1);
+    top: calc(50vh - 2em);
+    transform: translateY(-50%);
+    background-color: rgba(255, 255, 255, 0.7);
+}
+h1 {
+    color: rgba(200, 0, 0, 1);
+}
+code {
+    display: inline-block;
+    background-color: rgba(0, 0, 0, 0.1);
+    padding: 0.2em 0.6em;
+    border-radius: 0.2em;
+    font-family: monospace;
+}
+</style>
+</head>
+<body>
+    <main>
+        <h1>Setup Error</h1>
+        <p>This forum is not setup properly.</p>
+        <p>Please run <code>composer install</code> first.</p>
+    </main>
+</body>
+</html>
+HTML);
+
+// common bootstrap code
+if (!is_file(__DIR__ . '/vendor/autoload.php') || !is_file(__DIR__ . '/vendor/php-di/php-di/src/functions.php')) {
+    die(SETUP_ERROR_HTML);
+}
+try {
+    require_once __DIR__ . '/vendor/autoload.php';
+} catch (\Error $e) {
+    die(SETUP_ERROR_HTML);
+}
 
 // Build the container in a closure to elimiate global variables
 $container = (function (): ContainerBuilder {
