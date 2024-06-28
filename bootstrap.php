@@ -17,6 +17,7 @@
 require_once __DIR__ . '/vendor/autoload.php';
 
 use Cache\Adapter\Filesystem\FilesystemCachePool;
+use CrudeForum\CrudeForum\Config;
 use CrudeForum\CrudeForum\Core;
 use CrudeForum\CrudeForum\Storage;
 use CrudeForum\CrudeForum\Storage\FileStorage;
@@ -139,22 +140,23 @@ $container = (function (): ContainerBuilder {
             );
         },
 
-        'configs' => function () {
+        'configs' => DI\get(Config::class),
+        Config::class => function () {
             // The 'configs' array used in template rendering.
             // Used in routes.php and views
-            return [
-                'formPostAuthor' => Core::env('CRUDE_FORM_POST_AUTHOR'),
-                'formPostTitle' => Core::env('CRUDE_FORM_POST_TITLE'),
-                'formPostBody' => Core::env('CRUDE_FORM_POST_BODY'),
-                'postPerPage' => (int) Core::env('CRUDE_POST_PER_PAGE'),
-                'rssPostLimit' => (int) Core::env('CRUDE_RSS_POST_NUMBER'),
-                'siteName' => Core::env('CRUDE_SITE_NAME'),
-                'sloganTop' => Core::env('CRUDE_SLOGAN_TOP'),
-                'sloganBottom' => Core::env('CRUDE_SLOGAN_BOTTOM'),
-                'baseURL' => Core::env('CRUDE_BASE_URL'),
-                'basePath' => Core::env('CRUDE_BASE_PATH'),
-                'assetsPath' => Core::env('CRUDE_ASSETS_PATH'),
-            ];
+            return new Config(
+                formNamePostAuthor: Core::env('CRUDE_FORM_POST_AUTHOR'),
+                formNamePostTitle: Core::env('CRUDE_FORM_POST_TITLE'),
+                formNamePostBody: Core::env('CRUDE_FORM_POST_BODY'),
+                postPerPage: (int) Core::env('CRUDE_POST_PER_PAGE'),
+                rssPostLimit: (int) Core::env('CRUDE_RSS_POST_NUMBER'),
+                siteName: Core::env('CRUDE_SITE_NAME'),
+                sloganTop: Core::env('CRUDE_SLOGAN_TOP'),
+                sloganBottom: Core::env('CRUDE_SLOGAN_BOTTOM'),
+                baseURL: Core::env('CRUDE_BASE_URL'),
+                basePath: Core::env('CRUDE_BASE_PATH'),
+                assetsPath: Core::env('CRUDE_ASSETS_PATH'),
+            );
         },
 
         'dispatcher' => DI\get(Dispatcher::class),

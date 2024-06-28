@@ -13,6 +13,7 @@
  * @link     https://github.com/crude-forum/crude-forum/blob/master/routes.php Source Code
  */
 
+use CrudeForum\CrudeForum\Config;
 use CrudeForum\CrudeForum\Core;
 use CrudeForum\CrudeForum\Post;
 use CrudeForum\CrudeForum\PostSummary;
@@ -103,7 +104,7 @@ $router->addRoute(
 $router->addRoute(
     'GET',
     '/post/{postID:\d+}/back',
-    function (array $vars, Core $forum, array $configs) {
+    function (array $vars, Core $forum, Config $configs) {
         $lock = $forum->getLock();
         $postID = $vars['postID'];
         try {
@@ -113,7 +114,7 @@ $router->addRoute(
                 'Refresh: 0; URL=' .
                 $forum->linkTo(
                     'forum',
-                    $configs['postPerPage'] * floor($postSummary->pos / $configs['postPerPage'])
+                    $configs->postPerPage * floor($postSummary->pos / $configs->postPerPage)
                 )
             );
             echo $forum->template->render('base.twig');
@@ -168,14 +169,14 @@ $showForm = function (array $vars, Core $forum) {
 $router->addRoute('GET', '/post/{postID:\d+}/{action:edit|reply}', $showForm);
 $router->addRoute('GET', '/post/{action:add}', $showForm);
 
-$savePost = function (array $vars, Core $forum, array $configs) {
+$savePost = function (array $vars, Core $forum, Config $configs) {
     $forum->log("say?");
     $action = $vars['action'] ?? '';
     $postID = $vars['postID'] ?? false;
 
-    $author = $_POST[$configs['formPostAuthor']];
-    $title = $_POST[$configs['formPostTitle']];
-    $body = $_POST[$configs['formPostBody']];
+    $author = $_POST[$configs->formNamePostAuthor];
+    $title = $_POST[$configs->formNamePostTitle];
+    $body = $_POST[$configs->formNamePostBody];
     $currentTime = date('D Y-m-d H:i:s');
 
     // Characters to be avoided
@@ -190,16 +191,16 @@ $savePost = function (array $vars, Core $forum, array $configs) {
     // validate the form
     $errors = array();
     if (strlen($author) > 8) {
-        $errors[$configs['formPostAuthor']][] = 'Name too long';
+        $errors[$configs->formNamePostAuthor][] = 'Name too long';
     }
     if ($author == '') {
-        $errors[$configs['formPostAuthor']][] = 'Please enter your name';
+        $errors[$configs->formNamePostAuthor][] = 'Please enter your name';
     }
     if ($title == '') {
-        $errors[$configs['formPostTitle']][] = 'Please enter a subject';
+        $errors[$configs->formNamePostTitle][] = 'Please enter a subject';
     }
     if ($body == '') {
-        $errors[$configs['formPostBody']][] = 'Please enter post content';
+        $errors[$configs->formNamePostBody][] = 'Please enter post content';
     }
 
     // display error message with the originally filled form
@@ -307,28 +308,28 @@ $router->addRoute('POST', '/post/{action:add}', $savePost);
 $router->addRoute(
     'GET',
     '/forum[/[{page:\d+}]]',
-    function (array $vars, Core $forum, array $configs) {
+    function (array $vars, Core $forum, Config $configs) {
 
         $page = $vars['page'] ?? 0;
         $forum->log("forum?" . $page);
 
         $lock = $forum->getLock();
-        $index = Utils::chainWrappers(new Paged($page, $configs['postPerPage']))->wrap($forum->getIndex());
+        $index = Utils::chainWrappers(new Paged($page, $configs->postPerPage))->wrap($forum->getIndex());
         $contents = $forum->template->render(
             'forum.twig',
             [
                 'page' => $page,
                 'topLinks' => [
                     ['text' => '發言', 'href' => $forum->linkTo('post', null, 'add')],
-                    ['text' => '上一頁', 'href' => $forum->linkTo('forum', (($page > $configs['postPerPage']) ? $page - $configs['postPerPage'] : 0))],
-                    //['text' => '下一頁', 'href' => $forum->linkTo('forum', ($page + $configs['postPerPage']))],
+                    ['text' => '上一頁', 'href' => $forum->linkTo('forum', (($page > $configs->postPerPage) ? $page - $configs->postPerPage : 0))],
+                    //['text' => '下一頁', 'href' => $forum->linkTo('forum', ($page + $configs->postPerPage))],
                     ['text' => '首頁', 'href' => $forum->linkTo('forum')],
                     ['text' => '主頁', 'href' => '/'],
                 ],
                 'bottomLinks' => [
                     ['text' => '發言', 'href' => $forum->linkTo('post', null, 'add')],
-                    //['text' => '上一頁', 'href' => $forum->linkTo('forum', (($page > $configs['postPerPage']) ? $page - $configs['postPerPage'] : 0))],
-                    ['text' => '下一頁', 'href' => $forum->linkTo('forum', ($page + $configs['postPerPage']))],
+                    //['text' => '上一頁', 'href' => $forum->linkTo('forum', (($page > $configs->postPerPage) ? $page - $configs->postPerPage : 0))],
+                    ['text' => '下一頁', 'href' => $forum->linkTo('forum', ($page + $configs->postPerPage))],
                     ['text' => '首頁', 'href' => $forum->linkTo('forum')],
                     ['text' => '主頁', 'href' => '/'],
                 ],
@@ -343,7 +344,7 @@ $router->addRoute(
 $router->addRoute(
     'GET',
     '/user/{username}[/[{page:\d+}]]',
-    function (array $vars, Core $forum, array $configs) {
+    function (array $vars, Core $forum, Config $configs) {
         $page = $vars['page'] ?? 0;
         $forum->log("forum?" . $page);
 
@@ -363,7 +364,7 @@ $router->addRoute(
                     return ($postSummary->author == $vars['username']);
                 }
             ),
-            new Paged($page, $configs['postPerPage'])
+            new Paged($page, $configs->postPerPage)
         )->wrap($forum->getIndex());
         $user_path = 'user/' . $vars['username'];
         $contents = $forum->template->render(
@@ -372,15 +373,15 @@ $router->addRoute(
                 'page' => $page,
                 'topLinks' => [
                     ['text' => '發言', 'href' => $forum->linkTo('post', null, 'add')],
-                    ['text' => '上一頁', 'href' => $forum->linkTo($user_path, (($page > $configs['postPerPage']) ? $page - $configs['postPerPage'] : 0))],
-                    //['text' => '下一頁', 'href' => $forum->linkTo($user_path, ($page + $configs['postPerPage']))],
+                    ['text' => '上一頁', 'href' => $forum->linkTo($user_path, (($page > $configs->postPerPage) ? $page - $configs->postPerPage : 0))],
+                    //['text' => '下一頁', 'href' => $forum->linkTo($user_path, ($page + $configs->postPerPage))],
                     ['text' => '首頁', 'href' => $forum->linkTo('forum')],
                     ['text' => '主頁', 'href' => '/'],
                 ],
                 'bottomLinks' => [
                     ['text' => '發言', 'href' => $forum->linkTo('post', null, 'add')],
-                    //['text' => '上一頁', 'href' => $forum->linkTo($user_path, (($page > $configs['postPerPage']) ? $page - $configs['postPerPage'] : 0))],
-                    ['text' => '下一頁', 'href' => $forum->linkTo($user_path, ($page + $configs['postPerPage']))],
+                    //['text' => '上一頁', 'href' => $forum->linkTo($user_path, (($page > $configs->postPerPage) ? $page - $configs->postPerPage : 0))],
+                    ['text' => '下一頁', 'href' => $forum->linkTo($user_path, ($page + $configs->postPerPage))],
                     ['text' => '首頁', 'href' => $forum->linkTo('forum')],
                     ['text' => '主頁', 'href' => '/'],
                 ],
@@ -396,7 +397,7 @@ $router->addRoute(
 $router->addRoute(
     'GET',
     '/rss',
-    function (array $vars, Core $forum, array $configs) {
+    function (array $vars, Core $forum, Config $configs) {
         $mode = $_GET['mode'] ?? 'post';
 
         // read post summaries as reference to the mode
@@ -415,7 +416,7 @@ $router->addRoute(
                             return ($postSummary->level == 0);
                         }
                     ),
-                    new Paged(0, $configs['rssPostLimit'])
+                    new Paged(0, $configs->rssPostLimit)
                 )->wrap($forum->getIndex());
 
                 // read post index and post contents
@@ -440,7 +441,7 @@ $router->addRoute(
                 break;
             case 'post':
                 $posts = Utils::chainWrappers(
-                    new Paged(0, $configs['rssPostLimit'])
+                    new Paged(0, $configs->rssPostLimit)
                 )->wrap($forum->getPosts());
 
                 // parse post as postSummary and generate rssPosts

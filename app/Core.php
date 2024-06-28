@@ -252,7 +252,6 @@ class Core
             try {
                 $container->call($handler, [
                     'vars' => $vars,
-                    'configs' => $configs,
                 ]);
             } catch (\Exception $e) {
                 switch (true) {
