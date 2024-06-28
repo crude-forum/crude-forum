@@ -22,6 +22,7 @@ use CrudeForum\CrudeForum\Core;
 use CrudeForum\CrudeForum\Storage;
 use CrudeForum\CrudeForum\Storage\FileStorage;
 use CrudeForum\CrudeForum\StreamFilter;
+use DI\Container;
 use DI\ContainerBuilder;
 use FastRoute\Dispatcher;
 use FastRoute\RouteCollector;
@@ -29,22 +30,44 @@ use League\Flysystem\Adapter\Local;
 use League\Flysystem\Filesystem;
 use Psr\Cache\CacheItemPoolInterface;
 use Psr\Container\ContainerInterface;
+use Symfony\Component\Dotenv\Dotenv;
 use Twig\Environment;
-
-// load env config
-Core::loadDotenv(__DIR__);
-
-// for debug
-if ((bool) Core::env('CRUDE_DEBUG', 'FALSE')) {
-    ini_set('display_errors', 1);
-    error_reporting(E_ALL);
-}
-
-// set default timezone
-date_default_timezone_set(Core::env('CRUDE_TIMEZONE', 'UTC'));
 
 // Build the container in a closure to elimiate global variables
 $container = (function (): ContainerBuilder {
+
+    // Setup that has to be done before setting up container
+    // i.e. load env config, setup display errors and timezone.
+
+    // load env configs
+    Core::loadDotenv(__DIR__);
+    $configs = new Config(
+        formNamePostAuthor: Core::env('CRUDE_FORM_POST_AUTHOR'),
+        formNamePostTitle: Core::env('CRUDE_FORM_POST_TITLE'),
+        formNamePostBody: Core::env('CRUDE_FORM_POST_BODY'),
+        postPerPage: (int) Core::env('CRUDE_POST_PER_PAGE'),
+        rssPostLimit: (int) Core::env('CRUDE_RSS_POST_NUMBER'),
+        siteName: Core::env('CRUDE_SITE_NAME'),
+        sloganTop: Core::env('CRUDE_SLOGAN_TOP'),
+        sloganBottom: Core::env('CRUDE_SLOGAN_BOTTOM'),
+        baseURL: Core::env('CRUDE_BASE_URL', Core::defaultBaseURL()),
+        basePath: Core::env('CRUDE_BASE_PATH', Core::defaultBasePath()),
+        assetsPath: Core::env('CRUDE_ASSETS_PATH'),
+        timezone: Core::env('CRUDE_TIMEZONE', 'UTC'),
+        debug: (bool) Core::env('CRUDE_DEBUG', 'FALSE'),
+    );
+
+    // TODO: should have better solution than this
+    $administrator = Core::env('CRUDE_ADMIN');
+
+    // for debug
+    if ($configs->debug) {
+        ini_set('display_errors', 1);
+        error_reporting(E_ALL);
+    }
+
+    // set default timezone
+    date_default_timezone_set($configs->timezone);
 
     // Use ad DI container to build the environment
     $builder = new ContainerBuilder();
@@ -121,7 +144,7 @@ $container = (function (): ContainerBuilder {
         },
 
         'forum' => DI\get(Core::class),
-        Core::class => function (ContainerInterface $container) {
+        Core::class => function (ContainerInterface $container) use ($administrator) {
             /** @var FileStorage */
             $storage = $container->get('storage');
 
@@ -136,28 +159,12 @@ $container = (function (): ContainerBuilder {
                 $storage,
                 $twig,
                 $configs,
-                ['administrator' => Core::env('CRUDE_ADMIN')]
+                ['administrator' => $administrator]
             );
         },
 
         'configs' => DI\get(Config::class),
-        Config::class => function () {
-            // The 'configs' array used in template rendering.
-            // Used in routes.php and views
-            return new Config(
-                formNamePostAuthor: Core::env('CRUDE_FORM_POST_AUTHOR'),
-                formNamePostTitle: Core::env('CRUDE_FORM_POST_TITLE'),
-                formNamePostBody: Core::env('CRUDE_FORM_POST_BODY'),
-                postPerPage: (int) Core::env('CRUDE_POST_PER_PAGE'),
-                rssPostLimit: (int) Core::env('CRUDE_RSS_POST_NUMBER'),
-                siteName: Core::env('CRUDE_SITE_NAME'),
-                sloganTop: Core::env('CRUDE_SLOGAN_TOP'),
-                sloganBottom: Core::env('CRUDE_SLOGAN_BOTTOM'),
-                baseURL: Core::env('CRUDE_BASE_URL', Core::defaultBaseURL()),
-                basePath: Core::env('CRUDE_BASE_PATH', Core::defaultBasePath()),
-                assetsPath: Core::env('CRUDE_ASSETS_PATH'),
-            );
-        },
+        Config::class => $configs,
 
         'dispatcher' => DI\get(Dispatcher::class),
         Dispatcher::class => function () {
