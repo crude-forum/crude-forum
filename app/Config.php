@@ -51,5 +51,6 @@ class Config
         public string $formNamePostBody = '',
         public bool $debug = false,
     ) {
+        $this->baseURL = rtrim($this->baseURL, '/');
     }
 }
