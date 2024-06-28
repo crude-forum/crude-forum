@@ -97,6 +97,18 @@ like this:
 
 Should all the setup correct, you can now browse your forum in browser.
 
+
+## Alternative Installation
+
+For some legacy hosting environment, you might not be able to do path rewrite as modern PHP
+routing requires.
+
+CrudeForum support multiple routing strategies. For that, you may reference the examples:
+
+* [Legacy File-based Routing Support](examples/public.files)
+* [Legacy PATH_INFO-based Routing](examples/public.pathinfo)
+
+
 ## Development
 
 Simply clone this repository. You can run crude forum with modern PHP 7.1+ command line tools:
