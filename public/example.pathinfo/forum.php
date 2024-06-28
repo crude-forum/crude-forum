@@ -4,6 +4,9 @@ use \CrudeForum\CrudeForum\Core;
 
 require __DIR__ . '/../../bootstrap.php';
 
+// get forum instance
+$forum = $container->get('forum');
+
 // hard code all paths to start with '/temp/forum.php/'
 $forum->setBasePath('/example.pathinfo/forum.php');
 $forum->setBaseURL('http://localhost:8080/example.pathinfo/forum.php');
