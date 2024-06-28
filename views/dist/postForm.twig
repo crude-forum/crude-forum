@@ -3,24 +3,24 @@
 {% block content %}
 <form class="post-form" method="POST" action="{{ linkTo('post', postID, action) }}">
     <div class="field-wrapper field-name">
-        <label for="{{ configs.formPostAuthor }}">你的名字</label>
+        <label for="{{ configs.formNamePostAuthor }}">你的名字</label>
         <input
             type="text"
-            id="{{ configs.formPostAuthor }}"
-            class="{% if attribute(errors, configs.formPostAuthor) %}error{% endif %}"
-            name="{{ configs.formPostAuthor }}"
+            id="{{ configs.formNamePostAuthor }}"
+            class="{% if attribute(errors, configs.formNamePostAuthor) %}error{% endif %}"
+            name="{{ configs.formNamePostAuthor }}"
             value="{{ post.author }}"
             size="40"
             {% if post.author is empty %}autofocus{% endif %}
         >
     </div>
     <div class="field-wrapper field-title">
-        <label for="{{ configs.formPostTitle }}">主題</label>
+        <label for="{{ configs.formNamePostTitle }}">主題</label>
         <input
             type="text"
-            id="{{ configs.formPostTitle }}"
-            class="{% if attribute(errors, configs.formPostTitle) %}error{% endif %}"
-            name="{{ configs.formPostTitle }}"
+            id="{{ configs.formNamePostTitle }}"
+            class="{% if attribute(errors, configs.formNamePostTitle) %}error{% endif %}"
+            name="{{ configs.formNamePostTitle }}"
             value="{{ post.safeTitle() | raw }}"
             size="40"
             {% if not post.author is empty and post.title is empty %}autofocus{% endif %}
@@ -28,9 +28,9 @@
     </div>
     <div class="field-wrapper field-body">
         <textarea
-            id="{{ configs.formPostBody }}"
-            class="{% if attribute(errors, configs.formPostBody) %}error{% endif %}"
-            name="{{ configs.formPostBody }}"
+            id="{{ configs.formNamePostBody }}"
+            class="{% if attribute(errors, configs.formNamePostBody) %}error{% endif %}"
+            name="{{ configs.formNamePostBody }}"
             rows="30"
             cols="80"
             {% if not post.author is empty and not post.title is empty and post.body is empty %}autofocus{% endif %}
