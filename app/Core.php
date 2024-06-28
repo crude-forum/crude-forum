@@ -372,14 +372,17 @@ class Core
         array $options=[]
     ): string {
         $absolute = (bool) ($options['absolute'] ?? false);
-        $path = ($absolute) ?
-            [$this->_baseURL, $entity] : [$this->_basePath, $entity];
+        $path = [trim($this->_basePath, '/'), $entity];
+
         if (!empty($id)) {
             $path[] = $id;
         }
         if (!empty($action)) {
             $path[] = $action;
         }
+
+        // Remove empty parts from path to prevent double slashes
+        $path = array_filter($path, fn($part) => !empty($part));
 
         // build query, if in options
         $query = '';
@@ -396,7 +399,9 @@ class Core
                 array_push($path, 'add');
             }
         }
-        return implode('/', $path) . $query;
+        return ($absolute)
+            ? $this->_baseURL . '/' . implode('/', $path) . $query
+            : '/' . implode('/', $path) . $query;
     }
 
     /**

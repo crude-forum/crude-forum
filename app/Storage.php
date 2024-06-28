@@ -97,7 +97,7 @@ interface Storage
     /**
      * Get lock gets a file lock, which locks the forum read/write operations
      *
-     * @return resource
+     * @return Lock
      */
     public function getLock(): Lock;
 
