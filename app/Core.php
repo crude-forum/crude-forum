@@ -49,9 +49,14 @@ class Core
      *
      * @param FileStorage $storage Storage engine to use.
      * @param Environment $twig    Twig template engine.
-     * @param array|null  $config  configurations for the forum.
+     * @param array       $config  configurations for the forum.
      */
-    public function __construct(Storage $storage, Environment $twig, ?array $config)
+    public function __construct(
+        Storage $storage,
+        Environment $twig,
+        Config $configs,
+        array $options = [],
+    )
     {
 
         // add helper functions
@@ -79,9 +84,9 @@ class Core
         $this->_storage = $storage;
 
         // assign config parameters
-        $this->_administrator = $config['administrator'] ?? '';
-        $this->_baseURL = $config['baseURL'];
-        $this->_basePath = rtrim($config['basePath'] ?? '/', '/');
+        $this->_administrator = $options['administrator'] ?? '';
+        $this->_baseURL = $configs->baseURL;
+        $this->_basePath = $configs->basePath;
     }
 
     /**

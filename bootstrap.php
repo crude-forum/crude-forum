@@ -128,15 +128,15 @@ $container = (function (): ContainerBuilder {
             /** @var \Twig\Environment */
             $twig = $container->get('twig');
 
+            /** @var Config */
+            $configs = $container->get('configs');
+
             // initialize forum core
             return new Core(
                 $storage,
                 $twig,
-                [
-                    'administrator' => Core::env('CRUDE_ADMIN'),
-                    'baseURL' => Core::env('CRUDE_BASE_URL', Core::defaultBaseURL()),
-                    'basePath' => Core::env('CRUDE_BASE_PATH', Core::defaultBasePath()),
-                ]
+                $configs,
+                ['administrator' => Core::env('CRUDE_ADMIN')]
             );
         },
 
@@ -153,8 +153,8 @@ $container = (function (): ContainerBuilder {
                 siteName: Core::env('CRUDE_SITE_NAME'),
                 sloganTop: Core::env('CRUDE_SLOGAN_TOP'),
                 sloganBottom: Core::env('CRUDE_SLOGAN_BOTTOM'),
-                baseURL: Core::env('CRUDE_BASE_URL'),
-                basePath: Core::env('CRUDE_BASE_PATH'),
+                baseURL: Core::env('CRUDE_BASE_URL', Core::defaultBaseURL()),
+                basePath: Core::env('CRUDE_BASE_PATH', Core::defaultBasePath()),
                 assetsPath: Core::env('CRUDE_ASSETS_PATH'),
             );
         },
