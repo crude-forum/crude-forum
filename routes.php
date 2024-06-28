@@ -447,7 +447,6 @@ $router->addRoute(
                 // parse post as postSummary and generate rssPosts
                 foreach ($posts as $post) {
                     $postSummary = PostSummary::fromPost($post);
-                    $postSummary->post = $post;
                     $postSummary->rssBody = $forum->template->render(
                         'rssPostBody.twig',
                         [

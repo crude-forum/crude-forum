@@ -36,7 +36,7 @@ class PostSummary
     public string $author = '';
     public string $time = '';
     public int $pos = 0;
-    public string|null $post = null;
+    public Post|null $post = null;
     public string $rssBody = '';
 
     /**
@@ -91,7 +91,15 @@ class PostSummary
             throw new PostInvalid('post has undefined time');
             return null;
         }
-        return new PostSummary($post->id, 0, $post->title, $post->header['author'], $post->header['time']);
+        $postSummary = new PostSummary(
+            id: $post->id,
+            level: 0,
+            title: $post->title,
+            author: $post->header['author'],
+            time: $post->header['time'],
+        );
+        $postSummary->post = $post;
+        return $postSummary;
     }
 
     /**
